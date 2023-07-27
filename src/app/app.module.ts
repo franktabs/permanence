@@ -14,6 +14,7 @@ import { ContainerComponent } from './pages/container/container.component';
 import { Card1Component } from './shared/components/card1/card1.component';
 import { DayJsPipe } from './shared/pipes/day-js.pipe';
 import { TimeAgoPipe } from './shared/pipes/time-ago.pipe';
+import { Table1Component } from './shared/components/table1/table1.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -26,7 +27,8 @@ import { TimeAgoPipe } from './shared/pipes/time-ago.pipe';
     ContainerComponent,
     Card1Component,
     DayJsPipe,
-    TimeAgoPipe
+    TimeAgoPipe,
+    Table1Component
   ],
   imports: [
     BrowserModule,

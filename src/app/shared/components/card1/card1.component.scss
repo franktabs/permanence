@@ -66,6 +66,18 @@
     background-color: white;
     padding: 1em;
     width: 400px;
+    cursor: pointer;
+    transition: .2s;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
+    &:hover{
+        transform: translateY(-1em);
+        border: 1px blue dashed;
+    }
+
+    &:active{
+        box-shadow: inset 1px 1px 10px #868686c2 ;
+    }
+
     #card-body{
         display: flex;
     }
@@ -77,12 +89,14 @@
     }
 
     #part1{
+        flex: 1;
         display: flex;
         flex-direction: column;
-        padding: 1em;
+        justify-content: center;
+        padding: 0 1em;
         border-right: 1px solid black;
-        span{
-            font-size: 3em;
+        .my-icon{
+            font-size: 4em;
         }
     }
 
@@ -100,21 +114,28 @@
         .ligne{
             background-color:black;
             height: 1px;
+            margin: 10px;
         }
         p{
             text-align: center;
         }
 
         .traited{
+            font-weight: bold;
             color: blue;
         }
         .no-traited{
+            font-weight: bold;
             color: red;
         }
 
         .my-date{
+            display: block;
+            width: max-content;
             font-size: .8em;
             font-style: italic;
+            color: #636363;
+            font-weight: normal;
         }
     }
 }

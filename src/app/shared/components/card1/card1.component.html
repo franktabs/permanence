@@ -1,7 +1,7 @@
-<div id="card" class="shadow-lg"  >
+<div id="card"  >
     <div id="card-body" >
         <div id="part1" >
-            <span class="fs-1" [innerHTML]="icon" >
+            <span class="my-icon" [innerHTML]="icon" >
             </span>
             <p id="title" >
                 {{title|uppercase}}
@@ -9,9 +9,9 @@
         </div>
         <div id="part2" >
             <div>
-                <p class="traited">0 <br> Traité(s) <br> <span class="my-date" >{{'09/12/2012' | dayJs: "fromNow"}} </span> </p>
+                <p class="traited">0 <br> Traité(s) <br> <span class="my-date" >( {{'09/12/2012' | dayJs: "fromNow"}} )</span> </p>
                 <div class="ligne" ></div>
-                <p class="no-traited" >0 <br> Non tratié(s) <br> <span class="my-date">{{ date2 | timeAgo}}</span> </p>
+                <p class="no-traited" >0 <br> Non tratié(s) <br> <span class="my-date">( {{ date2 | timeAgo}} )</span> </p>
             </div>
         </div>
     </div>

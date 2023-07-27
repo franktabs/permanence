@@ -1,7 +1,10 @@
 header {
     background-color: white;
     z-index: 3;
-    position: relative;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
     box-shadow: 0 16px 9px #71717125;
 
     .span {
