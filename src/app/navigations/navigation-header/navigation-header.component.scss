@@ -1,5 +1,8 @@
 header{
     background-color: white;
+    z-index: 3;
+    position: relative;
+    box-shadow: 0 16px 9px #71717125;
 }
 
 .icon-search{
@@ -17,7 +20,7 @@ header{
 .alert-number{
     position: absolute;
     top: -10px;
-    z-index: 2;
+    z-index: 4;
     background-color: #FFAFAF;
     border-radius: 2em;
     font-size: .6em;

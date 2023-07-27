@@ -1,0 +1,30 @@
+
+
+.div-nav{
+    background-color: white;
+    display: flex;
+    justify-content: center;
+    width: max-content;
+    padding: 7em 0;
+    width: 300px;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    z-index: 1;
+    box-shadow: 3px 0 16px #00000025  ;
+    ul{
+        margin: 0;
+        padding: 0;
+        list-style: none;
+        display: flex;
+        flex-direction: column;
+        gap: 2em;
+    }
+
+    ul a {
+        color: #3F51B5;
+        text-decoration: none;
+        font-weight: bolder;
+        font-size: 1.4em;
+    }
+}

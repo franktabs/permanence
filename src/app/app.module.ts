@@ -6,11 +6,13 @@ import { AppComponent } from './app.component';
 import axios from 'axios';
 import { GetApiComponent } from './get-api/get-api.component';
 import { NavigationHeaderComponent } from './navigations/navigation-header/navigation-header.component';
+import { NavigationLeftComponent } from './navigations/navigation-left/navigation-left.component';
 @NgModule({
   declarations: [
     AppComponent,
     GetApiComponent,
-    NavigationHeaderComponent
+    NavigationHeaderComponent,
+    NavigationLeftComponent,
   ],
   imports: [
     BrowserModule,
