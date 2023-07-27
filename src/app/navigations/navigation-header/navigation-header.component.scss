@@ -1,11 +1,15 @@
-header{
+header {
     background-color: white;
     z-index: 3;
     position: relative;
     box-shadow: 0 16px 9px #71717125;
+
+    .span {
+        cursor: pointer;
+    }
 }
 
-.icon-search{
+.icon-search {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -17,7 +21,7 @@ header{
     border-radius: 2em;
 }
 
-.alert-number{
+.alert-number {
     position: absolute;
     top: -10px;
     z-index: 4;
@@ -29,13 +33,14 @@ header{
     right: -15px;
 }
 
-.photo{
+.photo {
     display: block;
     width: 38px;
     height: 38px;
     border-radius: 5em;
     overflow: hidden;
-    img{
+
+    img {
         height: 100%;
     }
 }
