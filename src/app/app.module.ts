@@ -5,13 +5,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import axios from 'axios';
 import { GetApiComponent } from './get-api/get-api.component';
-import { NavigationComponent } from './navigation/navigation.component';
-
+import { NavigationHeaderComponent } from './navigations/navigation-header/navigation-header.component';
 @NgModule({
   declarations: [
     AppComponent,
     GetApiComponent,
-    NavigationComponent
+    NavigationHeaderComponent
   ],
   imports: [
     BrowserModule,

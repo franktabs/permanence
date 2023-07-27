@@ -1,0 +1,38 @@
+header{
+    background-color: white;
+}
+
+.icon-search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1em;
+    width: 1em;
+    height: 1em;
+    background-color: #FFC1C5;
+    padding: .9em;
+    border-radius: 2em;
+}
+
+.alert-number{
+    position: absolute;
+    top: -10px;
+    z-index: 2;
+    background-color: #FFAFAF;
+    border-radius: 2em;
+    font-size: .6em;
+    font-weight: bold;
+    padding: 3px;
+    right: -15px;
+}
+
+.photo{
+    display: block;
+    width: 38px;
+    height: 38px;
+    border-radius: 5em;
+    overflow: hidden;
+    img{
+        height: 100%;
+    }
+}
