@@ -6,6 +6,8 @@ export interface IPersonnel {
     sexe:"M"|"F";
     holiday?:Date,
     willPassed?:boolean;
+    admin?:boolean;
+    superviseur?:boolean;
 }
 
 

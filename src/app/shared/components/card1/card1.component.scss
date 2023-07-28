@@ -65,12 +65,12 @@
 #card{
     background-color: white;
     padding: 1em;
-    width: 400px;
+    width: 380px;
     cursor: pointer;
     transition: .2s;
     box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
     &:hover{
-        transform: translateY(-1em);
+        transform: translateY(-.5em);
         border: 1px blue dashed;
     }
 
@@ -90,6 +90,7 @@
 
     #part1{
         flex: 1;
+        gap: 1em;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -121,11 +122,13 @@
         }
 
         .traited{
-            font-weight: bold;
+            // font-weight: bold;
+            font-size: 1.2em;
             color: blue;
         }
         .no-traited{
-            font-weight: bold;
+            // font-weight: bold;
+            font-size: 1.2em;
             color: red;
         }
 

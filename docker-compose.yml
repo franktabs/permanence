@@ -1,6 +1,6 @@
 version: "3"
 services:
-  angular-permanence:
+  angularPermanence:
     build:
       context: .
       dockerfile: Dockerfile

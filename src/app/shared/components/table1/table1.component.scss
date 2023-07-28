@@ -1,0 +1,35 @@
+@import "colors";
+
+.table1{
+    width: 100%;
+    background-color: white;
+    padding: 1em;
+}
+
+.ligne{
+    background-color: black;
+    height: 2px;
+}
+
+.mat-table{
+    width: 100%;
+}
+
+.icon-title{
+    font-size: 4em;
+}
+
+.mat-header-cell{
+    font-weight: bold;
+    font-size: 1em;
+    color: $bordeau-color;
+}
+
+.mat-row:hover {
+    cursor: pointer;
+    background-color: rgb(235, 235, 235);
+}
+
+.mat-row:active {
+    background-color: rgba(199, 199, 199, 0.973);
+}

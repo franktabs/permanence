@@ -1,5 +1,8 @@
+@import "colors";
+
+
 header {
-    background-color: white;
+    background-color: $for-white-color;
     z-index: 3;
     position: fixed;
     top: 0;
@@ -19,7 +22,7 @@ header {
     font-size: 1em;
     width: 1em;
     height: 1em;
-    background-color: #FFC1C5;
+    background-color: $for-rose-color;
     padding: .9em;
     border-radius: 2em;
 }
@@ -28,11 +31,11 @@ header {
     position: absolute;
     top: -10px;
     z-index: 4;
-    background-color: #FFAFAF;
+    background-color: $for-rose-color;
     border-radius: 2em;
-    font-size: .6em;
+    font-size: 0.6em;
     font-weight: bold;
-    padding: 3px;
+    padding: 0 3px;
     right: -15px;
 }
 

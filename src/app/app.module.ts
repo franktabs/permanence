@@ -15,6 +15,10 @@ import { Card1Component } from './shared/components/card1/card1.component';
 import { DayJsPipe } from './shared/pipes/day-js.pipe';
 import { TimeAgoPipe } from './shared/pipes/time-ago.pipe';
 import { Table1Component } from './shared/components/table1/table1.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MaterialModule } from './shared/material/material.module';
+import { ApiService } from './shared/services/api.service';
+import { HttpClientModule } from '@angular/common/http';
 @NgModule({
   declarations: [
     AppComponent,
@@ -33,8 +37,11 @@ import { Table1Component } from './shared/components/table1/table1.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
+    BrowserAnimationsModule,
+    MaterialModule,
+    HttpClientModule
   ],
-  providers: [],
+  providers: [ApiService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

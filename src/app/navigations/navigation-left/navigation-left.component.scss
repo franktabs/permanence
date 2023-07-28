@@ -1,7 +1,7 @@
-
+@import "colors";
 
 .div-nav{
-    background-color: white;
+    background-color: $for-white-color;
     display: flex;
     justify-content: center;
     width: max-content;
@@ -22,9 +22,26 @@
     }
 
     ul a {
-        color: #3F51B5;
+        color: $bordeau-color;
         text-decoration: none;
         font-weight: bolder;
         font-size: 1.4em;
+    }
+
+    ul li:hover{
+        cursor: pointer;
+    }
+
+    ul li::after{
+        content: "";
+        display: block;
+        height: 2px;
+        background-color: $bordeau-color;
+        width: 0px;
+        transition: .5s;
+    }
+
+    ul li:hover::after{
+        width: 100%;
     }
 }

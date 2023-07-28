@@ -1,4 +1,10 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+
+
+export type OuputTypeCard1 = {
+  icon:string;
+  title:string;
+}
 
 @Component({
   selector: 'app-card1',
@@ -19,6 +25,15 @@ export class Card1Component implements OnInit {
   @Input()
   public date2!:Date;
   constructor() { }
+
+  @Output() public theIcon:EventEmitter<OuputTypeCard1> = new EventEmitter<OuputTypeCard1>() ;
+
+
+  public handleClick(){
+    let varIcon = this.icon;
+    let varTitle = this.title;
+    this.theIcon.emit({icon:varIcon, title:varTitle});
+  }
 
   ngOnInit(): void {
   }
