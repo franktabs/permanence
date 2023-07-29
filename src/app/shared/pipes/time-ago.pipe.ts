@@ -4,7 +4,11 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'timeAgo'
 })
 export class TimeAgoPipe implements PipeTransform {
-  transform(value: Date): string {
+  transform(value: Date|string): string {
+
+    if(typeof value ==="string"){
+      value = new Date(value);
+    }
     console.log("viens du pipe timeAge", value)
     const seconds = Math.floor((+new Date() - +value) / 1000);
 

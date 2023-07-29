@@ -1,10 +1,10 @@
-import { AfterViewInit, Component, EventEmitter, Input, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
 import {MatTableDataSource, MatTableModule} from "@angular/material/table"
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http"
 import { ApiService } from '../../services/api.service';
-import { catchError, tap } from 'rxjs/operators';
-import { Observable, throwError } from 'rxjs';
+import { catchError, takeUntil, tap } from 'rxjs/operators';
+import { Observable, Subject, throwError } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
@@ -13,7 +13,7 @@ import { MatSort, Sort } from '@angular/material/sort';
   templateUrl: './table1.component.html',
   styleUrls: ['./table1.component.scss'], 
 })
-export class Table1Component implements AfterViewInit {
+export class Table1Component implements AfterViewInit, OnDestroy {
 
   public displayedColumns:Array<keyof IPersonnel> = ["nom", "prenom", "date_naissance", "sexe", "matricule"]
   public dataSource!:MatTableDataSource<IPersonnel>;
@@ -25,32 +25,24 @@ export class Table1Component implements AfterViewInit {
   @Input() icon!:string;
   @Input() title!:string;
 
+  private destroy$!:Subject<boolean> 
 
 
   constructor(private http:HttpClient, private api:ApiService, private _liveAnnouncer: LiveAnnouncer ) { }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+  }
   
   ngAfterViewInit(): void {
-    this.getAllPersonnel().subscribe({
+    this.destroy$ =  new Subject();
+    this.api.getAllPersonnel().pipe(takeUntil(this.destroy$)).subscribe({
       next:(personnels)=>{
+        this.api.personnels$.next(personnels);
         this.dataSource = new MatTableDataSource<IPersonnel>(personnels);
         this.dataSource.sort = this.sort;
       },
       error:(err)=>{this.errorMessage = err}
     })
-  }
-
-  public getAllPersonnel(){
-    return this.http.get<IPersonnel>(this.api.urlPersonnel).pipe(
-      tap((values)=>console.log("données recupéré", values))
-      ,catchError((err:HttpErrorResponse):Observable<any> =>{
-        if(err.error instanceof ErrorEvent){
-          console.error(err.error.message);
-        }else{
-          console.error(err.status);
-        }
-        return throwError(()=>new Error("Erreur produit au getAllPersonnel"));
-      })
-    )
   }
 
   /** Announce the change in sort state for assistive technology. */

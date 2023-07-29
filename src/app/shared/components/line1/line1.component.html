@@ -1,0 +1,13 @@
+<div class="line1 p-2">
+    <div class="icon">
+        <ng-content></ng-content>
+    </div>
+    <div>
+        <div class="d-flex gap-1">
+            <p class="fw-bold m-0 text-capitalize"> {{nom}} : </p>
+            <ng-content select="p"></ng-content>
+        </div>
+
+        <p class="fst-italic m-0 date"> {{ date | timeAgo }} </p>
+    </div>
+</div>

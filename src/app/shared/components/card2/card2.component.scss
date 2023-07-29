@@ -1,0 +1,23 @@
+@import "colors";
+
+.card2{
+    background-color: white;
+    padding: 1em;
+    &:hover{
+        border: 1px dashed $for-blue-color;
+    }
+}
+
+h1{
+    font-weight: bold;
+    font-size: 2em;
+}
+
+.ligne{
+    background-color: black;
+    height: 2px;
+}
+
+.body{
+    padding-top: 1em;
+}

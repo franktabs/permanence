@@ -1,0 +1,23 @@
+@import "colors";
+
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.line1{
+    border-bottom: 1px solid #a3a3a3f5;
+    display: flex;
+    &:hover{
+        background-color: #e2e2e2f5;
+    }
+    cursor: pointer;
+}
+
+.icon{
+    font-size: 2em;
+}
+
+.date{
+    font-weight: lighter;
+}

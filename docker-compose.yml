@@ -1,10 +1,8 @@
 version: "3"
 services:
-  angularPermanence:
+  angular-permanence:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - '8089:4200'
-    volumes:
-      - .:/app
+      - '8089:80'

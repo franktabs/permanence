@@ -1,0 +1,20 @@
+[
+    {
+        "id":1,
+        "nom":"DSI",
+        "region":"centre",
+        "lieu":"Avenue des Banque"
+    },
+    {
+        "id":2,
+        "nom":"DSS",
+        "region":"centre",
+        "lieu":"Avenue des Banque"
+    },
+    {
+        "id":3,
+        "nom":"DSC",
+        "region":"centre",
+        "lieu":"Avenue des Banque"
+    }
+]

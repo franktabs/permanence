@@ -4,10 +4,11 @@ export interface IPersonnel {
     prenom?:string;
     date_naissance:Date,
     sexe:"M"|"F";
-    holiday?:Date,
+    holiday?:boolean,
     willPassed?:boolean;
     admin?:boolean;
     superviseur?:boolean;
+    direction:string;
 }
 
 

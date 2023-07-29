@@ -19,6 +19,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MaterialModule } from './shared/material/material.module';
 import { ApiService } from './shared/services/api.service';
 import { HttpClientModule } from '@angular/common/http';
+import { Card2Component } from './shared/components/card2/card2.component';
+import { Line1Component } from './shared/components/line1/line1.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +34,9 @@ import { HttpClientModule } from '@angular/common/http';
     Card1Component,
     DayJsPipe,
     TimeAgoPipe,
-    Table1Component
+    Table1Component,
+    Card2Component,
+    Line1Component
   ],
   imports: [
     BrowserModule,

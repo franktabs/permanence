@@ -11,6 +11,7 @@ export class PageCollecteDataComponent implements OnInit {
   public date1Conge:Date = new Date("2023-06-27")
   public date2Conge:Date = new Date("2023-07-27")
   public toTable1:OuputTypeCard1={icon:"", title:""};
+  public direction:string = "DSI"
 
   public putInActiveIcon(msg:OuputTypeCard1){
     this.toTable1 = msg;

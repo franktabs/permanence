@@ -1,30 +1,30 @@
 [
     {
+        "matricule":"19G232",
         "nom":"frank",
         "prenom":"junior",
         "date_naissance":"2005-12-13",
-        "matricule":"19G232",
         "sexe":"M"
     },
     {
+        "matricule":"19G235",
         "nom":"Arthur",
         "prenom":"Jean",
         "date_naissance":"2005-12-13",
-        "matricule":"19G235",
         "sexe":"M"
     },
     {
+        "matricule":"19G237",
         "nom":"Yollande",
         "prenom":"Herve",
         "date_naissance":"2005-12-13",
-        "matricule":"19G237",
         "sexe":"M"
     },
     {
+        "matricule":"19G231",
         "nom":"Yannick",
         "prenom":"Yudomo",
         "date_naissance":"2005-12-13",
-        "matricule":"19G231",
         "sexe":"M"
     }
 ]
