@@ -5,7 +5,7 @@
 
 $bordeau-color:#6D071A;
 $for-blue-color:blue;
-$background-body:#E9E9E9;
+$background-body:#f7f7f7;
 $for-red-color:red;
 $for-white-color:white;
 
@@ -22,3 +22,16 @@ body{
 }
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+.my-modal{
+    position: fixed;
+    background-color: #ffffff96;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 12;
+}

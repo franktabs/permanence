@@ -1,7 +1,7 @@
 @import "colors";
 
 .div-nav{
-    background-color: $for-white-color;
+    background-color: $for-dark-color;
     display: flex;
     justify-content: center;
     width: max-content;
@@ -22,9 +22,9 @@
     }
 
     ul a {
-        color: $bordeau-color;
+        color: $for-white-color;
         text-decoration: none;
-        font-weight: bolder;
+        font-weight: bold;
         font-size: 1.4em;
     }
 
@@ -36,7 +36,7 @@
         content: "";
         display: block;
         height: 2px;
-        background-color: $bordeau-color;
+        background-color: $for-white-color;
         width: 0px;
         transition: .5s;
     }

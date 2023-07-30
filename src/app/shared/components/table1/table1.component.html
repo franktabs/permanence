@@ -1,5 +1,6 @@
 <div class="table1">
     <div>
+        <app-modal1 [(isOpen)]="openModal" *ngIf="openModal" [rows]="row" ></app-modal1>
         <div class="ms-4" >
             <div class="icon-title" [innerHTML]="icon"></div>
             <h1>{{title}}</h1>
@@ -37,7 +38,7 @@
                 </ng-container>
 
                 <tr tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="handleClick(row)" ></tr>
             </table>
             <mat-paginator [pageSizeOptions]="[2, 4, 8]" showFirstLastButtons
                 aria-label="Select page of periodic elements">

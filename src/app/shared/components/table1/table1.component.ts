@@ -18,6 +18,8 @@ export class Table1Component implements AfterViewInit, OnDestroy, OnChanges {
   public displayedColumns:Array<keyof IPersonnel> = ["nom", "prenom", "date_naissance", "sexe", "matricule"]
   public dataSource!:MatTableDataSource<IPersonnel>;
   public errorMessage:string="";
+  public openModal:boolean = false;
+  public row:IPersonnel|null = null;
 
   @ViewChild(MatPaginator) paginator! :MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -65,5 +67,12 @@ export class Table1Component implements AfterViewInit, OnDestroy, OnChanges {
       this._liveAnnouncer.announce('Sorting cleared');
     }
   }
+
+
+  public handleClick(row:IPersonnel){
+    this.row = row;
+    this.openModal = true;
+  }
+
 
 }

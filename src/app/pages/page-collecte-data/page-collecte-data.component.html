@@ -5,7 +5,7 @@
         <h2 class="fst-italic">TRIER PAR:</h2>
 
         <div class="d-flex trier gap-2 align-items-center">
-            <div class="text-center selection">
+            <div class="text-center selection shadow">
                 <ng-container *ngIf="data_apiDirections && data_apiDirections.length else empty_direction">
                     <mat-form-field>
                         <mat-label>Choisissez la direction</mat-label>
@@ -24,8 +24,8 @@
                     <p class="fst-italic">Aucune Directions trouvées</p>
                 </ng-template>
             </div>
-            <div class="text-center annuler" title="Reinitialiser le filtre" *ngIf="isTableFilter" (click)="resetTable()" >
-                <p class="m-0 fst-italic"  >Annuler <span class="btn btn-close" ></span> </p>
+            <div class="text-center annuler shadow-sm" title="Reinitialiser le filtre" *ngIf="isTableFilter" (click)="resetTable()" >
+                <p class="m-0 fst-italic "  >Annuler <span class="btn btn-close" ></span> </p>
             </div>
         </div>
     </div>

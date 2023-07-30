@@ -1,0 +1,31 @@
+<div class="my-modal"  >
+    <div class="my-body shadow-lg" >
+        <button class="btn btn-close my-close" (click)="closeModal()" ></button>
+        <div>
+            <div class="my-title fw-bold p-2">
+                <i class="bi bi-person-fill" ></i>
+                Informations
+            </div>
+            <div class="ligne" ></div>
+            <div class="p-3">
+                <table class="table table-bordered table-hover "  >
+                    <thead>
+                        <tr>
+                            <th>Attributs</th>
+                            <th>Valeurs</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <ng-container *ngFor="let elmt of keyRow">
+                            <tr *ngIf=" rows[elmt] " class="p-2"  >
+                                <th class="text-capitalize"> {{elmt}} </th>
+                                <td> {{rows[elmt] }} </td>
+                            </tr>
+                        </ng-container>
+                    </tbody>
+    
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
