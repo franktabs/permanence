@@ -1,5 +1,7 @@
 import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild } from '@angular/core';
 import { IPersonnel } from '../../interfaces/ipersonnel';
+import { IHolidays } from '../../interfaces/iholidays';
+import { IAbsence } from '../../interfaces/iabsence';
 
 @Component({
   selector: 'app-modal1',
@@ -8,24 +10,47 @@ import { IPersonnel } from '../../interfaces/ipersonnel';
 })
 export class Modal1Component implements OnInit, OnChanges {
 
-  @Input() isOpen!:boolean ;
+  @Input() isOpen!: boolean;
 
-  @Output() isOpenChange:EventEmitter<boolean> = new EventEmitter() 
+  @Output() isOpenChange: EventEmitter<boolean> = new EventEmitter()
 
-  @Input() rows!:IPersonnel | any;
+  @Input() rows!: IPersonnel | any;
 
-  public keyRow: Array<keyof IPersonnel> = []
+  public keyRow: Array<keyof IPersonnel> = [];
+
+  public keyRowHoliday: Array<keyof IHolidays> = [];
+
+  public keyRowAbsence: Array<keyof IAbsence> = [];
 
   constructor() { }
   ngOnChanges(changes: SimpleChanges): void {
-    if(changes['rows']){
+    if (changes['rows']) {
       let obj = changes['rows'].currentValue;
-      this.keyRow = Object.keys(obj).filter((item)=>{
-        if(typeof obj[item] =="string"){
+      this.keyRow = Object.keys(obj).filter((item) => {
+        if (typeof obj[item] == "string") {
           return true
         }
         return false
-      })as any;
+      }) as any;
+
+      if (obj.holiday) {
+        this.keyRowHoliday = Object.keys(obj.holiday).filter((item) => {
+          if (typeof obj.absence[item] == "string") {
+            return true
+          }
+          return false
+        }) as any;
+      }
+
+      if (obj.absence) {
+        this.keyRowAbsence = Object.keys(obj.absence).filter((item) => {
+          if (typeof obj.absence[item] == "string") {
+            return true
+          }
+          return false
+        }) as any;
+      }
+      console.log("absence",this.keyRowAbsence, "holiday",this.keyRowHoliday)
     }
   }
 
@@ -33,7 +58,7 @@ export class Modal1Component implements OnInit, OnChanges {
 
   }
 
-  closeModal(){
+  closeModal() {
     this.isOpenChange.emit(false);
   }
 

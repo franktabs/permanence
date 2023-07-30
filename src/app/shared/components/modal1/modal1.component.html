@@ -1,30 +1,86 @@
-<div class="my-modal"  >
-    <div class="my-body shadow-lg" >
-        <button class="btn btn-close my-close" (click)="closeModal()" ></button>
+<div class="my-modal">
+    <div class="my-body shadow-lg">
+        <button class="btn btn-close my-close" (click)="closeModal()"></button>
         <div>
             <div class="my-title fw-bold p-2">
-                <i class="bi bi-person-fill" ></i>
+                <i class="bi bi-person-fill"></i>
                 Informations
             </div>
-            <div class="ligne" ></div>
-            <div class="p-3">
-                <table class="table table-bordered table-hover "  >
-                    <thead>
-                        <tr>
-                            <th>Attributs</th>
-                            <th>Valeurs</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <ng-container *ngFor="let elmt of keyRow">
-                            <tr *ngIf=" rows[elmt] " class="p-2"  >
-                                <th class="text-capitalize"> {{elmt}} </th>
-                                <td> {{rows[elmt] }} </td>
+            <div class="ligne"></div>
+            <div class="d-flex">
+                <div class="m-3 p-3 part1">
+                    <h1> <i class="bi bi-card-text" ></i> A propos</h1>
+                    <table class="table table-hover ">
+                        <thead>
+                            <tr>
+                                <th>Attributs</th>
+                                <th>Valeurs</th>
                             </tr>
-                        </ng-container>
-                    </tbody>
+                        </thead>
+                        <tbody>
+                            <ng-container *ngFor="let elmt of keyRow">
+                                <tr *ngIf=" rows[elmt] " class="p-2">
+                                    <th class="text-capitalize"> {{elmt}} </th>
+                                    <td> {{rows[elmt] }} </td>
+                                </tr>
+                            </ng-container>
+                        </tbody>
+
+                    </table>
+                </div>
+                <div class="p-3 part2 d-flex flex-column gap-3">
+                    <div>
+                        <h1>
+                            <i class="bi bi-calendar2-week" > </i> Sur les Congés
+                        </h1>
+                        <table *ngIf="keyRowHoliday.length; else emptyHoliday " class="table table-hover" >
+                            <thead>
+                                <tr>
+                                    <th>Attributs</th>
+                                    <th>Valeurs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let elmt1 of keyRowHoliday">
+                                    <tr *ngIf=" rows.holiday[elmt1] " class="p-2">
+                                        <th class="text-capitalize"> {{elmt1}} </th>
+                                        <td> {{rows.holiday[elmt1] }} </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                        <ng-template #emptyHoliday >
+                            <p class="fst-italic" >Aucune données trouvées/p>
+                        </ng-template>
     
-                </table>
+                    </div>
+                    <div class="ligne"></div>
+                    <div>
+                        <h1>
+                            <i class="bi bi-motherboard" ></i> Sur les Absences
+                        </h1>
+                        <table *ngIf="keyRowAbsence.length; else emptyAbsence " class="table table-hover" >
+                            <thead>
+                                <tr>
+                                    <th>Attributs</th>
+                                    <th>Valeurs</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <ng-container *ngFor="let elmt2 of keyRowAbsence">
+                                    <tr *ngIf=" rows.absence[elmt2] " class="p-2">
+                                        <th class="text-capitalize"> {{elmt2}} </th>
+                                        <td> {{rows.absence[elmt2] }} </td>
+                                    </tr>
+                                </ng-container>
+                            </tbody>
+                        </table>
+                        <ng-template #emptyAbsence >
+                            <p class="fst-italic" >Aucune données trouvées/p>
+                        </ng-template>
+    
+                    </div>
+                </div>
             </div>
         </div>
     </div>

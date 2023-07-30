@@ -3,7 +3,7 @@
 .my-body{
     background-color: white;
     position: relative;
-    width: 400px;
+    min-width: 600px;
     padding: 1em;
 }
 
@@ -31,5 +31,17 @@
 tbody{
     tr th{
         color: $bordeau-color;
+    }
+}
+
+.part1{
+    border-right: 1px solid black;
+}
+
+.part1, .part2{
+    flex: 1;
+
+    h1{
+        font-style: italic;
     }
 }

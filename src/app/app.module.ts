@@ -22,6 +22,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { Card2Component } from './shared/components/card2/card2.component';
 import { Line1Component } from './shared/components/line1/line1.component';
 import { Modal1Component } from './shared/components/modal1/modal1.component';
+import { AuthService } from './shared/services/auth.service';
+import { PageHomeComponent } from './pages/page-home/page-home.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -38,7 +40,8 @@ import { Modal1Component } from './shared/components/modal1/modal1.component';
     Table1Component,
     Card2Component,
     Line1Component,
-    Modal1Component
+    Modal1Component,
+    PageHomeComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +50,7 @@ import { Modal1Component } from './shared/components/modal1/modal1.component';
     MaterialModule,
     HttpClientModule
   ],
-  providers: [ApiService],
+  providers: [ApiService, AuthService],
   bootstrap: [AppComponent]
 })
 export class AppModule {

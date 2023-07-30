@@ -4,12 +4,28 @@ import { PagePlannificationComponent } from './pages/page-plannification/page-pl
 import { PageCollecteDataComponent } from './pages/page-collecte-data/page-collecte-data.component';
 import { PageReportingComponent } from './pages/page-reporting/page-reporting.component';
 import { GetApiComponent } from './get-api/get-api.component';
+import { AuthGuard } from './shared/guards/auth.guard';
+import { PageHomeComponent } from './pages/page-home/page-home.component';
 
 const routes: Routes = [
-  {path:"", component:PageCollecteDataComponent},
-  { path: "planification", component: PagePlannificationComponent },
-  { path: "reporting", component: PageReportingComponent },
-  { path: "api", component: GetApiComponent },
+  {
+    path: "",
+    canActivate: [AuthGuard],
+    children:[
+      {
+        path:"",
+        component: PageCollecteDataComponent
+      },
+      { path: "planification", component: PagePlannificationComponent },
+      { path: "reporting", component: PageReportingComponent },
+      { path: "api", component: GetApiComponent },
+    ],
+   
+  },
+  {
+    path:"home",
+    component:PageHomeComponent
+  }
 
 ];
 
