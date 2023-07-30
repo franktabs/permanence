@@ -1,0 +1,172 @@
+[
+    {
+        "id": 1,
+        "matricule": "19G232",
+        "nom": "frank",
+        "prenom": "junior",
+        "date_naissance": "2002-02-13",
+        "sexe": "M",
+        "absence_id":1,
+        "absence": {
+            "id": 1,
+            "debut": "2023-09-12",
+            "fin": "2023-09-12",
+            "motif":"obligations familiales",
+            "date":"2023-07-21"
+        },
+        "direction_id": 1,
+        "holiday": {
+            "id": 1,
+            "debut": "2023-10-12",
+            "fin": "2023-11-02"
+        },
+        "holiday_id":1,
+        "direction": {
+            "id": 1,
+            "nom": "DSI",
+            "region": "centre",
+            "lieu": "Avenue des Banque"
+        }
+    },
+    {
+        "id": 2,
+        "matricule": "19G235",
+        "nom": "Arthur",
+        "prenom": "Jean",
+        "date_naissance": "2002-08-05",
+        "sexe": "M",
+        "holiday_id":2,
+        "holiday":{
+            "id": 2,
+            "debut": "2023-09-01",
+            "fin": "2023-10-24"
+        },
+        "direction_id": 2,
+        "absence_id":2,
+        "absence":{
+            "id": 2,
+            "debut": "2023-08-05",
+            "fin": "2023-08-05",
+            "motif":"obligations professionnelles",
+            "date":"2023-07-23"
+        },
+        "direction": {
+            "id": 2,
+            "nom": "DSS",
+            "region": "centre",
+            "lieu": "Avenue des Banque"
+        }
+    },
+    {
+        "id": 3,
+        "matricule": "19GZ17",
+        "nom": "Yollande",
+        "prenom": "Herve",
+        "date_naissance": "2005-09-23",
+        "sexe": "F",
+        "direction_id": 1,
+        "absence_id":3,
+        "holiday_id":3,
+        "holiday":{
+            "id": 3,
+            "debut": "2023-10-02",
+            "fin": "2023-11-21"
+        },
+        "absence":{
+            "id": 3,
+            "debut": "2023-10-02",
+            "fin": "2023-10-12",
+            "motif":"obligations traditionnelles",
+            "date":"2023-07-25"
+        },
+        "direction": {
+            "id": 1,
+            "nom": "DSI",
+            "region": "centre",
+            "lieu": "Avenue des Banque"
+        }
+    },
+    {
+        "id": 4,
+        "matricule": "19G231",
+        "nom": "Yannick",
+        "prenom": "Yudomo",
+        "date_naissance": "2005-12-13",
+        "sexe": "M",
+        "holiday_id":4,
+        "holiday":{
+            "id": 4,
+            "debut": "2023-09-12",
+            "fin": "2023-10-24"
+        },
+        "absence_id":4,
+        "absence":{
+            "id": 4,
+            "debut": "2023-09-12",
+            "fin": "2023-10-01",
+            "motif":"obligations médicales",
+            "date":"2023-07-24"
+        },
+        "direction_id": 1,
+        "direction": {
+            "id": 1,
+            "nom": "DSI",
+            "region": "centre",
+            "lieu": "Avenue des Banque"
+        }
+    },
+    {
+        "id": 5,
+        "matricule": "19G237",
+        "nom": "Francine",
+        "prenom": "Jasmine",
+        "date_naissance": "2001-10-01",
+        "sexe": "F",
+        "direction_id": 1,
+        "holiday":{},
+        "holiday_id":null,
+        "direction": {
+            "id": 1,
+            "nom": "DSI",
+            "region": "centre",
+            "lieu": "Avenue des Banque"
+        }
+    },
+    {
+        "id": 6,
+        "matricule": "19QN37",
+        "nom": "Jonasoe",
+        "prenom": "Audrey",
+        "date_naissance": "2001-07-05",
+        "sexe": "F",
+        "admin":true,
+        "direction_id": 1,
+        "holiday":{},
+        "holiday_id":null,
+        "direction": {
+            "id": 1,
+            "nom": "DSI",
+            "region": "centre",
+            "lieu": "Avenue des Banque"
+        }
+    },
+    {
+        "id": 7,
+        "matricule": "21QN37",
+        "nom": "Harmine",
+        "prenom": "Heoneo",
+        "date_naissance": "2000-03-05",
+        "sexe": "M",
+        "admin":false,
+        "superviseur":true,
+        "direction_id": 1,
+        "holiday":{},
+        "holiday_id":null,
+        "direction": {
+            "id": 1,
+            "nom": "DSI",
+            "region": "centre",
+            "lieu": "Avenue des Banque"
+        }
+    }
+]

@@ -3,6 +3,7 @@
 .card2{
     background-color: white;
     padding: 1em;
+    border: 1px solid transparent;
     &:hover{
         border: 1px dashed $for-blue-color;
     }

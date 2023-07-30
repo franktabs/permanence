@@ -1,9 +1,8 @@
+import { IHolidays } from "./iholidays";
+import { IPersonnel } from "./ipersonnel";
 
-export interface IAbsence{
-    matricule:string;
-    debut:string;
-    fin:string;
+export interface IAbsence extends IHolidays{
     date:string;
-    information?:string;
+    motif:string;
     autres?:string;
 }

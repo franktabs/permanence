@@ -1,5 +1,7 @@
+import { IPersonnel } from "./ipersonnel";
+
 export interface IHolidays{
-    matricule:string;
+    id:number;
     debut:string;
     fin:string;
 }

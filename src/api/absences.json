@@ -2,8 +2,10 @@
     {
         "id": 1,
         "personnel_id": 1,
-        "debut": "2023-10-12",
-        "fin": "2023-11-02",
+        "debut": "2023-09-12",
+        "fin": "2023-09-12",
+        "motif":"obligations familiales",
+        "date":"2023-07-21",
         "personnel": {
             "id": 1,
             "matricule": "19G232",
@@ -23,8 +25,10 @@
     {
         "id": 2,
         "personnel_id": 2,
-        "debut": "2023-09-01",
-        "fin": "2023-10-24",
+        "debut": "2023-08-05",
+        "fin": "2023-08-05",
+        "motif":"obligations professionnelles",
+        "date":"2023-07-23",
         "personnel": {
             "id": 2,
             "matricule": "19G235",
@@ -45,7 +49,9 @@
         "id": 3,
         "personnel_id": 3,
         "debut": "2023-10-02",
-        "fin": "2023-11-21",
+        "fin": "2023-10-12",
+        "motif":"obligations traditionnelles",
+        "date":"2023-07-25",
         "personnel":{
             "id":3,
             "matricule": "19GZ17",
@@ -66,7 +72,9 @@
         "id": 4,
         "personnel_id": 4,
         "debut": "2023-09-12",
-        "fin": "2023-10-24",
+        "fin": "2023-10-01",
+        "motif":"obligations médicales",
+        "date":"2023-07-24",
         "personnel":{
             "id":4,
             "matricule": "19G231",

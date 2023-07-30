@@ -1,35 +1,48 @@
-<div class="page" >
-    <span class="title"><i class="bi bi-database" > Collecte Données /</i></span>
-    
+<div class="page">
+    <span class="title"><i class="bi bi-database"> Collecte Données /</i></span>
+
     <div class="mt-3">
-        <h2 class="fst-italic" >TRIER PAR:</h2>
-        
-        <div class="d-flex trier" >
-            <div class="text-center selection" >
-                <mat-form-field>
-                    <mat-label>Choisissez la direction</mat-label>
-                    <mat-select [(value)]="direction">
-                      <mat-option>Aucune</mat-option>
-                      <mat-option value="DSI">Direction des Systèmes d'Informations</mat-option>
-                      <mat-option value="DDC">Direction De la Conformité</mat-option>
-                      <mat-option value="DDS">Direction de la sécurité</mat-option>
-                    </mat-select>
-                  </mat-form-field>
+        <h2 class="fst-italic">TRIER PAR:</h2>
+
+        <div class="d-flex trier gap-2 align-items-center">
+            <div class="text-center selection">
+                <ng-container *ngIf="data_apiDirections && data_apiDirections.length else empty_direction">
+                    <mat-form-field>
+                        <mat-label>Choisissez la direction</mat-label>
+                        <mat-select [(value)]="directionSelected">
+                            <mat-option >Aucune</mat-option>
+                            <ng-container *ngFor="let items of data_apiDirections">
+                                <mat-option [value]="items.nom">{{items.nom}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-container>
+                <ng-container>
+
+                </ng-container>
+                <ng-template #empty_direction>
+                    <p class="fst-italic">Aucune Directions trouvées</p>
+                </ng-template>
+            </div>
+            <div class="text-center annuler" title="Reinitialiser le filtre" *ngIf="isTableFilter" (click)="resetTable()" >
+                <p class="m-0 fst-italic"  >Annuler <span class="btn btn-close" ></span> </p>
             </div>
         </div>
     </div>
     <div>
-        <div class="p-3 d-flex flex-wrap  gap-4" >
-            <app-card1 title="Données Congés"  [date1]="date1Conge" [date2]="date2Conge" icon="<i class='bi bi-calendar' ></i>" (theIcon)="putInActiveIcon($event)" ></app-card1>
-            <app-card1 title="Personnel" [date1]="date1Conge" [date2]="date2Conge" icon="<i class='bi bi-person-lines-fill' ></i>" (theIcon)="putInActiveIcon($event)" ></app-card1>
-            <app-card1 title="Autres" [date1]="date1Conge" [date2]="date2Conge" icon="<i class='bi bi-person-fill-gear' ></i>" (theIcon)="putInActiveIcon($event)"                               ></app-card1>
+        <div class="p-3 d-flex flex-wrap  gap-4">
+            <app-card1 title="Données Congés" (click)="getPersonnelsHoliday()"  [date1]="date1Conge" [date2]="date2Conge"
+                icon="<i class='bi bi-calendar' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
+            <app-card1 title="Personnel" [date1]="date1Conge" [date2]="date2Conge"
+                icon="<i class='bi bi-person-lines-fill' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
+            <app-card1 title="Autres" [date1]="date1Conge" [date2]="date2Conge"
+                icon="<i class='bi bi-person-fill-gear' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
         </div>
-        <div class="mt-3" >
-            <div class="d-flex" >
-                <app-table1 [icon]="toTable1.icon" [title]="toTable1.title" class="w-100 mx-3" ></app-table1>
-                <app-card2 title="Evenements" class="evenement" ></app-card2>
+        <div class="mt-3">
+            <div class="d-flex">
+                <app-table1 [icon]="toTable1.icon" [title]="toTable1.title" class="w-100 mx-3" [personnels]="data_apiPersonnels" ></app-table1>
+                <app-card2 title="Evenements" class="evenement" [personnels]="data_apiPersonnels"  ></app-card2>
             </div>
         </div>
     </div>
 </div>
-

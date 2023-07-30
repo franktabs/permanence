@@ -4,8 +4,8 @@
         <div class="ligne" ></div>
     </div>
     <div class="body" >
-        <div *ngIf="data && data.length; else empty" >
-            <ng-container *ngFor="let ipersonnel of data" >
+        <div *ngIf="personnels && personnels.length; else empty" >
+            <ng-container *ngFor="let ipersonnel of personnels" >
                 <app-line1 [nom]="ipersonnel.nom +' '+ ipersonnel.prenom" date="2023-07-25" >
                     <i class="bi bi-person-fill" ></i>
                     <p class="m-0 p-0 d-inline">A obtenu Congé</p>

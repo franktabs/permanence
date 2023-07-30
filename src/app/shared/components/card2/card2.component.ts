@@ -1,4 +1,4 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { Observable, Subject, takeUntil } from 'rxjs';
@@ -11,10 +11,10 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 export class Card2Component implements OnInit, OnDestroy {
 
   @Input() title!:string;
-
-  public data!:IPersonnel[] |null 
+  @Input() personnels!:IPersonnel[] | null;
 
   constructor(private api:ApiService) { }
+
   ngOnDestroy(): void {
     this.destroy$.next(true);
   }
@@ -23,10 +23,6 @@ export class Card2Component implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.destroy$=new Subject();
-    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((personnels)=>{
-      console.log("emission card2", personnels)
-      this.data=personnels
-    });
   }
 
 

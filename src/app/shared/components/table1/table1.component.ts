@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnDestroy, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, EventEmitter, Input, OnChanges, OnDestroy, Output, SimpleChanges, ViewChild } from '@angular/core';
 import {MatTableDataSource, MatTableModule} from "@angular/material/table"
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import {HttpClient, HttpErrorResponse} from "@angular/common/http"
@@ -13,7 +13,7 @@ import { MatSort, Sort } from '@angular/material/sort';
   templateUrl: './table1.component.html',
   styleUrls: ['./table1.component.scss'], 
 })
-export class Table1Component implements AfterViewInit, OnDestroy {
+export class Table1Component implements AfterViewInit, OnDestroy, OnChanges {
 
   public displayedColumns:Array<keyof IPersonnel> = ["nom", "prenom", "date_naissance", "sexe", "matricule"]
   public dataSource!:MatTableDataSource<IPersonnel>;
@@ -24,25 +24,33 @@ export class Table1Component implements AfterViewInit, OnDestroy {
 
   @Input() icon!:string;
   @Input() title!:string;
+  @Input() personnels!:IPersonnel[] | null;
 
   private destroy$!:Subject<boolean> 
 
 
   constructor(private http:HttpClient, private api:ApiService, private _liveAnnouncer: LiveAnnouncer ) { }
+
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes["personnels"]){
+      this.dataSource = new MatTableDataSource<IPersonnel>(changes["personnels"].currentValue);
+    }
+  }
   ngOnDestroy(): void {
     this.destroy$.next(true);
   }
   
   ngAfterViewInit(): void {
     this.destroy$ =  new Subject();
-    this.api.getAllPersonnel().pipe(takeUntil(this.destroy$)).subscribe({
-      next:(personnels)=>{
-        this.api.personnels$.next(personnels);
-        this.dataSource = new MatTableDataSource<IPersonnel>(personnels);
-        this.dataSource.sort = this.sort;
-      },
-      error:(err)=>{this.errorMessage = err}
-    })
+    // this.api.getAllData<IPersonnel[]>({for:"personnels"}).pipe(takeUntil(this.destroy$)).subscribe({
+    //   next:(personnels)=>{
+    //     this.api.personnels$.next(personnels);
+    //     this.dataSource = new MatTableDataSource<IPersonnel>(personnels);
+    //     this.dataSource.sort = this.sort;
+    //   },
+    //   error:(err)=>{this.errorMessage = err}
+    // })
   }
 
   /** Announce the change in sort state for assistive technology. */
