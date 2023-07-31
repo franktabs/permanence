@@ -17,8 +17,7 @@ export interface IPersonnel {
     direction: IDirection | null;
     holiday_id?: number | null;
     holiday?: IHolidays;
-    absence?: IAbsence;
-    absence_id?: number;
+    absences?: IAbsence[];
 }
 
 

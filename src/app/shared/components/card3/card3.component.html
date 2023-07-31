@@ -1,0 +1,11 @@
+<div class="card3 shadow-lg" >
+    <app-modal2 [(close)]="closeModal" *ngIf="!closeModal" ></app-modal2>
+    <app-modal3 [(close)]="closeModal2" *ngIf="!closeModal2" ></app-modal3>
+    <div>
+        <h1> <i class="bi bi-calendar-week" ></i> ABSENCES</h1>
+        <div class="d-flex gap-2" >
+            <button mat-raised-button color="primary" (click)="closeModal2 = false" >Consulter <i class="bi bi-eye-fill" ></i> </button>
+            <button mat-raised-button color="accent" (click)="closeModal = false" >Soumettre Nouveau  <i class="bi bi-plus-circle-fill" ></i> </button>
+        </div>
+    </div>
+</div>

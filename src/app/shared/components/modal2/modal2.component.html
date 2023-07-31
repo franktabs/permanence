@@ -1,0 +1,67 @@
+<div class="my-modal">
+    <div class="my-body shadow-lg">
+        <button class="btn btn-close my-close" (click)="up()"></button>
+        <div>
+            <div class="my-title fw-bold p-2">
+                <i class="bi bi-ui-checks"></i>
+                Formulaire Absence
+            </div>
+            <div class="ligne"></div>
+            <div class="d-flex justify-content-center">
+                <div class="p-3 w-100">
+                    <form novalidate [formGroup] = "absenceForm" (ngSubmit)="postAbsence()" >
+                        <table class="table table-striped">
+                            <tbody>
+                                <tr class="align-middle">
+                                    <th>
+                                        <p> <label for="motif">Motif*</label> </p>
+                                    </th>
+                                    <td>
+                                        <p>
+                                            <input type="text" id="motif" formControlName="motif" placeholder="Votre Motif" class="form-control">
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <th>
+                                        <p><label for="debut">Jour de debut*</label></p>
+                                    </th>
+                                    <td>
+                                        <p>
+                                            <input type="date" id="debut" formControlName="debut" class="form-control">
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <th>
+                                        <p><label for="fin">Jour de fin*</label></p>
+                                    </th>
+                                    <td>
+                                        <p>
+                                            <input type="date" id="fin" formControlName="fin" class="form-control">
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <th>
+                                        <p><label for="commentaire">Commenter</label></p>
+                                    </th>
+                                    <td>
+                                        <p>
+                                            <textarea id="commentaire" formControlName="commentaire" class="form-control" rows="3"
+                                                placeholder="Faite un petit commentaire"></textarea>
+                                        </p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+
+                    <div class="text-end">
+                        <button mat-raised-button color="btn-bordeau" (click)="postAbsence()">Soumettre <i class="bi bi-save" ></i> </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

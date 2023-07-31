@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-navigation',
@@ -7,10 +8,11 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NavigationHeaderComponent implements OnInit {
 
-  constructor() { }
+  public isConnected!:boolean;
+  constructor(private auth:AuthService) { }
 
   ngOnInit(): void {
-    
+    this.isConnected = this.auth.isAuthenticated
   }
 
 }

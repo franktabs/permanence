@@ -1,0 +1,50 @@
+<div class="my-modal">
+    <div class="my-body shadow-lg">
+        <button class="btn btn-close my-close" (click)="up()"></button>
+        <div>
+            <div class="my-title fw-bold p-2">
+                <i class="bi bi-ui-checks"></i>
+                Vos Absences
+            </div>
+            <div class="ligne"></div>
+            <div class="d-flex justify-content-center">
+
+                <ng-container *ngIf="tabAbsences && tabAbsences.length; else empty">
+
+                    <div class="p-3 w-100 vacance shadow m-3" *ngFor="let oneAbsence of tabAbsences" >
+                        <div class="d-flex justify-content-between">
+                            <h1>Fait le {{oneAbsence.date}} </h1>
+                            <span *ngIf="oneAbsence.isValid==true" >Accepté <i class="bi bi-check-circle"></i> </span>
+                            <span *ngIf="oneAbsence.isValid==false" >Refusé <i class="bi bi-x-octagon"></i> </span>
+                            <span *ngIf="oneAbsence.isValid==null " >Non traité</span>
+                        </div>
+                        <hr>
+                        <div class="px-3">
+                            <div>
+                                <h3>Motif</h3>
+                                <p>
+                                    {{oneAbsence.motif}}
+                                </p>
+                            </div>
+                            <div *ngIf="oneAbsence.commentaire" >
+                                <h3>Commentaire</h3>
+                                <p> {{oneAbsence.commentaire}} </p>
+                            </div>
+                            <div>
+                                <h3>Période</h3>
+                                <p class="text-capitalize">
+                                    du <span class="debut"> {{oneAbsence.debut}} </span> au <span class="fin"> {{ oneAbsence.fin }} </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+
+                <ng-template #empty >
+                    <h1 class="fst-italic" >Aucune Données Trouvées</h1>
+                </ng-template>
+
+            </div>
+        </div>
+    </div>
+</div>

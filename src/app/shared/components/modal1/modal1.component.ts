@@ -20,7 +20,7 @@ export class Modal1Component implements OnInit, OnChanges {
 
   public keyRowHoliday: Array<keyof IHolidays> = [];
 
-  public keyRowAbsence: Array<keyof IAbsence> = [];
+  public infoAbsence: { keys: Array<keyof IAbsence>|null, value: IAbsence|null }  =  {keys:null, value:null};
 
   constructor() { }
   ngOnChanges(changes: SimpleChanges): void {
@@ -32,25 +32,40 @@ export class Modal1Component implements OnInit, OnChanges {
         }
         return false
       }) as any;
-
-      if (obj.holiday) {
-        this.keyRowHoliday = Object.keys(obj.holiday).filter((item) => {
-          if (typeof obj.absence[item] == "string") {
+      let obj1 = obj as IPersonnel
+      if (obj1.holiday) {
+        this.keyRowHoliday = Object.keys(obj1.holiday).filter((item) => {
+          // console.log("who's undefined", obj.absence[item], obj.absence)
+          let item1: keyof IHolidays = item as any
+          if (obj1.holiday && typeof obj1.holiday[item1] == "string") {
             return true
           }
           return false
         }) as any;
       }
 
-      if (obj.absence) {
-        this.keyRowAbsence = Object.keys(obj.absence).filter((item) => {
-          if (typeof obj.absence[item] == "string") {
-            return true
+      if (obj1.absences && obj1.absences.length) {
+        let absence: IAbsence | null = null
+        for (let oneAbsence of obj1.absences) {
+          let seconde = Math.floor((+new Date(oneAbsence.debut) - (+new Date())) / 1000);
+          if (seconde > 0) {
+            absence = oneAbsence;
+            break;
           }
-          return false
-        }) as any;
+        }
+        if (absence) {
+          this.infoAbsence.value = absence;
+          this.infoAbsence.keys = Object.keys(absence).filter((item) => {
+            let item1: keyof IAbsence = item as any;
+            if (absence && typeof absence[item1] == "string") {
+              return true
+            }
+            return false
+          }) as any;
+
+        }
       }
-      console.log("absence",this.keyRowAbsence, "holiday",this.keyRowHoliday)
+      console.log("personnes cliqué", this.rows)
     }
   }
 

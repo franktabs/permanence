@@ -5,6 +5,7 @@ import { IDirection } from 'src/app/shared/interfaces/idirection';
 import { IHolidays } from 'src/app/shared/interfaces/iholidays';
 import { IPersonnel } from 'src/app/shared/interfaces/ipersonnel';
 import { ApiService } from 'src/app/shared/services/api.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
   selector: 'app-page-collecte-data',
@@ -21,33 +22,36 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   public _data_apiPersonnels: IPersonnel[] | null = null;
   public allPersonnels: IPersonnel[] | null = null;
   public allUsers: IPersonnel[] | null = null;
-  public isTableFilter:boolean = false;
+  public isTableFilter: boolean = false;
+  public userAuth!: IPersonnel | null;
+  public destroy$!: Subject<boolean>;
 
 
-  constructor(private api: ApiService) { }
 
-  public set data_apiPersonnels(value: IPersonnel[] | null){
+  constructor(private api: ApiService, private auth: AuthService) { }
+
+  public set data_apiPersonnels(value: IPersonnel[] | null) {
     this._data_apiPersonnels = value;
-    if(this._data_apiPersonnels && this.allPersonnels){
-      if(this._data_apiPersonnels.length<this.allPersonnels.length){
-        this.isTableFilter=true;
-      }else{
-        this.isTableFilter=false;
-        this.directionSelected=null;
-        this.toTable1= {icon:"<i class='bi bi-person-lines-fill' ></i>","title":"Personnel"}
+    if (this._data_apiPersonnels && this.allPersonnels) {
+      if (this._data_apiPersonnels.length < this.allPersonnels.length) {
+        this.isTableFilter = true;
+      } else {
+        this.isTableFilter = false;
+        if (this.directionSelected) {
+          this.directionSelected = null;
+        }
+        this.toTable1 = { icon: "<i class='bi bi-person-lines-fill' ></i>", "title": "Personnel" }
       }
     }
   }
 
-  public get data_apiPersonnels(){
+  public get data_apiPersonnels() {
     return this._data_apiPersonnels;
   }
 
   public set directionSelected(value: string | null) {
     this._directionSelected = value;
-    if (this._directionSelected && this.allPersonnels && this.allPersonnels.length) {
-      this.data_apiPersonnels = this.allPersonnels?.filter((items) => { return items.direction?.nom == this._directionSelected })
-    } 
+    this.getPersonnelsDirection();
   }
 
   public get directionSelected() {
@@ -68,7 +72,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     return this._data_apiDirections;
   }
 
-  public resetTable(){
+  public resetTable() {
     this.data_apiPersonnels = this.allPersonnels;
   }
   public putInActiveIcon(msg: OuputTypeCard1) {
@@ -76,9 +80,9 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   }
 
   public getPersonnelsHoliday() {
-    if(this.data_apiPersonnels){
+    if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
-        if(items.holiday?.debut){
+        if (items.holiday?.debut) {
           let seconde = Math.floor((+new Date(items.holiday.debut) - (+new Date())) / 1000);
           return seconde > 0;
         }
@@ -86,16 +90,44 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
       })
       this.data_apiPersonnels = personnelsHoliday;
     }
-
   }
 
-  public destroy$!: Subject<boolean>;
+  public getPersonnelsDirection(){
+    if (!this.directionSelected) {
+      this.data_apiPersonnels = this.allPersonnels;
+    }
+    else if (this.directionSelected && this.allPersonnels && this.allPersonnels.length) {
+      this.data_apiPersonnels = this.allPersonnels.filter((items) => { return items.direction?.nom == this.directionSelected })
+    }
+  }
+
+  public getPersonnelsAbsence(){
+    if (this.data_apiPersonnels) {
+      let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
+        let isTake = false;
+        if(items.absences){
+          for( let oneAbsence of items.absences){
+            if (oneAbsence.debut) {
+              let seconde = Math.floor((+new Date(oneAbsence.debut) - (+new Date())) / 1000);
+              isTake =  seconde > 0;
+              if(isTake) break;
+            }
+          }
+        }
+        return isTake;
+      })
+      this.data_apiPersonnels = personnelsHoliday;
+    }
+  }
+
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
   }
 
   ngOnInit(): void {
+
+    this.userAuth = this.auth.user
     this.destroy$ = new Subject();
     console.log(this.date1Conge, this.date2Conge);
     this.toTable1.icon = "<i class='bi bi-person-lines-fill' ></i>";
@@ -110,10 +142,10 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     this.api.getAllData<IPersonnel[]>({ for: "personnels" }).pipe(takeUntil(this.destroy$)).subscribe({
       next: (personnels) => {
         this.api.personnels$.next(personnels);
-        let allUserPersonnel = personnels.filter((items)=>{return !items.admin && !items.superviseur})
+        let allUserPersonnel = personnels.filter((items) => { return !items.admin && !items.superviseur })
         this.data_apiPersonnels = allUserPersonnel;
         this.allPersonnels = allUserPersonnel;
-        this.allUsers=allUserPersonnel;
+        this.allUsers = allUserPersonnel;
       }
     })
   }

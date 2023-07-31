@@ -17,8 +17,8 @@
     background-color: white;
     padding: .5em;
     cursor: pointer;
-    border: 1px solid transparent;
-
+    border: 1px solid $bordeau-color;
+    transition: .5s;
     &:hover{
     border: 1px dashed $for-blue-color;
     

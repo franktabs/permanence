@@ -29,6 +29,13 @@ export class ApiService {
 
   constructor(private http: HttpClient) { }
 
+
+  public postAbsence(absence:IAbsence): Observable<IAbsence> {
+    return this.http.post(`${this.URL_ABSENCES}`, absence).pipe(
+      catchError(this.displayError) as any
+    )
+  }
+
   public getAllData<T>(props: TypeApi): Observable<T> {
     let lien: string | null = null;
     if (props.for === "absences") {
@@ -58,7 +65,14 @@ export class ApiService {
 
   }
 
-
+  displayError(err: HttpErrorResponse): Observable<any>  {
+    if (err.error instanceof ErrorEvent) {
+      console.error(err.error.message);
+    } else {
+      console.error(err.status);
+    }
+    return throwError(() => new Error("Erreur produit au chargement de données"));
+  }
 
 
 

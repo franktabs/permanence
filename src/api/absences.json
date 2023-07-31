@@ -21,7 +21,30 @@
                 "lieu": "Avenue des Banque"
             }
         }
+    },{
+        "id": 10,
+        "personnel_id": 1,
+        "debut": "2023-08-05",
+        "fin": "2023-08-05",
+        "motif":"obligations professionnelles",
+        "date":"2023-07-23",
+        "personnel": {
+            "id": 1,
+            "matricule": "19G232",
+            "nom": "frank",
+            "prenom": "junior",
+            "date_naissance": "2002-02-13",
+            "sexe": "M",
+            "direction_id": 1,
+            "direction": {
+                "id": 1,
+                "nom": "DSI",
+                "region": "centre",
+                "lieu": "Avenue des Banque"
+            }
+        }
     },
+    
     {
         "id": 2,
         "personnel_id": 2,

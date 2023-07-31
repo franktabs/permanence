@@ -24,6 +24,14 @@ import { Line1Component } from './shared/components/line1/line1.component';
 import { Modal1Component } from './shared/components/modal1/modal1.component';
 import { AuthService } from './shared/services/auth.service';
 import { PageHomeComponent } from './pages/page-home/page-home.component';
+import { AuthGuard } from './shared/guards/auth.guard';
+import { LoadDataGuard } from './shared/guards/load-data.guard';
+import { Card3Component } from './shared/components/card3/card3.component';
+import { Modal2Component } from './shared/components/modal2/modal2.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Modal3Component } from './shared/components/modal3/modal3.component';
+import { ModalExemple1Component } from './shared/components/modal-exemple1/modal-exemple1.component';
+import { CardAbsenceComponent } from './shared/components/card-absence/card-absence.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -41,16 +49,23 @@ import { PageHomeComponent } from './pages/page-home/page-home.component';
     Card2Component,
     Line1Component,
     Modal1Component,
-    PageHomeComponent
+    PageHomeComponent,
+    Card3Component,
+    Modal2Component,
+    Modal3Component,
+    ModalExemple1Component,
+    CardAbsenceComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
     MaterialModule,
-    HttpClientModule
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
-  providers: [ApiService, AuthService],
+  providers: [ApiService, AuthService, AuthGuard, LoadDataGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule {

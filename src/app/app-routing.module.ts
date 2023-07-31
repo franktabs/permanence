@@ -6,11 +6,12 @@ import { PageReportingComponent } from './pages/page-reporting/page-reporting.co
 import { GetApiComponent } from './get-api/get-api.component';
 import { AuthGuard } from './shared/guards/auth.guard';
 import { PageHomeComponent } from './pages/page-home/page-home.component';
+import { LoadDataGuard } from './shared/guards/load-data.guard';
 
 const routes: Routes = [
   {
     path: "",
-    canActivate: [AuthGuard],
+    canActivate: [LoadDataGuard],
     children:[
       {
         path:"",

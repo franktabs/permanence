@@ -1,0 +1,51 @@
+
+@import "colors";
+
+.my-body{
+    background-color: white;
+    position: relative;
+    min-width: 600px;
+    padding: 1em;
+}
+
+.my-close{
+    position: absolute;
+    top:.1em;
+    right: .1em;
+    padding: 1em;
+    &:hover{
+        background-color: rgb(199, 199, 199);
+        cursor: pointer;
+    }
+}
+
+.ligne{
+    background-color: black;
+    height: 2px;
+}
+
+.my-title{
+    font-size: 3em;
+
+}
+
+.vacance{
+
+    h1, h2, h3{
+        color: $bordeau-color;
+    }
+
+    h2, h3{
+        font-style: italic;
+        font-weight: bolder;
+    }
+
+    h1, h2, h3, p {
+    margin: 0 !important;
+    }
+
+    .debut, .fin{
+        color: $bordeau-color;
+        font-style: italic;
+    }
+}

@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { IPersonnel } from '../interfaces/ipersonnel';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,22 +11,23 @@ export class AuthService {
 
   private _isAuthenticated:boolean = false;
 
+  public isConnected$:Subject<boolean> = new Subject()
+
+
   login(user:IPersonnel) {
     this._user = user;
-    this.isAuthenticated = true;
+    this._isAuthenticated = true;
+    this.isConnected$.next(true);
   }
 
   logout() {
     this._user = null;
-    this.isAuthenticated = false;
+    this._isAuthenticated = false;
+    this.isConnected$.next(false)
   }
 
   get isAuthenticated(): boolean {
     return this._isAuthenticated;
-  }
-
-  set isAuthenticated(value:boolean){
-    this._isAuthenticated = value;
   }
 
   get user(){
