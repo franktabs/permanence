@@ -8,6 +8,8 @@ import { Observable, Subject, throwError } from 'rxjs';
 import { MatPaginator } from '@angular/material/paginator';
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { MatSort, Sort } from '@angular/material/sort';
+import { MatDialog } from '@angular/material/dialog';
+import { UserInfoModalComponent } from '../modals/user-info-modal/user-info-modal.component';
 @Component({
   selector: 'app-table1',
   templateUrl: './table1.component.html',
@@ -31,7 +33,9 @@ export class Table1Component implements AfterViewInit, OnDestroy, OnChanges {
   private destroy$!:Subject<boolean> 
 
 
-  constructor(private http:HttpClient, private api:ApiService, private _liveAnnouncer: LiveAnnouncer ) { }
+  constructor(private http:HttpClient,
+    private dialog: MatDialog, 
+    private api:ApiService, private _liveAnnouncer: LiveAnnouncer ) { }
 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -70,8 +74,15 @@ export class Table1Component implements AfterViewInit, OnDestroy, OnChanges {
 
 
   public handleClick(row:IPersonnel){
+
+    console.log("handle click row data ", row)
+
     this.row = row;
-    this.openModal = true;
+    //this.openModal = true;
+
+    this.dialog.open(UserInfoModalComponent, {
+      data: row
+    })
   }
 
 

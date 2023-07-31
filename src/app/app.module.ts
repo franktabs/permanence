@@ -32,6 +32,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { Modal3Component } from './shared/components/modal3/modal3.component';
 import { ModalExemple1Component } from './shared/components/modal-exemple1/modal-exemple1.component';
 import { CardAbsenceComponent } from './shared/components/card-absence/card-absence.component';
+import { UserInfoModalComponent } from './shared/components/modals/user-info-modal/user-info-modal.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -54,7 +55,8 @@ import { CardAbsenceComponent } from './shared/components/card-absence/card-abse
     Modal2Component,
     Modal3Component,
     ModalExemple1Component,
-    CardAbsenceComponent
+    CardAbsenceComponent,
+    UserInfoModalComponent
   ],
   imports: [
     BrowserModule,
@@ -63,7 +65,8 @@ import { CardAbsenceComponent } from './shared/components/card-absence/card-abse
     MaterialModule,
     HttpClientModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    
   ],
   providers: [ApiService, AuthService, AuthGuard, LoadDataGuard],
   bootstrap: [AppComponent]

@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, takeUntil, tap } from 'rxjs';
 import { OuputTypeCard1 } from 'src/app/shared/components/card1/card1.component';
 import { IDirection } from 'src/app/shared/interfaces/idirection';
 import { IHolidays } from 'src/app/shared/interfaces/iholidays';
@@ -92,7 +92,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getPersonnelsDirection(){
+  public getPersonnelsDirection() {
     if (!this.directionSelected) {
       this.data_apiPersonnels = this.allPersonnels;
     }
@@ -101,16 +101,16 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     }
   }
 
-  public getPersonnelsAbsence(){
+  public getPersonnelsAbsence() {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
         let isTake = false;
-        if(items.absences){
-          for( let oneAbsence of items.absences){
+        if (items.absences) {
+          for (let oneAbsence of items.absences) {
             if (oneAbsence.debut) {
               let seconde = Math.floor((+new Date(oneAbsence.debut) - (+new Date())) / 1000);
-              isTake =  seconde > 0;
-              if(isTake) break;
+              isTake = seconde > 0;
+              if (isTake) break;
             }
           }
         }
@@ -132,22 +132,22 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     console.log(this.date1Conge, this.date2Conge);
     this.toTable1.icon = "<i class='bi bi-person-lines-fill' ></i>";
     this.toTable1.title = "Personnel";
-    this.api.getAllData<IDirection[]>({ for: "directions" }).subscribe((directions) => {
-      this.api.directions$.next(directions);
+
+    this.api.directions$.pipe(takeUntil(this.destroy$)).subscribe((directions) => {
       this.data_apiDirections = directions;
-      // this.api.directions$.pipe(takeUntil(this.destroy$)).subscribe((s)=>{
-      //   this.data_apiDirections = s;
-      // })
-    });
-    this.api.getAllData<IPersonnel[]>({ for: "personnels" }).pipe(takeUntil(this.destroy$)).subscribe({
-      next: (personnels) => {
-        this.api.personnels$.next(personnels);
+    })
+
+    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe(
+      (personnels) => {
         let allUserPersonnel = personnels.filter((items) => { return !items.admin && !items.superviseur })
         this.data_apiPersonnels = allUserPersonnel;
         this.allPersonnels = allUserPersonnel;
         this.allUsers = allUserPersonnel;
       }
-    })
+    )
+
+    this.api.getAllData<IDirection[]>({ for: "directions" }).subscribe((obs)=>{this.api.directions$.next(obs)});
+    this.api.getAllData<IPersonnel[]>({ for: "personnels" }).subscribe((obs)=>{this.api.personnels$.next(obs)})
   }
 
 }

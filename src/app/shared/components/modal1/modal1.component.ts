@@ -16,11 +16,13 @@ export class Modal1Component implements OnInit, OnChanges {
 
   @Input() rows!: IPersonnel | any;
 
+  public closeModal3: boolean = true;
+
   public keyRow: Array<keyof IPersonnel> = [];
 
   public keyRowHoliday: Array<keyof IHolidays> = [];
 
-  public infoAbsence: { keys: Array<keyof IAbsence>|null, value: IAbsence|null }  =  {keys:null, value:null};
+  public infoAbsence: { keys: Array<keyof IAbsence> | null, value: IAbsence | null } = { keys: null, value: null };
 
   constructor() { }
   ngOnChanges(changes: SimpleChanges): void {
@@ -75,6 +77,10 @@ export class Modal1Component implements OnInit, OnChanges {
 
   closeModal() {
     this.isOpenChange.emit(false);
+  }
+
+  openModalAbsence(){
+    this.closeModal3 = false;
   }
 
 }

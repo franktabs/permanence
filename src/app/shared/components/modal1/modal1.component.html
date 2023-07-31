@@ -1,4 +1,5 @@
 <div class="my-modal">
+    <app-modal3 [(close)]="closeModal3" *ngIf="!closeModal3" [tabs]="rows.absences" ></app-modal3>
     <div class="my-body shadow-lg">
         <button class="btn btn-close my-close" (click)="closeModal()"></button>
         <div>
@@ -62,7 +63,7 @@
                             </tbody>
                         </table>
                         <div class="text-end" >
-                            <button mat-button color="accent" *ngIf="!!rows.absences && rows.absences.length>0">
+                            <button mat-button color="accent" (click)="openModalAbsence()"  *ngIf="!!rows.absences && rows.absences.length>0">
                                 Voir tout
                             </button>
                         </div>

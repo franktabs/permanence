@@ -8,8 +8,8 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 export class ModalExemple1Component implements OnInit {
 
   @Input() close:boolean = true;
-  @Input() nameModal!:string ;
   @Output() closeChange:EventEmitter<boolean> = new EventEmitter() 
+  @Input() nameModal!:string ;
 
   constructor() { }
 

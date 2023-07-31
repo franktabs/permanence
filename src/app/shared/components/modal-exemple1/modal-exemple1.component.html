@@ -1,1 +1,15 @@
-<p>modal-exemple1 works!</p>
+<div class="my-modal">
+    <div class="my-body shadow-lg">
+        <button class="btn btn-close my-close" (click)="up()"></button>
+        <div>
+            <div class="my-title fw-bold p-2">
+                <ng-content select="[i]" ></ng-content>
+                {{nameModal}}
+            </div>
+            <div class="ligne"></div>
+            <div class="d-flex justify-content-center">
+                <ng-content></ng-content>
+            </div>
+        </div>
+    </div>
+</div>
