@@ -18,7 +18,7 @@ export class LoadDataGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     let obser =  this.api.getAllData<IPersonnel[]>({ for: "personnels" }).pipe(map((sub)=>{
-      let person = sub[6];
+      let person = sub[0];
       this.auth.login(person);
       console.log("ecrit avant")
       return this.auth.isAuthenticated;

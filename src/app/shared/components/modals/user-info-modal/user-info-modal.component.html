@@ -1,7 +1,29 @@
 <h1 mat-dialog-title>
-    User info
+    Informations
 </h1>
 
 <div mat-dialog-content>
-    {{userInfo | json}}
+    <div class="d-flex">
+        <div class="m-3 p-3 part1">
+            <h1> <i class="bi bi-card-text"></i> A propos</h1>
+            <table class="table table-hover ">
+                <thead>
+                    <tr>
+                        <th>Matricule</th>
+                        <th>Noms</th>
+                        <th>Prénoms</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>{{userInfo.matricule}}</td>
+                        <td>{{userInfo.nom}}</td>
+                        <td>{{userInfo.prenom}}</td>
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+        
+           
 </div>

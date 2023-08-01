@@ -78,11 +78,11 @@ export class Table1Component implements AfterViewInit, OnDestroy, OnChanges {
     console.log("handle click row data ", row)
 
     this.row = row;
-    //this.openModal = true;
+    this.openModal = true;
 
-    this.dialog.open(UserInfoModalComponent, {
-      data: row
-    })
+    // this.dialog.open(UserInfoModalComponent, {
+    //   data: row
+    // })
   }
 
 

@@ -4,7 +4,7 @@ import { IPersonnel } from "./ipersonnel";
 export interface IAbsence extends IHolidays{
     date:string;
     motif:string;
-    isValid:boolean;
+    isValid:boolean|null;
     commentaire?:string;
     autres?:string;
 }
