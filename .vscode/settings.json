@@ -1,5 +1,5 @@
 {
     "commentTranslate.multiLineMerge": false,
     "commentTranslate.targetLanguage": "fr",
-    "commentTranslate.hover.enabled": false
+    "commentTranslate.hover.enabled": true
 }

@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import { IAbsence } from '../../interfaces/iabsence';
+import { AuthService } from '../../services/auth.service';
+import { IPersonnel } from '../../interfaces/ipersonnel';
 
 @Component({
   selector: 'app-card-absence',
@@ -7,9 +10,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CardAbsenceComponent implements OnInit {
 
-  constructor() { }
+  @Input() absence!:IAbsence
+
+  public userAuth!:IPersonnel|null;
+  constructor(private auth:AuthService) { }
 
   ngOnInit(): void {
+    this.userAuth = this.auth.user;
   }
 
 }

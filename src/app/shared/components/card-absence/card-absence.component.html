@@ -1,1 +1,44 @@
-<p>card-absence works!</p>
+<!-- <ng-container *ngIf="tabAbsences && tabAbsences.length; else empty"> -->
+
+    <div class="p-3 w-100 vacance shadow m-3 hover-div" >
+        <div class="d-flex justify-content-between gap-5">
+            <h1 class="w-max-content">Fait le {{absence.date}} </h1>
+            <div class="w-max-content">
+                <span *ngIf="absence.isValid==true">Accepté <i class="bi bi-check-circle"></i>
+                </span>
+                <span *ngIf="absence.isValid==false">Refusé <i class="bi bi-x-octagon"></i> </span>
+                <span *ngIf="absence.isValid==null ">Non traité</span>
+            </div>
+        </div>
+        <hr>
+        <div class="px-3">
+            <div>
+                <h3>Motif</h3>
+                <p>
+                    {{absence.motif}}
+                </p>
+            </div>
+            <div *ngIf="absence.commentaire">
+                <h3>Commentaire</h3>
+                <p> {{absence.commentaire}} </p>
+            </div>
+            <div>
+                <h3>Période</h3>
+                <p class="text-capitalize">
+                    du <span class="debut"> {{absence.debut}} </span> au <span class="fin"> {{
+                        absence.fin }} </span>
+                </p>
+            </div>
+        </div>
+        <ng-container *ngIf="userAuth && userAuth.superviseur">
+            <hr>
+            <div class="d-flex justify-content-end gap-2">
+                <button mat-raised-button color="accent" *ngIf="absence.isValid==true || absence.isValid==null"
+                    (click)="absence.isValid=false">Refuser</button>
+                <button mat-raised-button color="primary" *ngIf="absence.isValid==false || absence.isValid==null"
+                    (click)="absence.isValid=true">Valider</button>
+            </div>
+        </ng-container>
+
+    </div>
+<!-- </ng-container> -->

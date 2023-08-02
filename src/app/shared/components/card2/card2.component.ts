@@ -3,6 +3,8 @@ import { ApiService } from '../../services/api.service';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { Observable, Subject, takeUntil } from 'rxjs';
 
+
+//Carte sur pour afficher les évènements, historique
 @Component({
   selector: 'app-card2',
   templateUrl: './card2.component.html',

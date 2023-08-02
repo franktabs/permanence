@@ -1,0 +1,29 @@
+GET - http://192.168.11.137:18080/o/afb-liferay-rest/afb-users-by-id/52174
+
+Response Body
+
+{
+    "firstname": "NGOULEU EPSE MOMO GAELLE",
+    "matriculeGRH": "",
+    "telephoneCisco": "10004",
+    "telephoneMobile": "699 61 08 89",
+    "lastlogindate": "2023-02-20 10:18:21.122",
+    "lastloginip": "172.21.10.49",
+    "middlename": "NGOULEU EPSE MOMO GAELLE",
+    "photo": "",
+    "emailaddress": "gaellengouleu_momo@afrilandfirstbank.com",
+    "sexe": "M",
+    "userId": "52174",
+    "affectation": "DRC : RETRAITE",
+    "lastname": "NGOULEU EPSE MOMO GAELLE",
+    "loginPortal": "NGU8",
+    "service": "COMMERCIAL",
+    "loginip": "172.21.10.49",
+    "modifiedDate": "2023-02-20 10:20:32.335",
+    "fonction": "GFC GE",
+    "logindate": "2023-02-20 10:20:32.335",
+    "screenname": "gaellengouleu_momo",
+    "createDate": "2021-02-26 09:45:46.782",
+    "status": 0,
+    "Ville": "YAOUNDE"
+}

@@ -3,27 +3,35 @@
 @import '~bootstrap/dist/css/bootstrap.min.css';
 @import '~bootstrap-icons/font/bootstrap-icons.min.css';
 
-$bordeau-color:#6D071A;
-$for-blue-color:blue;
-$background-body:#f7f7f7;
-$for-red-color:red;
-$for-white-color:white;
+$bordeau-color: #6D071A;
+$for-blue-color: blue;
+$background-body: #f7f7f7;
+$for-red-color: red;
+$for-white-color: white;
 
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-body{
+body {
     background-color: $background-body;
     position: relative;
     min-height: 100vh;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
-.my-modal{
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.my-modal {
     position: fixed;
     background-color: #ffffff96;
     top: 0;
@@ -36,6 +44,39 @@ body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
     z-index: 12;
 }
 
-.w-max-content{
+.w-max-content {
     width: max-content !important;
+}
+
+.hover-div {
+    border: 1px dashed transparent;
+
+    &:hover {
+        border: 1px dashed blue;
+    }
+}
+
+.text-bordeau {
+
+    color: $bordeau-color !important;
+}
+
+.bg-bordeau{
+    background-color: $bordeau-color !important;
+}
+
+.head-2{
+    font-size: 2em !important;
+}
+
+.head-3{
+    font-size: 3em !important;
+}
+
+.head-4{
+    font-size: 4em !important;
+}
+
+.head-1-5{
+    font-size: 1.5em !important;
 }

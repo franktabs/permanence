@@ -6,6 +6,8 @@ export type OuputTypeCard1 = {
   title:string;
 }
 
+//Carte affiché à l'admin ou superviseur: Congé, Personnel, Absences
+
 @Component({
   selector: 'app-card1',
   templateUrl: './card1.component.html',

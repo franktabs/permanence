@@ -3,6 +3,10 @@ import { IPersonnel } from '../../interfaces/ipersonnel';
 import { IHolidays } from '../../interfaces/iholidays';
 import { IAbsence } from '../../interfaces/iabsence';
 
+
+
+//modal utilisé pour afficher les informations sur une ressource
+// provenant d'un click sur une ligne du tableau
 @Component({
   selector: 'app-modal1',
   templateUrl: './modal1.component.html',

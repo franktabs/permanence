@@ -33,6 +33,9 @@ import { Modal3Component } from './shared/components/modal3/modal3.component';
 import { ModalExemple1Component } from './shared/components/modal-exemple1/modal-exemple1.component';
 import { CardAbsenceComponent } from './shared/components/card-absence/card-absence.component';
 import { UserInfoModalComponent } from './shared/components/modals/user-info-modal/user-info-modal.component';
+import { PageAccueilComponent } from './pages/page-accueil/page-accueil.component';
+import { PageAbsenceComponent } from './pages/page-absence/page-absence.component';
+import { PageRapportComponent } from './pages/page-rapport/page-rapport.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,7 +59,10 @@ import { UserInfoModalComponent } from './shared/components/modals/user-info-mod
     Modal3Component,
     ModalExemple1Component,
     CardAbsenceComponent,
-    UserInfoModalComponent
+    UserInfoModalComponent,
+    PageAccueilComponent,
+    PageAbsenceComponent,
+    PageRapportComponent
   ],
   imports: [
     BrowserModule,

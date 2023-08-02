@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 
+
+//Carte qui fut utiliser pour donner à l'utilisateur la possibilité de faire une 
+// une consultation et une soumission d'absences
 @Component({
   selector: 'app-card3',
   templateUrl: './card3.component.html',

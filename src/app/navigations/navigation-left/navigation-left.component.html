@@ -1,9 +1,19 @@
 <div class="div-nav">
-    <nav>
+    <nav *ngIf="userAuth && (userAuth.admin || userAuth.superviseur); else ressource" >
         <ul>
-            <li><a  routerLink="" ><i class="bi bi-database" > </i> Collecte Données</a></li>
-            <li><a routerLink="planification" ><i class="bi bi-calendar3" > </i> Planification</a></li>
-            <li><a routerLink="reporting"><i class="bi bi-flag-fill" > </i> Reporting</a></li>
+            <li><a  routerLink="gestion/collecte" ><i class="bi bi-database" > </i> Collecte Données</a></li>
+            <li><a routerLink="gestion/planification" ><i class="bi bi-calendar3" > </i> Planification</a></li>
+            <li><a routerLink="gestion/reporting"><i class="bi bi-flag-fill" > </i> Reporting</a></li>
         </ul>
     </nav>
+    <ng-template #ressource >
+        <nav >
+            <ul>
+                <li><a  routerLink="user/accueil" ><i class="bi bi-house-fill" > </i> Accueil</a></li>
+                <li><a routerLink="user/absences" ><i class="bi bi-calendar-week" > </i> Absences</a></li>
+                <li><a routerLink="user/rapports"><i class="bi bi-journal-bookmark-fill" > </i> Rapports</a></li>
+                <li><a routerLink="user/accueil"><i class="bi bi-question-octagon-fill" > </i> Observations</a></li>
+            </ul>
+        </nav>
+    </ng-template>
 </div>

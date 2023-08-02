@@ -9,7 +9,7 @@
             <div class="ligne"></div>
             <div class="d-flex justify-content-center">
                 <div class="p-3 w-100">
-                    <form novalidate [formGroup] = "absenceForm" (ngSubmit)="postAbsence()" >
+                    <form [formGroup]="absenceForm" (ngSubmit)="postAbsence()">
                         <table class="table table-striped">
                             <tbody>
                                 <tr class="align-middle">
@@ -18,7 +18,8 @@
                                     </th>
                                     <td>
                                         <p>
-                                            <input type="text" id="motif" formControlName="motif" placeholder="Votre Motif" class="form-control">
+                                            <input type="text" id="motif" formControlName="motif"
+                                                placeholder="Votre Motif" class="form-control" required>
                                         </p>
                                     </td>
                                 </tr>
@@ -28,7 +29,8 @@
                                     </th>
                                     <td>
                                         <p>
-                                            <input type="date" id="debut" formControlName="debut" class="form-control">
+                                            <input type="date" id="debut" formControlName="debut" class="form-control"
+                                                required="true">
                                         </p>
                                     </td>
                                 </tr>
@@ -38,7 +40,8 @@
                                     </th>
                                     <td>
                                         <p>
-                                            <input type="date" id="fin" formControlName="fin" class="form-control">
+                                            <input type="date" id="fin" formControlName="fin" class="form-control"
+                                                required>
                                         </p>
                                     </td>
                                 </tr>
@@ -48,18 +51,21 @@
                                     </th>
                                     <td>
                                         <p>
-                                            <textarea id="commentaire" formControlName="commentaire" class="form-control" rows="3"
+                                            <textarea id="commentaire" formControlName="commentaire"
+                                                class="form-control" rows="3"
                                                 placeholder="Faite un petit commentaire"></textarea>
                                         </p>
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
+
+                        <div class="text-end">
+                            <button mat-raised-button color="btn-bordeau" type="submit"
+                                [disabled]="!absenceForm.valid">Soumettre <i class="bi bi-save"></i> </button>
+                        </div>
                     </form>
 
-                    <div class="text-end">
-                        <button mat-raised-button color="btn-bordeau" (click)="postAbsence()">Soumettre <i class="bi bi-save" ></i> </button>
-                    </div>
                 </div>
             </div>
         </div>

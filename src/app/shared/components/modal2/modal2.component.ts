@@ -3,6 +3,8 @@ import { ApiService } from '../../services/api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IAbsence } from '../../interfaces/iabsence';
 
+//formulaire pour la soumission des demandes d'absences
+
 @Component({
   selector: 'app-modal2',
   templateUrl: './modal2.component.html',
@@ -11,6 +13,7 @@ import { IAbsence } from '../../interfaces/iabsence';
 export class Modal2Component implements OnInit {
 
   @Input() close:boolean = true;
+  @Input() tabAbsences:IAbsence[]|null = null;
   @Output() closeChange:EventEmitter<boolean> = new EventEmitter()
 
   public absenceForm!:FormGroup;
@@ -23,9 +26,8 @@ export class Modal2Component implements OnInit {
       "motif":["", Validators.required],
       "debut":["", Validators.required],
       "fin":["", Validators.required],
-      "date":["", Validators.required],
-      "commentaire":["", Validators.required]
-
+      "date":[""],
+      "commentaire":[""]
     }) 
   }
 
@@ -35,6 +37,12 @@ export class Modal2Component implements OnInit {
 
   postAbsence(){
     console.log("données formulaire absence =>",this.absenceForm)
+    let data:IAbsence = this.absenceForm.value;
+    let day = new Date().toLocaleDateString("en-CA", {year:"numeric", month:"2-digit", day:"2-digit"});
+    data.date = day;
+
+    this.tabAbsences?.unshift(data)
+    this.up()
   }
 
 }

@@ -6,6 +6,35 @@ import { IHolidays } from 'src/app/shared/interfaces/iholidays';
 import { IPersonnel } from 'src/app/shared/interfaces/ipersonnel';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { TypeFormatJSON, formatJSON } from 'src/utils/function';
+
+interface IApiPerson{
+  name:string,
+  prename:string,
+  age:number,
+  sex:"F"|"M",
+  profes?:string,
+  tabs:any
+}
+
+interface IPerson{
+  nom:string,
+  prenom:string,
+  age:number,
+  sexe:"F"|"M",
+  profession:string,
+}
+
+let apiPerson:IApiPerson = {
+  name:"frank",
+  prename:"junior",
+  age:12,
+  sex:"F",
+  profes:"ingénieur",
+  tabs:[{
+    moi:"jean",
+  }]
+}
 
 @Component({
   selector: 'app-page-collecte-data',
@@ -126,7 +155,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
+    this.monTest();
     this.userAuth = this.auth.user
     this.destroy$ = new Subject();
     console.log(this.date1Conge, this.date2Conge);
@@ -139,6 +168,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
 
     this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe(
       (personnels) => {
+        let a = personnels[0];
         let allUserPersonnel = personnels.filter((items) => { return !items.admin && !items.superviseur })
         this.data_apiPersonnels = allUserPersonnel;
         this.allPersonnels = allUserPersonnel;
@@ -150,4 +180,12 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     this.api.getAllData<IPersonnel[]>({ for: "personnels" }).subscribe((obs)=>{this.api.personnels$.next(obs)})
   }
 
+
+  monTest(){
+    let correspondance:TypeFormatJSON<IApiPerson, IPerson>["correspondance"] = {name:"nom", prename:"prenom", sex:"sexe", "profes":"profession"}
+    let apiFormat = formatJSON<IApiPerson, IPerson>({obj:apiPerson, correspondance:correspondance})
+    console.log("transformation de l'api recu de ",apiPerson,"vers ",apiFormat)
+  }
+
 }
+

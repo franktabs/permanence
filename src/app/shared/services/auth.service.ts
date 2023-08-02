@@ -7,6 +7,8 @@ import { Subject } from 'rxjs';
 })
 export class AuthService {
 
+  public readonly DEFAULT_PERSON:number = 0;
+
   private _user:IPersonnel|null=null;
 
   private _isAuthenticated:boolean = false;

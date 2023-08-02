@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
+import { ActivatedRouteSnapshot, CanActivate, Router, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable, map, take, tap } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
@@ -12,15 +12,18 @@ export class LoadDataGuard implements CanActivate {
 
   private api = inject(ApiService);
   private auth = inject(AuthService);
+  private router = inject(Router)
 
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
     let obser =  this.api.getAllData<IPersonnel[]>({ for: "personnels" }).pipe(map((sub)=>{
-      let person = sub[0];
+      let person = sub[6];
       this.auth.login(person);
-      console.log("ecrit avant")
+      if(!this.auth.isAuthenticated){
+        this.router.navigateByUrl("home")
+      }
       return this.auth.isAuthenticated;
     }))
 
