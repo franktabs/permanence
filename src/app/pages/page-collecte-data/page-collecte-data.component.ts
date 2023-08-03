@@ -8,7 +8,7 @@ import { IHolidays } from 'src/app/shared/interfaces/iholidays';
 import { IPersonnel } from 'src/app/shared/interfaces/ipersonnel';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { TypeFormatJSON, formatJSON } from 'src/utils/function';
+import { TypeFormatJSON, formatJSON, formater } from 'src/utils/function';
 
 interface IApiPerson {
   name: string;
@@ -177,37 +177,26 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     this.toTable1.icon = "<i class='bi bi-person-lines-fill' ></i>";
     this.toTable1.title = 'Personnel';
 
-    this.api.directions$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((directions) => {
-        this.data_apiDirections = directions;
+    this.api
+      .getAllData<IApiDirection[]>({ for: 'directions' })
+      .subscribe((obs) => {
+        this.data_apiDirections = obs;
       });
-
-    this.api.personnels$
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((personnels) => {
-        let a = personnels[0];
-        let allUserPersonnel = personnels.filter((items) => {
+    this.api
+      .getAllData<IPersonnel[]>({ for: 'personnels' })
+      .subscribe((obs) => {
+        let allUserPersonnel = obs.filter((items) => {
           return !items.admin && !items.superviseur;
         });
         this.data_apiPersonnels = allUserPersonnel;
         this.allPersonnels = allUserPersonnel;
         this.allUsers = allUserPersonnel;
       });
-
-    this.api
-      .getAllData<IApiDirection[]>({ for: 'directions' })
-      .subscribe((obs) => {
-        this.api.directions$.next(obs);
-      });
-    this.api
-      .getAllData<IPersonnel[]>({ for: 'personnels' })
-      .subscribe((obs) => {
-        this.api.personnels$.next(obs);
-      });
   }
 
   monTest() {
+    console.log('formatage du nombre =>', formater(242322.2334));
+
     let correspondance: TypeFormatJSON<IApiPerson, IPerson>['correspondance'] =
       { name: 'nom', prename: 'prenom', sex: 'sexe', profes: 'profession' };
     let apiFormat = formatJSON<IApiPerson, IPerson>({

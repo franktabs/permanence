@@ -1,39 +1,38 @@
 [
     {
-        "idDirection":1,
-       "organizationId":287721,
-        "level":4,
-        "type_":"DIRECTION",
-        "treepath":"/287662/287721/",
-        "parentorganizationId":287662,
-        "name":"DIRECTION DES SYSTEMES INFORMATIONS"
+        "id": 1,
+        "organizationId": 287721,
+        "level": 4,
+        "type_": "DIRECTION",
+        "treepath": "/287662/287721/",
+        "parentorganizationId": 287662,
+        "names": "SYSTEME_INFORMATION"
     },
     {
-        "idDirection":2,
-       "organizationId":287702,
-        "level":4,
-        "type_":"REGION",
-        "treepath":"/287662/287702/",
-        "parentorganizationId":287662,
-        "name":"REGION CENTRE"
+        "id": 2,
+        "organizationId": 287702,
+        "level": 4,
+        "type_": "REGION",
+        "treepath": "/287662/287702/",
+        "parentorganizationId": 287662,
+        "names": "CORPORATE_BANKING"
     },
     {
-        "idDirection":1,
-       "organizationId":470696,
-        "level":4,
-        "type_":"DIVISION",
-        "treepath":"/287662/470310/470291/470330/470696/",
-        "parentorganizationId":470330,
-        "name":"DIRECTION DES SYSTEMES INFORMATIONS"
+        "id": 1,
+        "organizationId": 470696,
+        "level": 4,
+        "type_": "DIVISION",
+        "treepath": "/287662/470310/470291/470330/470696/",
+        "parentorganizationId": 470330,
+        "names": "CONTROLE_OPERATION"
     },
     {
-        "idDirection":1,
-       "organizationId":470677,
-        "level":1,
-        "type_":"DIVISION",
-        "treepath":"/287662/470310/470291/470330/470677/",
-        "parentorganizationId":470330,
-        "name":"DIVISION GESTIONNAIRE GE BONANJO"
+        "id": 1,
+        "organizationId": 470677,
+        "level": 1,
+        "type_": "DIVISION",
+        "treepath": "/287662/470310/470291/470330/470677/",
+        "parentorganizationId": 470330,
+        "names": "CONFORMITE"
     }
-
 ]

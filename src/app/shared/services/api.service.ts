@@ -8,73 +8,83 @@ import { IHolidays } from '../interfaces/iholidays';
 import { IDirection } from '../interfaces/idirection';
 import { IApiDirection } from '../interfaces/iapidirection';
 
-
 export interface TypeApi {
-  for: "holidays" | "directions" | "personnels" | "absences"
+  for: 'holidays' | 'directions' | 'personnels' | 'absences';
 }
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ApiService {
+  public readonly IP = 'http://192.168.2.64:8080/gestion';
+  // public readonly URL_PERSONNELS = this.IP+'';
+  public readonly URL_PERSONNELS = 'api/personnels.json';
+  public readonly URL_ABSENCES = 'api/absences.json';
+  public readonly URL_HOLIDAYS = 'api/holidays.json';
+  // public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
+  public readonly URL_DIRECTIONS = 'api/organisation.json';
 
-  public readonly URL_PERSONNELS = "api/personnels.json";
-  public readonly URL_ABSENCES = "api/absences.json";
-  public readonly URL_HOLIDAYS = "api/holidays.json";
-  public readonly URL_DIRECTIONS = "api/apiorganisation.json";
+  constructor(private http: HttpClient) {}
 
-  public personnels$: Subject<IPersonnel[]> = new Subject();
-  public absences$: Subject<IAbsence[]> = new Subject();
-  public holidays$: Subject<IHolidays[]> = new Subject();
-  public directions$: Subject<IApiDirection[]> = new Subject();
-
-  constructor(private http: HttpClient) { }
-
-
-  public postAbsence(absence:IAbsence): Observable<IAbsence> {
-    return this.http.post(`${this.URL_ABSENCES}`, absence).pipe(
-      catchError(this.displayError) as any
-    )
+  public postAbsence(absence: IAbsence): Observable<IAbsence> {
+    return this.http
+      .post(`${this.URL_ABSENCES}`, absence)
+      .pipe(catchError(this.displayError) as any);
   }
 
   public getAllData<T>(props: TypeApi): Observable<T> {
     let lien: string | null = null;
-    if (props.for === "absences") {
-      lien = this.URL_ABSENCES
-    } else if (props.for === "directions") {
-      lien = this.URL_DIRECTIONS
-    } else if (props.for === "holidays") {
-      lien = this.URL_HOLIDAYS
-    } else if (props.for === "personnels") {
-      lien = this.URL_PERSONNELS
+    if (props.for === 'absences') {
+      lien = this.URL_ABSENCES;
+    } else if (props.for === 'directions') {
+      lien = this.URL_DIRECTIONS;
+    } else if (props.for === 'holidays') {
+      lien = this.URL_HOLIDAYS;
+    } else if (props.for === 'personnels') {
+      lien = this.URL_PERSONNELS;
     }
     if (lien) {
       return this.http.get<T>(lien).pipe(
-        tap((values) => console.log("données recupéré ", lien, values))
-        , catchError((err: HttpErrorResponse): Observable<any> => {
+        tap((values) => {
+          console.log('données recupéré ', lien, values);
+          let tabs = values as any
+          if(props.for==="directions"){
+            for(let value of tabs){
+              
+              this.http.post(this.IP+"/direction/create", value).pipe(
+                tap(elm=>console.log("insertion de ", elm)),
+                catchError(this.displayError)
+              ).subscribe((subs)=>{
+                console.log("l'objet", subs,"sauvegardé")
+              })
+            }
+          }
+        }),
+        catchError((err: HttpErrorResponse): Observable<any> => {
           if (err.error instanceof ErrorEvent) {
+            console.error("message d'erreur", err);
             console.error(err.error.message);
           } else {
             console.error(err.status);
           }
-          return throwError(() => new Error("Erreur produit au chargement de données"));
+          return throwError(
+            () => new Error('Erreur produit au chargement de données')
+          );
         })
-      )
+      );
     } else {
-      return throwError(() => new Error("Erreur chargement url api !!!"));
+      return throwError(() => new Error('Erreur chargement url api !!!'));
     }
-
   }
 
-  displayError(err: HttpErrorResponse): Observable<any>  {
+  displayError(err: HttpErrorResponse): Observable<any> {
     if (err.error instanceof ErrorEvent) {
       console.error(err.error.message);
     } else {
       console.error(err.status);
     }
-    return throwError(() => new Error("Erreur produit au chargement de données"));
+    return throwError(
+      () => new Error('Erreur produit au chargement de données')
+    );
   }
-
-
-
 }

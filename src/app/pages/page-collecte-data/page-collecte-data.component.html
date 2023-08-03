@@ -11,7 +11,7 @@
                             <mat-select [(value)]="directionSelected">
                                 <mat-option  >Aucune</mat-option>
                                 <ng-container *ngFor="let items of data_apiDirections">
-                                    <mat-option [value]="items.name">{{items.name}}</mat-option>
+                                    <mat-option [value]="items.names">{{items.names}}</mat-option>
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>

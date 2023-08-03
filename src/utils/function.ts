@@ -1,38 +1,78 @@
-
 export type TypeFormatJSON<T, J> = {
-    obj:{[key in keyof T]: any},
-    correspondance:{[key in keyof T]?: keyof J}
+  obj: { [key in keyof T]: any };
+  correspondance: { [key in keyof T]?: keyof J };
+};
+
+export function formatJSON<T, J>({
+  obj,
+  correspondance,
+}: TypeFormatJSON<T, J>): { [key in keyof J]: any } {
+  let objEmpty: { [key in keyof T | keyof J]: any } = {} as any;
+
+  Object.keys(obj as any).forEach((key) => {
+    let key1: keyof T = key as any;
+    let newKey = correspondance[key1];
+    if (newKey != undefined) {
+      objEmpty[newKey as keyof J] = obj[key1];
+    } else {
+      objEmpty[key1] = obj[key1];
+    }
+  });
+
+  return objEmpty;
 }
-
-export function formatJSON<T,J>({obj, correspondance}:TypeFormatJSON<T, J>): {[key in keyof J]:any} {
-    
-    let objEmpty:{[key in ((keyof T)| (keyof J)) ]:any} = {} as any;
-
-    Object.keys(obj as any).forEach((key)=>{
-        let key1:keyof T = key as any;
-        let newKey = correspondance[key1];
-        if(newKey!=undefined ){
-            objEmpty[newKey as keyof J] = obj[key1]
-        }else{
-            objEmpty[key1] = obj[key1]
-        }
-    })
-
-    return objEmpty;
-}
-
 
 type TriJSON<T> = {
-    obj:any,
-    key: Array<keyof T>
+  obj: any;
+  key: Array<keyof T>;
+};
+
+export function triJSON<T>({ obj, key }: TriJSON<T>): {
+  [key in keyof T]: any;
+} {
+  let objEmpty: { [key in keyof T]: any } = {} as any;
+  key.forEach((val) => {
+    objEmpty[val] = obj[val];
+  });
+  return objEmpty;
 }
 
-export function triJSON<T>({obj, key}:TriJSON<T>):{[key in keyof T]:any}{
+export function formater(
+  n: number,
+  espace: ' ' | '.' | '' = ' ',
+  virgule: ',' | '.' = '.'
+) {
+  const nombre = n.toString();
+  const float = parseFloat(nombre).toString();
+  let [nombreString, nombreVirgule] = ['', ''];
+  if (float.split('.').length === 2) {
+    [nombreString, nombreVirgule] = float.split('.');
+  } else {
+    nombreString = float;
+  }
+  const longueur = nombreString.length;
 
-    let objEmpty:{[key in keyof T]:any} = {} as any
-    key.forEach((val)=>{
-        objEmpty[val] = obj[val];
-    })
-    return objEmpty;
+  if (longueur <= 3) {
+    return nombreString;
+  }
 
+  let resultat = '';
+  let i = 0;
+
+  for (i = longueur - 3; i >= 0; i -= 3) {
+    resultat = espace + nombreString.substring(i, i + 3) + resultat;
+  }
+
+  if (i < 0) {
+    resultat = nombreString.substring(0, i + 3) + resultat;
+  }
+
+  if (nombreVirgule !== '') {
+    let nombreFormat = resultat.trim() + virgule + nombreVirgule;
+    console.log(nombreFormat);
+    return nombreFormat;
+  }
+  let nombreFormat = resultat.trim()
+  console.log(nombreFormat)
+  return nombreFormat;
 }

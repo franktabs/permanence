@@ -17,5 +17,6 @@ export interface IApiPersonnel{
     absent:boolean|null,
     vacancy:boolean|null,
     eligible:boolean|null,
-
+    absentList:any[]|null,
+    vacancies:any[]|null
 }
