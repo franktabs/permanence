@@ -20,3 +20,19 @@ export function formatJSON<T,J>({obj, correspondance}:TypeFormatJSON<T, J>): {[k
 
     return objEmpty;
 }
+
+
+type TriJSON<T> = {
+    obj:any,
+    key: Array<keyof T>
+}
+
+export function triJSON<T>({obj, key}:TriJSON<T>):{[key in keyof T]:any}{
+
+    let objEmpty:{[key in keyof T]:any} = {} as any
+    key.forEach((val)=>{
+        objEmpty[val] = obj[val];
+    })
+    return objEmpty;
+
+}

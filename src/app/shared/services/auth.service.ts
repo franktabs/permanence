@@ -7,7 +7,7 @@ import { Subject } from 'rxjs';
 })
 export class AuthService {
 
-  public readonly DEFAULT_PERSON:number = 0;
+  public readonly DEFAULT_PERSON:number = 6;
 
   private _user:IPersonnel|null=null;
 

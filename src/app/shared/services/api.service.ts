@@ -6,6 +6,7 @@ import { Personnel } from '../models/personnel.model';
 import { IAbsence } from '../interfaces/iabsence';
 import { IHolidays } from '../interfaces/iholidays';
 import { IDirection } from '../interfaces/idirection';
+import { IApiDirection } from '../interfaces/iapidirection';
 
 
 export interface TypeApi {
@@ -20,12 +21,12 @@ export class ApiService {
   public readonly URL_PERSONNELS = "api/personnels.json";
   public readonly URL_ABSENCES = "api/absences.json";
   public readonly URL_HOLIDAYS = "api/holidays.json";
-  public readonly URL_DIRECTIONS = "api/directions.json";
+  public readonly URL_DIRECTIONS = "api/apiorganisation.json";
 
   public personnels$: Subject<IPersonnel[]> = new Subject();
   public absences$: Subject<IAbsence[]> = new Subject();
   public holidays$: Subject<IHolidays[]> = new Subject();
-  public directions$: Subject<IDirection[]> = new Subject();
+  public directions$: Subject<IApiDirection[]> = new Subject();
 
   constructor(private http: HttpClient) { }
 

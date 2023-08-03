@@ -1,6 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { OuputTypeCard1 } from 'src/app/shared/components/card1/card1.component';
+import { IApiDirection } from 'src/app/shared/interfaces/iapidirection';
 import { IDirection } from 'src/app/shared/interfaces/idirection';
 import { IHolidays } from 'src/app/shared/interfaces/iholidays';
 import { IPersonnel } from 'src/app/shared/interfaces/ipersonnel';
@@ -8,46 +10,50 @@ import { ApiService } from 'src/app/shared/services/api.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import { TypeFormatJSON, formatJSON } from 'src/utils/function';
 
-interface IApiPerson{
-  name:string,
-  prename:string,
-  age:number,
-  sex:"F"|"M",
-  profes?:string,
-  tabs:any
+interface IApiPerson {
+  name: string;
+  prename: string;
+  age: number;
+  sex: 'F' | 'M';
+  profes?: string;
+  tabs: any;
 }
 
-interface IPerson{
-  nom:string,
-  prenom:string,
-  age:number,
-  sexe:"F"|"M",
-  profession:string,
+interface IPerson {
+  nom: string;
+  prenom: string;
+  age: number;
+  sexe: 'F' | 'M';
+  profession: string;
 }
 
-let apiPerson:IApiPerson = {
-  name:"frank",
-  prename:"junior",
-  age:12,
-  sex:"F",
-  profes:"ingénieur",
-  tabs:[{
-    moi:"jean",
-  }]
-}
+let apiPerson: IApiPerson = {
+  name: 'frank',
+  prename: 'junior',
+  age: 12,
+  sex: 'F',
+  profes: 'ingénieur',
+  tabs: [
+    {
+      moi: 'jean',
+    },
+  ],
+};
 
 @Component({
   selector: 'app-page-collecte-data',
   templateUrl: './page-collecte-data.component.html',
-  styleUrls: ['./page-collecte-data.component.scss', "../shared/styles/styles.scss"]
+  styleUrls: [
+    './page-collecte-data.component.scss',
+    '../shared/styles/styles.scss',
+  ],
 })
 export class PageCollecteDataComponent implements OnInit, OnDestroy {
-
-  public date1Conge: Date = new Date("2023-06-27")
-  public date2Conge: Date = new Date("2023-07-27")
-  public toTable1: OuputTypeCard1 = { icon: "", title: "" };
+  public date1Conge: Date = new Date('2023-06-27');
+  public date2Conge: Date = new Date('2023-07-27');
+  public toTable1: OuputTypeCard1 = { icon: '', title: '' };
   private _directionSelected: string | null = null;
-  private _data_apiDirections: IDirection[] | null = null;
+  private _data_apiDirections: IApiDirection[] | null = null;
   public _data_apiPersonnels: IPersonnel[] | null = null;
   public allPersonnels: IPersonnel[] | null = null;
   public allUsers: IPersonnel[] | null = null;
@@ -55,9 +61,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   public userAuth!: IPersonnel | null;
   public destroy$!: Subject<boolean>;
 
-
-
-  constructor(private api: ApiService, private auth: AuthService) { }
+  constructor(private api: ApiService, private auth: AuthService) {}
 
   public set data_apiPersonnels(value: IPersonnel[] | null) {
     this._data_apiPersonnels = value;
@@ -69,7 +73,10 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
         if (this.directionSelected) {
           this.directionSelected = null;
         }
-        this.toTable1 = { icon: "<i class='bi bi-person-lines-fill' ></i>", "title": "Personnel" }
+        this.toTable1 = {
+          icon: "<i class='bi bi-person-lines-fill' ></i>",
+          title: 'Personnel',
+        };
       }
     }
   }
@@ -87,9 +94,9 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     return this._directionSelected;
   }
 
-  public set data_apiDirections(value: IDirection[] | null) {
+  public set data_apiDirections(value: IApiDirection[] | null) {
     this._data_apiDirections = value;
-    console.log("changement de data_apiDirecions")
+    console.log('changement de data_apiDirecions');
     // if (this._data_apiDirections && this._data_apiDirections.length) {
     //   this.directionSelected = this._data_apiDirections[0].nom
     // } else {
@@ -112,11 +119,13 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
         if (items.holiday?.debut) {
-          let seconde = Math.floor((+new Date(items.holiday.debut) - (+new Date())) / 1000);
+          let seconde = Math.floor(
+            (+new Date(items.holiday.debut) - +new Date()) / 1000
+          );
           return seconde > 0;
         }
         return false;
-      })
+      });
       this.data_apiPersonnels = personnelsHoliday;
     }
   }
@@ -124,9 +133,14 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   public getPersonnelsDirection() {
     if (!this.directionSelected) {
       this.data_apiPersonnels = this.allPersonnels;
-    }
-    else if (this.directionSelected && this.allPersonnels && this.allPersonnels.length) {
-      this.data_apiPersonnels = this.allPersonnels.filter((items) => { return items.direction?.nom == this.directionSelected })
+    } else if (
+      this.directionSelected &&
+      this.allPersonnels &&
+      this.allPersonnels.length
+    ) {
+      this.data_apiPersonnels = this.allPersonnels.filter((items) => {
+        return items.direction?.nom == this.directionSelected;
+      });
     }
   }
 
@@ -137,18 +151,19 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
         if (items.absences) {
           for (let oneAbsence of items.absences) {
             if (oneAbsence.debut) {
-              let seconde = Math.floor((+new Date(oneAbsence.debut) - (+new Date())) / 1000);
+              let seconde = Math.floor(
+                (+new Date(oneAbsence.debut) - +new Date()) / 1000
+              );
               isTake = seconde > 0;
               if (isTake) break;
             }
           }
         }
         return isTake;
-      })
+      });
       this.data_apiPersonnels = personnelsHoliday;
     }
   }
-
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
@@ -156,36 +171,66 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.monTest();
-    this.userAuth = this.auth.user
+    this.userAuth = this.auth.user;
     this.destroy$ = new Subject();
     console.log(this.date1Conge, this.date2Conge);
     this.toTable1.icon = "<i class='bi bi-person-lines-fill' ></i>";
-    this.toTable1.title = "Personnel";
+    this.toTable1.title = 'Personnel';
 
-    this.api.directions$.pipe(takeUntil(this.destroy$)).subscribe((directions) => {
-      this.data_apiDirections = directions;
-    })
+    this.api.directions$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((directions) => {
+        this.data_apiDirections = directions;
+      });
 
-    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe(
-      (personnels) => {
+    this.api.personnels$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((personnels) => {
         let a = personnels[0];
-        let allUserPersonnel = personnels.filter((items) => { return !items.admin && !items.superviseur })
+        let allUserPersonnel = personnels.filter((items) => {
+          return !items.admin && !items.superviseur;
+        });
         this.data_apiPersonnels = allUserPersonnel;
         this.allPersonnels = allUserPersonnel;
         this.allUsers = allUserPersonnel;
-      }
-    )
+      });
 
-    this.api.getAllData<IDirection[]>({ for: "directions" }).subscribe((obs)=>{this.api.directions$.next(obs)});
-    this.api.getAllData<IPersonnel[]>({ for: "personnels" }).subscribe((obs)=>{this.api.personnels$.next(obs)})
+    this.api
+      .getAllData<IApiDirection[]>({ for: 'directions' })
+      .subscribe((obs) => {
+        this.api.directions$.next(obs);
+      });
+    this.api
+      .getAllData<IPersonnel[]>({ for: 'personnels' })
+      .subscribe((obs) => {
+        this.api.personnels$.next(obs);
+      });
   }
 
-
-  monTest(){
-    let correspondance:TypeFormatJSON<IApiPerson, IPerson>["correspondance"] = {name:"nom", prename:"prenom", sex:"sexe", "profes":"profession"}
-    let apiFormat = formatJSON<IApiPerson, IPerson>({obj:apiPerson, correspondance:correspondance})
-    console.log("transformation de l'api recu de ",apiPerson,"vers ",apiFormat)
+  monTest() {
+    let correspondance: TypeFormatJSON<IApiPerson, IPerson>['correspondance'] =
+      { name: 'nom', prename: 'prenom', sex: 'sexe', profes: 'profession' };
+    let apiFormat = formatJSON<IApiPerson, IPerson>({
+      obj: apiPerson,
+      correspondance: correspondance,
+    });
+    console.log(
+      "transformation de l'api recu de ",
+      apiPerson,
+      'vers ',
+      apiFormat
+    );
   }
-
 }
 
+export function monValidation(
+  control: AbstractControl
+): ValidationErrors | null {
+  const valeur = control.value;
+
+  if (valeur && valeur.length > 10) {
+    return { monValidation: true };
+  }
+
+  return null;
+}
