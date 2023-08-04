@@ -11,14 +11,14 @@
 
                 <ng-container *ngIf="tabAbsences && tabAbsences.length; else empty">
 
-                    <div class="p-3 w-100 vacance shadow m-3" *ngFor="let oneAbsence of tabAbsences">
+                    <div class="p-3 w-100 vacance shadow-lg m-3" *ngFor="let oneAbsence of tabAbsences">
                         <div class="d-flex justify-content-between gap-5">
-                            <h1 class="w-max-content">Fait le {{oneAbsence.date}} </h1>
+                            <h1 class="w-max-content">Fait le {{oneAbsence.submissionDate}} </h1>
                             <div class="w-max-content">
-                                <span *ngIf="oneAbsence.isValid==true">Accepté <i class="bi bi-check-circle"></i>
+                                <span *ngIf="oneAbsence.validate==true">Accepté <i class="bi bi-check-circle"></i>
                                 </span>
-                                <span *ngIf="oneAbsence.isValid==false">Refusé <i class="bi bi-x-octagon"></i> </span>
-                                <span *ngIf="oneAbsence.isValid==null ">Non traité</span>
+                                <span *ngIf="oneAbsence.validate==false">Refusé <i class="bi bi-x-octagon"></i> </span>
+                                <span *ngIf="oneAbsence.validate==null ">Non traité</span>
                             </div>
                         </div>
                         <hr>
@@ -29,25 +29,25 @@
                                     {{oneAbsence.motif}}
                                 </p>
                             </div>
-                            <div *ngIf="oneAbsence.commentaire">
+                            <div *ngIf="oneAbsence.message">
                                 <h3>Commentaire</h3>
-                                <p> {{oneAbsence.commentaire}} </p>
+                                <p> {{oneAbsence.message}} </p>
                             </div>
                             <div>
                                 <h3>Période</h3>
                                 <p class="text-capitalize">
-                                    du <span class="debut"> {{oneAbsence.debut}} </span> au <span class="fin"> {{
-                                        oneAbsence.fin }} </span>
+                                    du <span class="debut"> {{oneAbsence.start | displayKey }} </span> au <span class="fin"> {{
+                                        oneAbsence.end | displayKey }} </span>
                                 </p>
                             </div>
                         </div>
                         <ng-container *ngIf="user.superviseur">
                             <hr>
                             <div class="d-flex justify-content-end gap-2">
-                                <button mat-raised-button color="accent" *ngIf="oneAbsence.isValid==true || oneAbsence.isValid==null"
-                                    (click)="oneAbsence.isValid=false">Refuser</button>
-                                <button mat-raised-button color="primary" *ngIf="oneAbsence.isValid==false || oneAbsence.isValid==null"
-                                    (click)="oneAbsence.isValid=true">Valider</button>
+                                <button mat-raised-button color="accent" *ngIf="oneAbsence.validate==true || oneAbsence.validate==null"
+                                    (click)="oneAbsence.validate=false">Refuser</button>
+                                <button mat-raised-button color="primary" *ngIf="oneAbsence.validate==false || oneAbsence.validate==null"
+                                    (click)="oneAbsence.validate=true">Valider</button>
                             </div>
                         </ng-container>
 

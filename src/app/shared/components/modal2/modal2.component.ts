@@ -3,6 +3,7 @@ import { ApiService } from '../../services/api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IAbsence } from '../../interfaces/iabsence';
 import { TypeAbsence } from '../../utils/types-map';
+import { IApiAbsence } from '../../interfaces/iapiabsence';
 
 //formulaire pour la soumission des demandes d'absences
 
@@ -14,7 +15,7 @@ import { TypeAbsence } from '../../utils/types-map';
 export class Modal2Component implements OnInit {
 
   @Input() close:boolean = true;
-  @Input() tabAbsences:TypeAbsence[]|null = null;
+  @Input() tabAbsences:IApiAbsence[]|null = null;
   @Output() closeChange:EventEmitter<boolean> = new EventEmitter()
 
   public absenceForm!:FormGroup;
@@ -25,10 +26,10 @@ export class Modal2Component implements OnInit {
   ngOnInit(): void {
     this.absenceForm = this.formBuilder.group({
       "motif":["", Validators.required],
-      "debut":["", Validators.required],
-      "fin":["", Validators.required],
-      "date":[""],
-      "commentaire":[""]
+      "start":["", Validators.required],
+      "end":["", Validators.required],
+      "submissionDate":[""],
+      "message":[""]
     }) 
   }
 
@@ -38,9 +39,9 @@ export class Modal2Component implements OnInit {
 
   postAbsence(){
     console.log("données formulaire absence =>",this.absenceForm)
-    let data:TypeAbsence = this.absenceForm.value;
+    let data:IApiAbsence = this.absenceForm.value;
     let day = new Date().toLocaleDateString("en-CA", {year:"numeric", month:"2-digit", day:"2-digit"});
-    data.date = day;
+    data.submissionDate = day;
 
     this.tabAbsences?.unshift(data)
     this.up()

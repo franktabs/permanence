@@ -6,7 +6,7 @@
         "type_": "DIRECTION",
         "treepath": "/287662/287721/",
         "parentorganizationId": 287662,
-        "names": "DIRECTION DES SYSTEMES INFORMATIONS",
+        "name": "DIRECTION DES SYSTEMES INFORMATIONS",
         "departements":[
             {
                 "id": 1,
@@ -15,7 +15,7 @@
                 "type_": "DEPARTEMENT",
                 "treepath": "/287662/287721/287740/",
                 "parentorganizationId": 287662,
-                "names": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS"
+                "name": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS"
             }
         ]
     }

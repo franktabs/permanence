@@ -2,12 +2,12 @@
 
     <div class="p-3 w-100 vacance shadow m-3 hover-div" >
         <div class="d-flex justify-content-between gap-5">
-            <h1 class="w-max-content">Fait le {{absence.date}} </h1>
+            <h1 class="w-max-content">Fait le {{absence.submissionDate | displayKey}} </h1>
             <div class="w-max-content">
-                <span *ngIf="absence.isValid==true">Accepté <i class="bi bi-check-circle"></i>
+                <span *ngIf="absence.validate==true">Accepté <i class="bi bi-check-circle"></i>
                 </span>
-                <span *ngIf="absence.isValid==false">Refusé <i class="bi bi-x-octagon"></i> </span>
-                <span *ngIf="absence.isValid==null ">Non traité</span>
+                <span *ngIf="absence.validate==false">Refusé <i class="bi bi-x-octagon"></i> </span>
+                <span *ngIf="absence.validate==null ">Non traité</span>
             </div>
         </div>
         <hr>
@@ -18,25 +18,25 @@
                     {{absence.motif}}
                 </p>
             </div>
-            <div *ngIf="absence.commentaire">
+            <div *ngIf="absence.message">
                 <h3>Commentaire</h3>
-                <p> {{absence.commentaire}} </p>
+                <p> {{absence.message}} </p>
             </div>
             <div>
                 <h3>Période</h3>
                 <p class="text-capitalize">
-                    du <span class="debut"> {{absence.debut}} </span> au <span class="fin"> {{
-                        absence.fin }} </span>
+                    du <span class="debut"> {{absence.start | displayKey}} </span> au <span class="fin"> {{
+                        absence.end | displayKey }} </span>
                 </p>
             </div>
         </div>
         <ng-container *ngIf="userAuth && userAuth.superviseur">
             <hr>
             <div class="d-flex justify-content-end gap-2">
-                <button mat-raised-button color="accent" *ngIf="absence.isValid==true || absence.isValid==null"
-                    (click)="absence.isValid=false">Refuser</button>
-                <button mat-raised-button color="primary" *ngIf="absence.isValid==false || absence.isValid==null"
-                    (click)="absence.isValid=true">Valider</button>
+                <button mat-raised-button color="accent" *ngIf="absence.validate==true || absence.validate==null"
+                    (click)="absence.validate=false">Refuser</button>
+                <button mat-raised-button color="primary" *ngIf="absence.validate==false || absence.validate==null"
+                    (click)="absence.validate=true">Valider</button>
             </div>
         </ng-container>
 

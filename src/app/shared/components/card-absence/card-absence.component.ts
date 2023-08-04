@@ -3,6 +3,7 @@ import { IAbsence } from '../../interfaces/iabsence';
 import { AuthService } from '../../services/auth.service';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
+import { IApiAbsence } from '../../interfaces/iapiabsence';
 
 @Component({
   selector: 'app-card-absence',
@@ -11,7 +12,7 @@ import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
 })
 export class CardAbsenceComponent implements OnInit {
 
-  @Input() absence!:TypeAbsence
+  @Input() absence!:IApiAbsence
 
   public userAuth!:TypePersonnel|null;
   constructor(private auth:AuthService) { }

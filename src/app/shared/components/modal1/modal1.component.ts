@@ -3,6 +3,8 @@ import { IPersonnel } from '../../interfaces/ipersonnel';
 import { IHolidays } from '../../interfaces/iholidays';
 import { IAbsence } from '../../interfaces/iabsence';
 import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
+import { IApiHoliday } from '../../interfaces/iapiholiday';
+import { IApiAbsence } from '../../interfaces/iapiabsence';
 
 
 
@@ -27,7 +29,7 @@ export class Modal1Component implements OnInit, OnChanges {
 
   public keyRowHoliday: Array<keyof IHolidays> = [];
 
-  public infoAbsence: { keys: Array<keyof TypeAbsence> | null, value: TypeAbsence | null } = { keys: null, value: null };
+  public infoAbsence: { keys: Array<keyof IApiAbsence> | null, value: IApiAbsence | null } = { keys: null, value: null };
 
   constructor() { }
   ngOnChanges(changes: SimpleChanges): void {
@@ -40,21 +42,23 @@ export class Modal1Component implements OnInit, OnChanges {
         return false
       }) as any;
       let obj1 = obj as TypePersonnel
-      if (obj1.holidays && obj1.holidays.length) {
-        this.keyRowHoliday = Object.keys(obj1.holidays[0]).filter((item) => {
+      let unkHolidays : IApiHoliday[] = obj1.holidays as any
+      if (unkHolidays && unkHolidays.length) {
+        this.keyRowHoliday = Object.keys(unkHolidays[0]).filter((item) => {
           // console.log("who's undefined", obj.absence[item], obj.absence)
-          let item1: keyof IHolidays = item as any
-          if (obj1.holidays && obj1.holidays[0] && typeof obj1.holidays[0][item1] == "string") {
+
+          let item1: keyof IApiHoliday = item as any
+          if (unkHolidays && unkHolidays[0] && typeof unkHolidays[0][item1] == "string") {
             return true
           }
           return false
         }) as any;
       }
-
-      if (obj1.absences && obj1.absences.length) {
-        let absence: TypeAbsence | null = null
-        for (let oneAbsence of obj1.absences ) {
-          let seconde = Math.floor((+new Date(oneAbsence.debut) - (+new Date())) / 1000);
+      let unkAbsences:IApiAbsence[] = obj1.absences as any;
+      if (unkAbsences && unkAbsences.length) {
+        let absence: IApiAbsence | null = unkAbsences[0]
+        for (let oneAbsence of unkAbsences ) {
+          let seconde = Math.floor((+new Date(oneAbsence.start) - (+new Date())) / 1000);
           if (seconde > 0) {
             absence = oneAbsence as TypeAbsence;
             break;
@@ -63,7 +67,7 @@ export class Modal1Component implements OnInit, OnChanges {
         if (absence) {
           this.infoAbsence.value = absence;
           this.infoAbsence.keys = Object.keys(absence).filter((item) => {
-            let item1: keyof TypeAbsence = item as any;
+            let item1: keyof IApiAbsence = item as any;
             if (absence && typeof absence[item1] == "string") {
               return true
             }

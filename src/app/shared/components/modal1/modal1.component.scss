@@ -5,6 +5,7 @@
     position: relative;
     min-width: 600px;
     padding: 1em;
+
 }
 
 .my-close{
@@ -18,9 +19,18 @@
     }
 }
 
-.ligne{
+.contenu{
+    max-height: 70vh;
+    overflow: auto;
+}
+
+.ligne, .ligne2{
     background-color: black;
     height: 2px;
+}
+
+.ligne2{
+    border: 1px solid;
 }
 
 .my-title{

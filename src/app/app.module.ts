@@ -36,6 +36,8 @@ import { UserInfoModalComponent } from './shared/components/modals/user-info-mod
 import { PageAccueilComponent } from './pages/page-accueil/page-accueil.component';
 import { PageAbsenceComponent } from './pages/page-absence/page-absence.component';
 import { PageRapportComponent } from './pages/page-rapport/page-rapport.component';
+import { DisplayKeyPipe } from './shared/pipes/display-key.pipe';
+import { MyDivDirective } from './shared/directives/my-div.directive';
 @NgModule({
   declarations: [
     AppComponent,
@@ -62,7 +64,9 @@ import { PageRapportComponent } from './pages/page-rapport/page-rapport.componen
     UserInfoModalComponent,
     PageAccueilComponent,
     PageAbsenceComponent,
-    PageRapportComponent
+    PageRapportComponent,
+    DisplayKeyPipe,
+    MyDivDirective
   ],
   imports: [
     BrowserModule,

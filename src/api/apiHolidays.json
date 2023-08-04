@@ -18,9 +18,9 @@
             "service": "INFORMATIQUE",
             "libAge": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS",
             "permanence": false,
-            "eligible": true,
-            "absent": false,
-            "vacancy": false
+            "isEligible": true,
+            "isAbsent": false,
+            "isVacancy": false
         }
     }
 ]

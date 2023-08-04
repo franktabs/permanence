@@ -14,3 +14,5 @@ export type TypeDirection = ReturnFormatJSON<IApiDirection, IDirection>
 export type TypeAbsence = ReturnFormatJSON<IApiAbsence, IAbsence>
 export type TypeHoliday = ReturnFormatJSON<IApiHoliday, IHolidays>
 export type TypeDepartement = IApiDepartement
+
+export type KeyOfAllType = keyof TypeAbsence | keyof TypeHoliday | keyof TypeDepartement | keyof TypeDirection | keyof TypePersonnel

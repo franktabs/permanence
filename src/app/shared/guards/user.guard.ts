@@ -23,7 +23,7 @@ export class UserGuard implements CanActivate {
         if(!this.auth.isAuthenticated && !this.auth.user){
           this.router.navigateByUrl("home");
         }else{
-          if(this.auth.user?.admin || this.auth.user?.superviseur){
+          if(!this.auth.user?.agent){
             this.router.navigateByUrl("gestion/collecte")
             return false
           }else{

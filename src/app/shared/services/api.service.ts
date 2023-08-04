@@ -8,6 +8,7 @@ import { IHolidays } from '../interfaces/iholidays';
 import { IDirection } from '../interfaces/idirection';
 import { IApiDirection } from '../interfaces/iapidirection';
 import { TypeAbsence } from '../utils/types-map';
+import { IApiAbsence } from '../interfaces/iapiabsence';
 
 export interface TypeApi {
   for: 'holidays' | 'directions' | 'personnels' | 'absences';
@@ -18,18 +19,25 @@ export interface TypeApi {
 })
 export class ApiService {
   public readonly IP = 'http://192.168.2.64:8080/gestion';
-  // public readonly URL_PERSONNELS = this.IP+'';
-  public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
+  public readonly URL_PERSONNELS = this.IP+'/person/allPersons';
+  // public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
+
+
   public readonly URL_ABSENCES = 'api/apiAbsences.json';
+  public readonly URL_POST_ABSENCES= ""
+
   public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
-  // public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
-  public readonly URL_DIRECTIONS = 'api/apiDirections.json';
+
+
+  public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
+  // public readonly URL_DIRECTIONS = 'api/apiDirections.json';
+
 
   constructor(private http: HttpClient) {}
 
-  public postAbsence(absence: TypeAbsence): Observable<TypeAbsence> {
+  public postAbsence(absence: IApiAbsence): Observable<IApiAbsence> {
     return this.http
-      .post(`${this.URL_ABSENCES}`, absence)
+      .post(`${this.URL_POST_ABSENCES}`, absence)
       .pipe(catchError(this.displayError) as any);
   }
 

@@ -1,0 +1,11 @@
+[
+    {
+        "firstname": "string",
+        "emailaddress": "email",
+        "telephoneCisco": "int(1000-9999)",
+        "telephoneMobile": "6int(2-9)+int(0-9)+int(0-9)+int(0-9)+int(0-9)+int(0-9)+int(0-9)+int(0-9)+int(0-9)",
+        "userId": "int(1000-9999)",
+        "sexe": "string('M', 'F')",
+        "fonction": "string"
+    }
+]

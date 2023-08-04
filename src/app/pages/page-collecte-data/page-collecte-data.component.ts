@@ -2,7 +2,9 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { OuputTypeCard1 } from 'src/app/shared/components/card1/card1.component';
+import { IApiAbsence } from 'src/app/shared/interfaces/iapiabsence';
 import { IApiDirection } from 'src/app/shared/interfaces/iapidirection';
+import { IApiHoliday } from 'src/app/shared/interfaces/iapiholiday';
 import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
 import { IDirection } from 'src/app/shared/interfaces/idirection';
 import { IHolidays } from 'src/app/shared/interfaces/iholidays';
@@ -126,11 +128,12 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   public getPersonnelsHoliday() {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
-        if (items.holidays) {
-          for (let holiday of items.holidays) {
-            if (holiday?.debut) {
+        let unkHolidays: IApiHoliday[] = items.holidays as any
+        if (unkHolidays) {
+          for (let holiday of unkHolidays) {
+            if (holiday?.start) {
               let seconde = Math.floor(
-                (+new Date(holiday.debut) - +new Date()) / 1000
+                (+new Date(holiday.start) - +new Date()) / 1000
               );
               return seconde > 0;
             }
@@ -160,11 +163,12 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
         let isTake = false;
-        if (items.absences) {
-          for (let oneAbsence of items.absences) {
-            if (oneAbsence.debut) {
+        let unkAbsences:IApiAbsence[] = items.absences as any
+        if (unkAbsences) {
+          for (let oneAbsence of unkAbsences) {
+            if (oneAbsence.start) {
               let seconde = Math.floor(
-                (+new Date(oneAbsence.debut) - +new Date()) / 1000
+                (+new Date(oneAbsence.start) - +new Date()) / 1000
               );
               isTake = seconde > 0;
               if (isTake) break;
@@ -225,14 +229,14 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   }
 }
 
-export function monValidation(
-  control: AbstractControl
-): ValidationErrors | null {
-  const valeur = control.value;
+// export function maValidation(
+//   control: AbstractControl
+// ): ValidationErrors | null {
+//   const valeur = control.value;
 
-  if (valeur && valeur.length > 10) {
-    return { monValidation: true };
-  }
+//   if (valeur && valeur.length > 10) {
+//     return { monValidation: true };
+//   }
 
-  return null;
-}
+//   return null;
+// }
