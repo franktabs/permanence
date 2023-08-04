@@ -1,22 +1,23 @@
 import { Injectable } from '@angular/core';
 import { IPersonnel } from '../interfaces/ipersonnel';
 import { Subject } from 'rxjs';
+import { TypePersonnel } from '../utils/types-map';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  public readonly DEFAULT_PERSON:number = 6;
+  public readonly DEFAULT_PERSON:number = 17;
 
-  private _user:IPersonnel|null=null;
+  private _user:TypePersonnel|null=null;
 
   private _isAuthenticated:boolean = false;
 
   public isConnected$:Subject<boolean> = new Subject()
 
 
-  login(user:IPersonnel) {
+  login(user:TypePersonnel) {
     this._user = user;
     this._isAuthenticated = true;
     this.isConnected$.next(true);

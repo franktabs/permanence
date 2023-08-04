@@ -1,0 +1,26 @@
+[
+    {
+        "id":1,
+        "start": "2023-11-15",
+        "end": "2023-11-20",
+        "submissionDate": "2023-06-08",
+        "personnel":    {
+            "id": 1,
+            "firstname": "Rodrigue Christian",
+            "emailaddress": "rodrigue_toukam@afrilandfirstbank.com",
+            "telephoneCisco": "01644",
+            "telephoneMobile": "673498292",
+            "userId": 43677,
+            "organizationId": 287740,
+            "sexe": "M",
+            "fonction": "CONTROLEUR D'EXPLOITATION INFORMATIQUE ASSISTANT SENIOR",
+            "agent": true,
+            "service": "INFORMATIQUE",
+            "libAge": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS",
+            "permanence": false,
+            "eligible": true,
+            "absent": false,
+            "vacancy": false
+        }
+    }
+]

@@ -11,7 +11,7 @@
                             <mat-select [(value)]="directionSelected">
                                 <mat-option  >Aucune</mat-option>
                                 <ng-container *ngFor="let items of data_apiDirections">
-                                    <mat-option [value]="items.names">{{items.names}}</mat-option>
+                                    <mat-option [value]="items.name">{{items.name}}</mat-option>
                                 </ng-container>
                             </mat-select>
                         </mat-form-field>
@@ -39,7 +39,7 @@
             </div>
             <div class="mt-3">
                 <div class="d-flex">
-                    <app-table1 [icon]="toTable1.icon" [title]="toTable1.title" class="w-100 mx-3" [personnels]="data_apiPersonnels" ></app-table1>
+                    <app-table1 [icon]="toTable1.icon" [title]="toTable1.title" class="app-table1 mx-3" [personnels]="data_apiPersonnels" ></app-table1>
                     <app-card2 title="Evenements" class="evenement" [personnels]="data_apiPersonnels"  ></app-card2>
                 </div>
             </div>

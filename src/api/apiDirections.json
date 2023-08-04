@@ -1,0 +1,23 @@
+[
+    {
+        "id": 1,
+        "organizationId": 287721,
+        "level": 4,
+        "type_": "DIRECTION",
+        "treepath": "/287662/287721/",
+        "parentorganizationId": 287662,
+        "names": "DIRECTION DES SYSTEMES INFORMATIONS",
+        "departements":[
+            {
+                "id": 1,
+                "organizationId": 287740,
+                "level": 2,
+                "type_": "DEPARTEMENT",
+                "treepath": "/287662/287721/287740/",
+                "parentorganizationId": 287662,
+                "names": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS"
+            }
+        ]
+    }
+
+]

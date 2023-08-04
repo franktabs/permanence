@@ -1,3 +1,4 @@
+import { IApiDepartement } from "./iapidepartement";
 
 export interface IApiDirection{
     id:number|null;
@@ -6,8 +7,8 @@ export interface IApiDirection{
     treepath:string|null;
     parentorganizationId:number|null;
     organizationId:number|null;
-    names:string|null;
-    departements?:any[]|null;
+    name:string|null;
+    departements?:IApiDepartement[]|null;
 }
 
 

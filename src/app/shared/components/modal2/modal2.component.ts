@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ApiService } from '../../services/api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IAbsence } from '../../interfaces/iabsence';
+import { TypeAbsence } from '../../utils/types-map';
 
 //formulaire pour la soumission des demandes d'absences
 
@@ -13,7 +14,7 @@ import { IAbsence } from '../../interfaces/iabsence';
 export class Modal2Component implements OnInit {
 
   @Input() close:boolean = true;
-  @Input() tabAbsences:IAbsence[]|null = null;
+  @Input() tabAbsences:TypeAbsence[]|null = null;
   @Output() closeChange:EventEmitter<boolean> = new EventEmitter()
 
   public absenceForm!:FormGroup;
@@ -37,7 +38,7 @@ export class Modal2Component implements OnInit {
 
   postAbsence(){
     console.log("données formulaire absence =>",this.absenceForm)
-    let data:IAbsence = this.absenceForm.value;
+    let data:TypeAbsence = this.absenceForm.value;
     let day = new Date().toLocaleDateString("en-CA", {year:"numeric", month:"2-digit", day:"2-digit"});
     data.date = day;
 

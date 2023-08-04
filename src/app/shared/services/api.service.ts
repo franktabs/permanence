@@ -7,6 +7,7 @@ import { IAbsence } from '../interfaces/iabsence';
 import { IHolidays } from '../interfaces/iholidays';
 import { IDirection } from '../interfaces/idirection';
 import { IApiDirection } from '../interfaces/iapidirection';
+import { TypeAbsence } from '../utils/types-map';
 
 export interface TypeApi {
   for: 'holidays' | 'directions' | 'personnels' | 'absences';
@@ -18,15 +19,15 @@ export interface TypeApi {
 export class ApiService {
   public readonly IP = 'http://192.168.2.64:8080/gestion';
   // public readonly URL_PERSONNELS = this.IP+'';
-  public readonly URL_PERSONNELS = 'api/personnels.json';
-  public readonly URL_ABSENCES = 'api/absences.json';
-  public readonly URL_HOLIDAYS = 'api/holidays.json';
+  public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
+  public readonly URL_ABSENCES = 'api/apiAbsences.json';
+  public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
   // public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
-  public readonly URL_DIRECTIONS = 'api/organisation.json';
+  public readonly URL_DIRECTIONS = 'api/apiDirections.json';
 
   constructor(private http: HttpClient) {}
 
-  public postAbsence(absence: IAbsence): Observable<IAbsence> {
+  public postAbsence(absence: TypeAbsence): Observable<TypeAbsence> {
     return this.http
       .post(`${this.URL_ABSENCES}`, absence)
       .pipe(catchError(this.displayError) as any);
@@ -47,18 +48,18 @@ export class ApiService {
       return this.http.get<T>(lien).pipe(
         tap((values) => {
           console.log('données recupéré ', lien, values);
-          let tabs = values as any
-          if(props.for==="directions"){
-            for(let value of tabs){
+          // let tabs = values as any
+          // if(props.for==="directions"){
+          //   for(let value of tabs){
               
-              this.http.post(this.IP+"/direction/create", value).pipe(
-                tap(elm=>console.log("insertion de ", elm)),
-                catchError(this.displayError)
-              ).subscribe((subs)=>{
-                console.log("l'objet", subs,"sauvegardé")
-              })
-            }
-          }
+          //     this.http.post(this.IP+"/direction/create", value).pipe(
+          //       tap(elm=>console.log("insertion de ", elm)),
+          //       catchError(this.displayError)
+          //     ).subscribe((subs)=>{
+          //       console.log("l'objet", subs,"sauvegardé")
+          //     })
+          //   }
+          // }
         }),
         catchError((err: HttpErrorResponse): Observable<any> => {
           if (err.error instanceof ErrorEvent) {

@@ -2,6 +2,7 @@ import { Component, Input, OnChanges, OnDestroy, OnInit, SimpleChanges } from '@
 import { ApiService } from '../../services/api.service';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { Observable, Subject, takeUntil } from 'rxjs';
+import { TypePersonnel } from '../../utils/types-map';
 
 
 //Carte sur pour afficher les évènements, historique
@@ -13,7 +14,7 @@ import { Observable, Subject, takeUntil } from 'rxjs';
 export class Card2Component implements OnInit, OnDestroy {
 
   @Input() title!:string;
-  @Input() personnels!:IPersonnel[] | null;
+  @Input() personnels!:TypePersonnel[] | null;
 
   constructor(private api:ApiService) { }
 

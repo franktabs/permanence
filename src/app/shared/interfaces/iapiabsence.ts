@@ -1,3 +1,4 @@
+import { IApiPersonnel } from "./iapipersonnel";
 
 
 export interface IApiAbsence{
@@ -6,7 +7,7 @@ export interface IApiAbsence{
     motif:string|null,
     validate:boolean|null,
     submissionDate: string,
-    personnel:any,
+    personnel?:IApiPersonnel,
     start:string,
     end:string
 }

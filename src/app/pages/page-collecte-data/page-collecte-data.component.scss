@@ -1,7 +1,7 @@
 @import "colors";
 
 .evenement{
-    width: 500px;
+    width: 400px;
 }
 
 .selection{
@@ -27,6 +27,10 @@
     &:active{
         background-color: rgb(211, 211, 211);
     }
+}
+
+.app-table1{
+    max-width: calc(100% - 500px);
 }
 
 // .trier{

@@ -3,12 +3,20 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { OuputTypeCard1 } from 'src/app/shared/components/card1/card1.component';
 import { IApiDirection } from 'src/app/shared/interfaces/iapidirection';
+import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
 import { IDirection } from 'src/app/shared/interfaces/idirection';
 import { IHolidays } from 'src/app/shared/interfaces/iholidays';
 import { IPersonnel } from 'src/app/shared/interfaces/ipersonnel';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
-import { TypeFormatJSON, formatJSON, formater } from 'src/utils/function';
+import {
+  TypeFormatJSON,
+  formatJSON,
+  formater,
+  mapJSON,
+} from 'src/app/shared/utils/function';
+import { mapDirection, mapPersonnel } from 'src/app/shared/utils/tables-map';
+import { TypeDirection, TypePersonnel } from 'src/app/shared/utils/types-map';
 
 interface IApiPerson {
   name: string;
@@ -53,17 +61,17 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   public date2Conge: Date = new Date('2023-07-27');
   public toTable1: OuputTypeCard1 = { icon: '', title: '' };
   private _directionSelected: string | null = null;
-  private _data_apiDirections: IApiDirection[] | null = null;
-  public _data_apiPersonnels: IPersonnel[] | null = null;
-  public allPersonnels: IPersonnel[] | null = null;
-  public allUsers: IPersonnel[] | null = null;
+  private _data_apiDirections: TypeDirection[] | null = null;
+  public _data_apiPersonnels: TypePersonnel[] | null = null;
+  public allPersonnels: TypePersonnel[] | null = null;
+  public allUsers: TypePersonnel[] | null = null;
   public isTableFilter: boolean = false;
-  public userAuth!: IPersonnel | null;
+  public userAuth!: TypePersonnel | null;
   public destroy$!: Subject<boolean>;
 
   constructor(private api: ApiService, private auth: AuthService) {}
 
-  public set data_apiPersonnels(value: IPersonnel[] | null) {
+  public set data_apiPersonnels(value: TypePersonnel[] | null) {
     this._data_apiPersonnels = value;
     if (this._data_apiPersonnels && this.allPersonnels) {
       if (this._data_apiPersonnels.length < this.allPersonnels.length) {
@@ -94,7 +102,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     return this._directionSelected;
   }
 
-  public set data_apiDirections(value: IApiDirection[] | null) {
+  public set data_apiDirections(value: TypeDirection[] | null) {
     this._data_apiDirections = value;
     console.log('changement de data_apiDirecions');
     // if (this._data_apiDirections && this._data_apiDirections.length) {
@@ -118,11 +126,15 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   public getPersonnelsHoliday() {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
-        if (items.holiday?.debut) {
-          let seconde = Math.floor(
-            (+new Date(items.holiday.debut) - +new Date()) / 1000
-          );
-          return seconde > 0;
+        if (items.holidays) {
+          for (let holiday of items.holidays) {
+            if (holiday?.debut) {
+              let seconde = Math.floor(
+                (+new Date(holiday.debut) - +new Date()) / 1000
+              );
+              return seconde > 0;
+            }
+          }
         }
         return false;
       });
@@ -139,7 +151,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
       this.allPersonnels.length
     ) {
       this.data_apiPersonnels = this.allPersonnels.filter((items) => {
-        return items.direction?.nom == this.directionSelected;
+        return items.departement?.direction?.name == this.directionSelected;
       });
     }
   }
@@ -176,16 +188,18 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
     console.log(this.date1Conge, this.date2Conge);
     this.toTable1.icon = "<i class='bi bi-person-lines-fill' ></i>";
     this.toTable1.title = 'Personnel';
-
+    
     this.api
       .getAllData<IApiDirection[]>({ for: 'directions' })
       .subscribe((obs) => {
-        this.data_apiDirections = obs;
+        
+        this.data_apiDirections = mapJSON<IApiDirection, IDirection>(obs, mapDirection);
       });
     this.api
-      .getAllData<IPersonnel[]>({ for: 'personnels' })
+      .getAllData<IApiPersonnel[]>({ for: 'personnels' })
       .subscribe((obs) => {
-        let allUserPersonnel = obs.filter((items) => {
+        let dataMap = mapJSON<IApiPersonnel, IPersonnel>(obs, mapPersonnel)
+        let allUserPersonnel = dataMap.filter((items) => {
           return !items.admin && !items.superviseur;
         });
         this.data_apiPersonnels = allUserPersonnel;
@@ -195,14 +209,13 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   }
 
   monTest() {
-    console.log('formatage du nombre =>', formater(242322.2334));
-
     let correspondance: TypeFormatJSON<IApiPerson, IPerson>['correspondance'] =
       { name: 'nom', prename: 'prenom', sex: 'sexe', profes: 'profession' };
     let apiFormat = formatJSON<IApiPerson, IPerson>({
       obj: apiPerson,
       correspondance: correspondance,
     });
+
     console.log(
       "transformation de l'api recu de ",
       apiPerson,

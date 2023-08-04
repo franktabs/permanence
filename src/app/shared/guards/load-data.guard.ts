@@ -4,6 +4,7 @@ import { Observable, map, take, tap } from 'rxjs';
 import { ApiService } from '../services/api.service';
 import { AuthService } from '../services/auth.service';
 import { IPersonnel } from '../interfaces/ipersonnel';
+import { TypePersonnel } from '../utils/types-map';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class LoadDataGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    let obser =  this.api.getAllData<IPersonnel[]>({ for: "personnels" }).pipe(map((sub)=>{
+    let obser =  this.api.getAllData<TypePersonnel[]>({ for: "personnels" }).pipe(map((sub)=>{
       let person = sub[6];
       this.auth.login(person);
       if(!this.auth.isAuthenticated){

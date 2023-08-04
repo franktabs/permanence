@@ -1,13 +1,15 @@
 export type TypeFormatJSON<T, J> = {
-  obj: { [key in keyof T]: any };
+  obj: { [key in keyof T]?: any };
   correspondance: { [key in keyof T]?: keyof J };
 };
+
+export type ReturnFormatJSON<T,J> = { [key in keyof J | keyof T]: key extends keyof J ? J[key] : (key extends keyof T ? T[key]:never) }
 
 export function formatJSON<T, J>({
   obj,
   correspondance,
-}: TypeFormatJSON<T, J>): { [key in keyof J]: any } {
-  let objEmpty: { [key in keyof T | keyof J]: any } = {} as any;
+}: TypeFormatJSON<T, J>): ReturnFormatJSON<T,J> {
+  let objEmpty:ReturnFormatJSON<T,J> = {} as any;
 
   Object.keys(obj as any).forEach((key) => {
     let key1: keyof T = key as any;
@@ -27,6 +29,17 @@ type TriJSON<T> = {
   key: Array<keyof T>;
 };
 
+
+export function mapJSON<T,J>(tab:T[], correspondance:TypeFormatJSON<T,J>["correspondance"]){
+  let tableTransform:ReturnFormatJSON<T,J>[] = [];
+  for(let ob of tab){
+    let objTransform = formatJSON<T, J>({obj:ob, correspondance:correspondance});
+    tableTransform.push(objTransform);
+  }
+  return tableTransform
+}
+
+//retourne un objet qui contient les attribut de key qui sont des attributs de obj
 export function triJSON<T>({ obj, key }: TriJSON<T>): {
   [key in keyof T]: any;
 } {
@@ -72,7 +85,7 @@ export function formater(
     console.log(nombreFormat);
     return nombreFormat;
   }
-  let nombreFormat = resultat.trim()
-  console.log(nombreFormat)
+  let nombreFormat = resultat.trim();
+  console.log(nombreFormat);
   return nombreFormat;
 }

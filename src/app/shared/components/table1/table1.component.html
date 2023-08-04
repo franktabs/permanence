@@ -7,43 +7,52 @@
         </div>
         <div class="ligne"></div>
         <div>
-            <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
+            <div class="table-responsive">
+                <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
 
-                <ng-container matColumnDef="nom">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by nom">Nom</th>
-                    <td mat-cell *matCellDef="let element"> {{element.nom}} </td>
-                </ng-container>
+                    <ng-container matColumnDef="nom">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by nom"
+                            class="px-4">Nom</th>
+                        <td mat-cell *matCellDef="let element" class="px-4"> <div class="w-max-content ">{{element.nom}}</div> </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="prenom">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by prenom">Prenom
-                    </th>
-                    <td mat-cell *matCellDef="let element"> {{element.prenom}} </td>
-                </ng-container>
+                    <ng-container matColumnDef="sexe">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by sexe"
+                            class="px-4">Sexe
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="px-4"> {{element.sexe}} </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="date_naissance">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header
-                        sortActionDescription="Sort by date_naissance">Date de naissance</th>
-                    <td mat-cell *matCellDef="let element"> {{element.date_naissance}} </td>
-                </ng-container>
+                    <ng-container matColumnDef="email">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by email"
+                            class="px-4">email</th>
+                        <td mat-cell *matCellDef="let element" class="px-4"> {{element.email}} </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="sexe">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by sexe">Sexe</th>
-                    <td mat-cell *matCellDef="let element"> {{element.sexe}} </td>
-                </ng-container>
+                    <ng-container matColumnDef="fonction">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by fonction"
+                            class="px-4">fonction</th>
+                        <td mat-cell *matCellDef="let element" class="px-4">
+                            <div class="w-max-content "> {{element.fonction}} </div>
+                        </td>
+                    </ng-container>
 
-                <ng-container matColumnDef="matricule">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by matricule">
-                        Matricule
+                    <ng-container matColumnDef="service">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by service"
+                            class="px-4">
+                            Service
+                        </th>
+                        <td mat-cell *matCellDef="let element" class="px-4"> 
+                            <div class="w-max-content "> {{element.service}} </div>    
+                        </td>
+                    </ng-container>
 
-                    </th>
-                    <td mat-cell *matCellDef="let element"> {{element.matricule}} </td>
-                </ng-container>
-
-                <tr tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="handleClick(row)"></tr>
-            </table>
-            <mat-paginator [pageSizeOptions]="[2, 4, 8]" showFirstLastButtons
-                aria-label="Select page of periodic elements">
+                    <tr tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                    <tr mat-row *matRowDef="let row; columns: displayedColumns;" (click)="handleClick(row)"></tr>
+                </table>
+            </div>
+            <mat-paginator *ngIf="dataSource && dataSource.data" [length]="dataSource.data.length" [pageSize]="5"
+                [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons>
             </mat-paginator>
         </div>
     </div>

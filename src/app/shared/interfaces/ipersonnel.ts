@@ -7,17 +7,17 @@ export interface IPersonnel {
     matricule: string;
     nom: string;
     prenom?: string;
-    date_naissance: Date,
     sexe: "M" | "F";
     isholiday?: boolean,
     willPassed?: boolean;
     admin?: boolean;
     superviseur?: boolean;
-    direction_id: number;
-    direction: IDirection | null;
     holiday_id?: number | null;
-    holiday?: IHolidays;
+    holidays?: IHolidays[];
     absences?: IAbsence[];
+    email:string|null;
+    contact1:string|null;
+    contact2:string|null;
 }
 
 

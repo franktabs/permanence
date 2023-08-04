@@ -1,0 +1,42 @@
+[
+    {
+        "id": 1,
+        "organizationId": 287740,
+        "level": 2,
+        "type_": "DEPARTEMENT",
+        "treepath": "/287662/287721/287740/",
+        "parentorganizationId": 287721,
+        "names": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS",
+        "personnels":[
+            {
+                "id": 1,
+                "firstname": "Rodrigue Christian",
+                "emailaddress": "rodrigue_toukam@afrilandfirstbank.com",
+                "telephoneCisco": "01644",
+                "telephoneMobile": "673498292",
+                "userId": 43677,
+                "organizationId": 287740,
+                "sexe": "M",
+                "fonction": "CONTROLEUR D'EXPLOITATION INFORMATIQUE ASSISTANT SENIOR",
+                "agent": true,
+                "service": "INFORMATIQUE",
+                "libAge": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS",
+                "permanence": false,
+                "absentList": [],
+                "vacancies": [],
+                "eligible": true,
+                "absent": false,
+                "vacancy": false
+            }
+        ],
+        "direction":{
+            "id": 1,
+            "organizationId": 287721,
+            "level": 4,
+            "type_": "DIRECTION",
+            "treepath": "/287662/287721/",
+            "parentorganizationId": 287662,
+            "names": "DIRECTION DES SYSTEMES INFORMATIONS"
+        }
+    }
+]

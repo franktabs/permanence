@@ -1,6 +1,9 @@
+import { IApiAbsence } from "./iapiabsence";
+import { IApiDepartement } from "./iapidepartement";
+import { IApiHoliday } from "./iapiholiday";
 
 export interface IApiPersonnel{
-    idPersonne:number|null,
+    id:number|null,
     userId:number,
     firstname:string,
     emailaddress:string|null,
@@ -13,10 +16,10 @@ export interface IApiPersonnel{
     service:string,
     libAge:string,
     permanence:string|null,
-    departement:unknown,
     absent:boolean|null,
     vacancy:boolean|null,
     eligible:boolean|null,
-    absentList:any[]|null,
-    vacancies:any[]|null
+    absentList?:IApiAbsence[]|null,
+    vacancies?:IApiHoliday[]|null
+    departement?:IApiDepartement|null,
 }

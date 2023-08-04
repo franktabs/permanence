@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { IAbsence } from 'src/app/shared/interfaces/iabsence';
 import { AuthService } from 'src/app/shared/services/auth.service';
+import { TypeAbsence } from 'src/app/shared/utils/types-map';
 
 @Component({
   selector: 'app-page-absence',
@@ -9,7 +10,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 })
 export class PageAbsenceComponent implements OnInit {
 
-  public tabAbsences: IAbsence[] | null = [];
+  public tabAbsences: TypeAbsence[] | null = [];
 
   public closeAppModal2:boolean = true;
 
@@ -17,7 +18,7 @@ export class PageAbsenceComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.auth.user && this.auth.user.absences) {
-      this.tabAbsences = this.auth.user.absences;
+      this.tabAbsences = this.auth.user.absences as TypeAbsence[];
     }
   }
 

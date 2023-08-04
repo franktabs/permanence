@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChange
 import { AuthService } from '../../services/auth.service';
 import { IAbsence } from '../../interfaces/iabsence';
 import { IPersonnel } from '../../interfaces/ipersonnel';
+import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
 
 //Tous les absences d'un utlisateur
 @Component({
@@ -14,17 +15,17 @@ export class Modal3Component implements OnInit, OnChanges {
   @Input() close: boolean = true;
   @Output() closeChange: EventEmitter<boolean> = new EventEmitter();
 
-  @Input() tabs: IAbsence | null = null;
+  @Input() tabs: TypeAbsence | null = null;
 
-  public tabAbsences: IAbsence[] | null = [];
+  public tabAbsences: TypeAbsence[] | null = [];
 
-  public user!:IPersonnel;
+  public user!:TypePersonnel;
 
   constructor(private userAuth: AuthService) { }
 
   ngOnInit(): void {
     if (this.userAuth.user && this.userAuth.user.absences) {
-      this.tabAbsences = this.userAuth.user.absences;
+      this.tabAbsences = this.userAuth.user.absences as TypeAbsence[];
     }
     if(this.userAuth.user){
       this.user=this.userAuth.user;

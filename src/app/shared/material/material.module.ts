@@ -8,6 +8,7 @@ import {MatBadgeModule} from "@angular/material/badge"
 import { MatSelectModule } from '@angular/material/select';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 const moduleMaterial = [
   MatPaginatorModule,
@@ -18,7 +19,8 @@ const moduleMaterial = [
   MatSelectModule,
   MatFormFieldModule,
   MatInputModule,
-  MatDialogModule
+  MatDialogModule,
+  BrowserAnimationsModule
 ]
 
 @NgModule({

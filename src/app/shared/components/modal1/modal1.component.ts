@@ -2,6 +2,7 @@ import { Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, 
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { IHolidays } from '../../interfaces/iholidays';
 import { IAbsence } from '../../interfaces/iabsence';
+import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
 
 
 
@@ -18,15 +19,15 @@ export class Modal1Component implements OnInit, OnChanges {
 
   @Output() isOpenChange: EventEmitter<boolean> = new EventEmitter()
 
-  @Input() rows!: IPersonnel | any;
+  @Input() rows!: TypePersonnel | any;
 
   public closeModal3: boolean = true;
 
-  public keyRow: Array<keyof IPersonnel> = [];
+  public keyRow: Array<keyof TypePersonnel> = [];
 
   public keyRowHoliday: Array<keyof IHolidays> = [];
 
-  public infoAbsence: { keys: Array<keyof IAbsence> | null, value: IAbsence | null } = { keys: null, value: null };
+  public infoAbsence: { keys: Array<keyof TypeAbsence> | null, value: TypeAbsence | null } = { keys: null, value: null };
 
   constructor() { }
   ngOnChanges(changes: SimpleChanges): void {
@@ -38,12 +39,12 @@ export class Modal1Component implements OnInit, OnChanges {
         }
         return false
       }) as any;
-      let obj1 = obj as IPersonnel
-      if (obj1.holiday) {
-        this.keyRowHoliday = Object.keys(obj1.holiday).filter((item) => {
+      let obj1 = obj as TypePersonnel
+      if (obj1.holidays && obj1.holidays.length) {
+        this.keyRowHoliday = Object.keys(obj1.holidays[0]).filter((item) => {
           // console.log("who's undefined", obj.absence[item], obj.absence)
           let item1: keyof IHolidays = item as any
-          if (obj1.holiday && typeof obj1.holiday[item1] == "string") {
+          if (obj1.holidays && obj1.holidays[0] && typeof obj1.holidays[0][item1] == "string") {
             return true
           }
           return false
@@ -51,18 +52,18 @@ export class Modal1Component implements OnInit, OnChanges {
       }
 
       if (obj1.absences && obj1.absences.length) {
-        let absence: IAbsence | null = null
-        for (let oneAbsence of obj1.absences) {
+        let absence: TypeAbsence | null = null
+        for (let oneAbsence of obj1.absences ) {
           let seconde = Math.floor((+new Date(oneAbsence.debut) - (+new Date())) / 1000);
           if (seconde > 0) {
-            absence = oneAbsence;
+            absence = oneAbsence as TypeAbsence;
             break;
           }
         }
         if (absence) {
           this.infoAbsence.value = absence;
           this.infoAbsence.keys = Object.keys(absence).filter((item) => {
-            let item1: keyof IAbsence = item as any;
+            let item1: keyof TypeAbsence = item as any;
             if (absence && typeof absence[item1] == "string") {
               return true
             }
