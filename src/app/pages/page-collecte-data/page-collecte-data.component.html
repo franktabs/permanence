@@ -1,53 +1,61 @@
 <div class="page">
     <span class="title"><i class="bi bi-database"> Collecte Données /</i></span>
+    <div class="mt-3">
+        <h2 class="fst-italic">TRIER PAR:</h2>
+
+        <div class="d-flex trier gap-2 align-items-center">
+            <div class="text-center selection shadow">
+                <ng-container *ngIf="data_apiDirections && data_apiDirections.length else empty_direction">
+                    <mat-form-field>
+                        <mat-label>Choisissez la direction</mat-label>
+                        <mat-select [(value)]="directionSelected">
+                            <mat-option>Aucune</mat-option>
+                            <ng-container *ngFor="let items of data_apiDirections">
+                                <mat-option [value]="items.name">{{items.name}}</mat-option>
+                            </ng-container>
+                        </mat-select>
+                    </mat-form-field>
+                </ng-container>
+                <ng-container>
+
+                </ng-container>
+                <ng-template #empty_direction>
+                    <p class="fst-italic">Aucune Directions trouvées</p>
+                </ng-template>
+            </div>
+            <div class="text-center annuler shadow-lg" title="Reinitialiser le filtre" *ngIf="isTableFilter"
+                (click)="resetTable()">
+                <p class="m-0 fst-italic ">Annuler <span class="btn btn-close"></span> </p>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div class="p-3 d-flex flex-wrap  gap-4">
+            <app-card1 title="Données Congés" (click)="getPersonnelsHoliday()" [date1]="date1Conge" [date2]="date2Conge"
+                icon="<i class='bi bi-calendar' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
+            <app-card1 title="Personnel" [date1]="date1Conge" (click)="getPersonnelsDirection()" [date2]="date2Conge"
+                icon="<i class='bi bi-person-lines-fill' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
+            <app-card1 title="Absences" (click)="getPersonnelsAbsence()" [date1]="date1Conge" [date2]="date2Conge"
+                icon="<i class='bi bi-calendar-week' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
+        </div>
         <div class="mt-3">
-            <h2 class="fst-italic">TRIER PAR:</h2>
-    
-            <div class="d-flex trier gap-2 align-items-center">
-                <div class="text-center selection shadow">
-                    <ng-container *ngIf="data_apiDirections && data_apiDirections.length else empty_direction">
-                        <mat-form-field>
-                            <mat-label>Choisissez la direction</mat-label>
-                            <mat-select [(value)]="directionSelected">
-                                <mat-option  >Aucune</mat-option>
-                                <ng-container *ngFor="let items of data_apiDirections">
-                                    <mat-option [value]="items.name">{{items.name}}</mat-option>
-                                </ng-container>
-                            </mat-select>
-                        </mat-form-field>
-                    </ng-container>
-                    <ng-container>
-    
-                    </ng-container>
-                    <ng-template #empty_direction>
-                        <p class="fst-italic">Aucune Directions trouvées</p>
-                    </ng-template>
-                </div>
-                <div class="text-center annuler shadow-lg" title="Reinitialiser le filtre" *ngIf="isTableFilter" (click)="resetTable()" >
-                    <p class="m-0 fst-italic "  >Annuler <span class="btn btn-close" ></span> </p>
+            <div class="d-flex">
+                <app-table1 [icon]="toTable1.icon" [title]="toTable1.title" class="app-table1 mx-3"
+                    [personnels]="data_apiPersonnels"></app-table1>
+
+                <div class="d-flex flex-column">
+                    <app-card2 title="Evenements" class="evenement largeur" [personnels]="data_apiPersonnels"></app-card2>
+                    <mat-paginator class="largeur" *ngIf="dataSource && dataSource.data" [length]="dataSource.data.length"
+                        [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]" showFirstLastButtons>
+                    </mat-paginator>
                 </div>
             </div>
         </div>
-        <div>
-            <div class="p-3 d-flex flex-wrap  gap-4">
-                <app-card1 title="Données Congés" (click)="getPersonnelsHoliday()"  [date1]="date1Conge" [date2]="date2Conge"
-                    icon="<i class='bi bi-calendar' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
-                <app-card1 title="Personnel" [date1]="date1Conge" (click)="getPersonnelsDirection()"  [date2]="date2Conge"
-                    icon="<i class='bi bi-person-lines-fill' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
-                <app-card1 title="Absences" (click)="getPersonnelsAbsence()"   [date1]="date1Conge" [date2]="date2Conge"
-                    icon="<i class='bi bi-calendar-week' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
-            </div>
-            <div class="mt-3">
-                <div class="d-flex">
-                    <app-table1 [icon]="toTable1.icon" [title]="toTable1.title" class="app-table1 mx-3" [personnels]="data_apiPersonnels" ></app-table1>
-                    <app-card2 title="Evenements" class="evenement" [personnels]="data_apiPersonnels"  ></app-card2>
-                </div>
-            </div>
-        </div>
-   
+    </div>
+
     <ng-template #simpleUser>
         <div class="mt-3">
-            <div class="d-flex" >
+            <div class="d-flex">
                 <app-card3></app-card3>
             </div>
         </div>

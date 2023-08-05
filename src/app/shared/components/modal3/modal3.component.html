@@ -41,7 +41,7 @@
                                 </p>
                             </div>
                         </div>
-                        <ng-container *ngIf="user.superviseur">
+                        <ng-container *ngIf="!user.agent">
                             <hr>
                             <div class="d-flex justify-content-end gap-2">
                                 <button mat-raised-button color="accent" *ngIf="oneAbsence.validate==true || oneAbsence.validate==null"

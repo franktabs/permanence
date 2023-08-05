@@ -1,5 +1,5 @@
 <div class="div-nav">
-    <nav *ngIf="userAuth && (userAuth.admin || userAuth.superviseur); else ressource" >
+    <nav *ngIf="userAuth && (!userAuth.agent); else ressource" >
         <ul>
             <li><a  routerLink="gestion/collecte" ><i class="bi bi-database" > </i> Collecte Données</a></li>
             <li><a routerLink="gestion/planification" ><i class="bi bi-calendar3" > </i> Planification</a></li>

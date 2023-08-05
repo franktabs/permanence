@@ -9,7 +9,7 @@ export class TimeAgoPipe implements PipeTransform {
     if(typeof value ==="string"){
       value = new Date(value);
     }
-    console.log("viens du pipe timeAge", value)
+    // console.log("viens du pipe timeAge", value)
     const seconds = Math.floor((+new Date() - +value) / 1000);
 
     if (seconds < 60) {

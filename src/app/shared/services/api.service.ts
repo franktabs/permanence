@@ -19,8 +19,8 @@ export interface TypeApi {
 })
 export class ApiService {
   public readonly IP = 'http://192.168.2.64:8080/gestion';
-  public readonly URL_PERSONNELS = this.IP+'/person/allPersons';
-  // public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
+  // public readonly URL_PERSONNELS = this.IP+'/person/allPersons';
+  public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
 
 
   public readonly URL_ABSENCES = 'api/apiAbsences.json';
@@ -29,8 +29,8 @@ export class ApiService {
   public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
 
 
-  public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
-  // public readonly URL_DIRECTIONS = 'api/apiDirections.json';
+  // public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
+  public readonly URL_DIRECTIONS = 'api/apiDirections.json';
 
 
   constructor(private http: HttpClient) {}
@@ -71,18 +71,18 @@ export class ApiService {
         }),
         catchError((err: HttpErrorResponse): Observable<any> => {
           if (err.error instanceof ErrorEvent) {
-            console.error("message d'erreur", err);
+            console.error("message d'erreur", err, "a l'url ", lien);
             console.error(err.error.message);
           } else {
             console.error(err.status);
           }
           return throwError(
-            () => new Error('Erreur produit au chargement de données')
+            () => new Error('Erreur produit au chargement de données, '+lien)
           );
         })
       );
     } else {
-      return throwError(() => new Error('Erreur chargement url api !!!'));
+      return throwError(() => new Error('Erreur chargement url api !!! '+lien));
     }
   }
 

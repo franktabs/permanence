@@ -13,7 +13,7 @@ export class RedirectGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if(this.auth.isAuthenticated && (this.auth.user?.admin || this.auth.user?.superviseur)){
+    if(this.auth.isAuthenticated && (!this.auth.user?.agent)){
       this.router.navigateByUrl("gestion/collecte")
     }
     return true;

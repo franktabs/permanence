@@ -43,6 +43,7 @@ export class Modal2Component implements OnInit {
     let day = new Date().toLocaleDateString("en-CA", {year:"numeric", month:"2-digit", day:"2-digit"});
     data.submissionDate = day;
 
+    this.api.postAbsence(data)
     this.tabAbsences?.unshift(data)
     this.up()
   }

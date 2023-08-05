@@ -1,5 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { OuputTypeCard1 } from 'src/app/shared/components/card1/card1.component';
 import { IApiAbsence } from 'src/app/shared/interfaces/iapiabsence';
@@ -58,7 +60,7 @@ let apiPerson: IApiPerson = {
     '../shared/styles/styles.scss',
   ],
 })
-export class PageCollecteDataComponent implements OnInit, OnDestroy {
+export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   public date1Conge: Date = new Date('2023-06-27');
   public date2Conge: Date = new Date('2023-07-27');
   public toTable1: OuputTypeCard1 = { icon: '', title: '' };
@@ -70,12 +72,26 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   public isTableFilter: boolean = false;
   public userAuth!: TypePersonnel | null;
   public destroy$!: Subject<boolean>;
+  public dataSource: MatTableDataSource<TypePersonnel> =
+  new MatTableDataSource<TypePersonnel>([]);
+
+  @ViewChild(MatPaginator, { static: false })
+  set paginator(value: MatPaginator) {
+    if (this.dataSource) {
+      this.dataSource.paginator = value;
+    }
+  }
 
   constructor(private api: ApiService, private auth: AuthService) {}
 
   public set data_apiPersonnels(value: TypePersonnel[] | null) {
     this._data_apiPersonnels = value;
+    
     if (this._data_apiPersonnels && this.allPersonnels) {
+      this.dataSource = new MatTableDataSource<TypePersonnel>(
+        this._data_apiPersonnels
+      );
+      this.dataSource.paginator = this.paginator;
       if (this._data_apiPersonnels.length < this.allPersonnels.length) {
         this.isTableFilter = true;
       } else {
@@ -186,6 +202,9 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
+    
+
     this.monTest();
     this.userAuth = this.auth.user;
     this.destroy$ = new Subject();
@@ -211,6 +230,16 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy {
         this.allUsers = allUserPersonnel;
       });
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['personnels']) {
+      this.dataSource = new MatTableDataSource<TypePersonnel>(
+        changes['personnels'].currentValue
+      );
+      this.dataSource.paginator = this.paginator;
+    }
+  }
+
 
   monTest() {
     let correspondance: TypeFormatJSON<IApiPerson, IPerson>['correspondance'] =
