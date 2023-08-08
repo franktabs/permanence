@@ -16,7 +16,7 @@ import { mapJSON } from '../../utils/function';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { mapPersonnel } from '../../utils/tables-map';
 
-type Ferier = { jour: string; type: 'ouvrable' | 'non ouvrable' | 'simple' };
+export type Ferier = { jour: string; type: 'ouvrable' | 'non ouvrable' | 'simple' };
 
 export type DataPlanning = {
   periode: number | string;

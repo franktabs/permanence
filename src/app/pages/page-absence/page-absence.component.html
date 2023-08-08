@@ -1,12 +1,12 @@
 <div class="page">
     <app-modal2 [(close)]="closeAppModal2" *ngIf="!closeAppModal2" [tabAbsences] = "tabAbsences"></app-modal2>
-    <span class="title"><i class="bi bi-calendar-week" > Absences /</i></span>
+    <span class="title"><i class="bi bi-calendar-week" > Remplacements /</i></span>
     <div class="mt-5" >
-        <button mat-raised-button color="primary" (click)="closeAppModal2 = false" > <i class="bi bi-building-add" ></i> Effectuer une demande d'absence</button>
+        <button mat-raised-button color="primary" (click)="closeAppModal2 = false" > <i class="bi bi-building-add" ></i> Effectuer une demande de remplacement</button>
     </div>
     <div class="mt-5 d-flex" >
         <div class="w-100">
-            <h1 class="text-capitalize head-3 color-bordeau" >historique d'absences</h1>
+            <h1 class="text-capitalize head-3 color-bordeau" >historique de remplacements</h1>
             <div class="d-flex justify-content-start flex-wrap gap-3">
 
                 <ng-container *ngIf="tabAbsences && tabAbsences.length; else empty" >

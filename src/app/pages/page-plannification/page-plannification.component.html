@@ -9,7 +9,10 @@
             <button mat-raised-button color="primary"  (click)="handleModalPlanification()" > <i class="bi bi-calendar3" ></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
         </div>
         <div class="mt-5 planning" >
-            <app-day *ngFor="let day of tabDays" [date]="addDay(day)" ></app-day>
+            <ng-container *ngFor="let day of tabDays">
+                
+                <app-day  [date]="addDay(day)" [feriers]="dataPlanning ? dataPlanning.feriers:[]" ></app-day>
+            </ng-container>
         </div>
     </div>
 </div>

@@ -61,33 +61,38 @@ body {
     color: $bordeau-color !important;
 }
 
-.bg-bordeau{
+.bg-bordeau {
     background-color: $bordeau-color !important;
 }
 
-.bg-mprimary{
-    background-color: #3F51B5;
+.bg-mprimary-light {
+    background-color: lighten($color: #3F51B5, $amount: 20) !important;
 }
 
-.bg-blue{
+.bg-mprimary {
+    background-color: #3F51B5 !important;
+}
+
+.bg-blue {
     background-color: $for-blue-color;
 }
-.color-bordeau{
+
+.color-bordeau {
     color: $bordeau-color;
 }
 
-.head-2{
+.head-2 {
     font-size: 2em !important;
 }
 
-.head-3{
+.head-3 {
     font-size: 3em !important;
 }
 
-.head-4{
+.head-4 {
     font-size: 4em !important;
 }
 
-.head-1-5{
+.head-1-5 {
     font-size: 1.5em !important;
 }

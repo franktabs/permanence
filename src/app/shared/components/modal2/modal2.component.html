@@ -4,13 +4,13 @@
         <div>
             <div class="my-title fw-bold p-2">
                 <i class="bi bi-ui-checks"></i>
-                Formulaire Absence
+                Formulaire Remplacement
             </div>
             <div class="ligne"></div>
             <div class="d-flex justify-content-center">
                 <div class="p-3 w-100">
                     <form [formGroup]="absenceForm" (ngSubmit)="postAbsence()">
-                        <table class="table table-striped">
+                        <table class="table">
                             <tbody>
                                 <tr class="align-middle">
                                     <th>
@@ -25,23 +25,12 @@
                                 </tr>
                                 <tr class="align-middle">
                                     <th>
-                                        <p><label for="debut">Jour de debut*</label></p>
+                                        <p><label for="debut">Jour du Remplacement*</label></p>
                                     </th>
                                     <td>
                                         <p>
                                             <input type="date" id="debut" formControlName="start" class="form-control"
                                                 required="true">
-                                        </p>
-                                    </td>
-                                </tr>
-                                <tr class="align-middle">
-                                    <th>
-                                        <p><label for="fin">Jour de fin*</label></p>
-                                    </th>
-                                    <td>
-                                        <p>
-                                            <input type="date" id="fin" formControlName="end" class="form-control"
-                                                required>
                                         </p>
                                     </td>
                                 </tr>
@@ -54,6 +43,22 @@
                                             <textarea id="commentaire" formControlName="message"
                                                 class="form-control" rows="3"
                                                 placeholder="Faite un petit commentaire"></textarea>
+                                        </p>
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <th>
+                                        <p><label for="nom">Remplaceur*</label></p>
+                                    </th>
+                                    <td>
+                                        <p>
+                                            <app-personnel-autocomplete id="nom" (dataPerson)="receiveSuperviseur($event)" 
+                                            forLabel="Nom de votre Remplaçant" forPlaceholder="Remplaçant"
+                                            [options]="options"
+                                            name="nom"
+                                            >
+                        
+                                        </app-personnel-autocomplete>
                                         </p>
                                     </td>
                                 </tr>

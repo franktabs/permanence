@@ -5,7 +5,6 @@
     background-color: white;
     position: relative;
     min-width: 600px;
-    padding: 1em;
     max-width: 90vw;
 }
 
@@ -22,7 +21,8 @@
 
 .ligne{
     background-color: black;
-    height: 2px;
+    height: 1px;
+    margin: 2px;
 }
 
 .my-title{
@@ -32,13 +32,14 @@
 
 .vacance{
 
-    h1, h2, h3{
-        color: $bordeau-color;
-    }
+    background-color: white;
 
     h2, h3{
-        font-style: italic;
+        color: $for-primary-color;
         font-weight: bolder;
+    }
+    h1{
+        color: $bordeau-color;
     }
 
     h1, h2, h3, p {
@@ -47,6 +48,6 @@
 
     .debut, .fin{
         color: $bordeau-color;
-        font-style: italic;
+        font-weight: bold;
     }
 }

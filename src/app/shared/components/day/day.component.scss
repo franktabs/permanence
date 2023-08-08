@@ -3,9 +3,10 @@
 .my-day{
 
     table thead tr th{
-        background-color: $bordeau-color;
+        background-color: gray;
         color: white;
         text-transform: capitalize;
+        height: 100%;
     }
 
     th{
@@ -14,7 +15,6 @@
     h1, h2{
         font-size: 1em;
         text-align: center;
-        font-weight: bold;
         margin: 0 !important;
 
     }

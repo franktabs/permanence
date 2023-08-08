@@ -21,8 +21,8 @@
                                 <span *ngIf="oneAbsence.validate==null ">Non traité</span>
                             </div>
                         </div>
-                        <hr>
-                        <div class="px-3">
+                        <div class="ligne" ></div>
+                        <div class="px-1">
                             <div>
                                 <h3>Motif</h3>
                                 <p>
@@ -34,10 +34,15 @@
                                 <p> {{oneAbsence.message}} </p>
                             </div>
                             <div>
-                                <h3>Période</h3>
+                                <h3>Jour du Remplacement</h3>
                                 <p class="text-capitalize">
-                                    du <span class="debut"> {{oneAbsence.start | displayKey }} </span> au <span class="fin"> {{
-                                        oneAbsence.end | displayKey }} </span>
+                                    Le <span class="debut"> {{oneAbsence.start | displayKey }} </span>
+                                </p>
+                            </div>
+                            <div *ngIf="oneAbsence.nom">
+                                <h3>Remplaceur</h3>
+                                <p class="text-capitalize">
+                                    Mr/Mrs/Mlle <span class="fw-bold"> {{oneAbsence.nom | displayKey:"remplacement" }} </span>
                                 </p>
                             </div>
                         </div>
