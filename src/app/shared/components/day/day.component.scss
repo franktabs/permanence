@@ -2,18 +2,21 @@
 
 .my-day{
 
-    thead tr{
+    table thead tr th{
         background-color: $bordeau-color;
         color: white;
         text-transform: capitalize;
     }
 
     th{
-        padding: 1em;
+        padding: .5em 1em;
     }
     h1, h2{
+        font-size: 1em;
         text-align: center;
         font-weight: bold;
+        margin: 0 !important;
+
     }
 }
 
@@ -25,4 +28,5 @@
     padding: .5em;
     color: black;
     font-weight: normal;
+    font-size: 1em;
 }

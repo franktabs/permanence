@@ -1,5 +1,5 @@
 <div class="page">
-    <app-modal-planification [(open)]="openModalPlanification"  *ngIf="openModalPlanification" ></app-modal-planification>
+    <app-modal-planification [(open)]="openModalPlanification"  *ngIf="openModalPlanification" (dataEmit)="receiveData($event)" ></app-modal-planification>
     <span class="title">
         <i class="bi bi-calendar3"> Planification /</i>
     </span>
@@ -8,7 +8,7 @@
         <div>
             <button mat-raised-button color="primary"  (click)="handleModalPlanification()" > <i class="bi bi-calendar3" ></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
         </div>
-        <div class="mt-5 d-flex flex-wrap gap-3" >
+        <div class="mt-5 planning" >
             <app-day *ngFor="let day of tabDays" [date]="addDay(day)" ></app-day>
         </div>
     </div>

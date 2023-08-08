@@ -23,7 +23,6 @@ export class DayComponent implements OnInit, OnChanges {
     if(changes["date"]){
       let newDate = changes["date"].currentValue ;
       this.ordinaire = newDate.getDay()!=0 && newDate.getDay()!=6 && this.typeFerier=='simple';
-      console.log("valeur de ordinaire", this.ordinaire)
     }
   }
 

@@ -1,11 +1,11 @@
 <div class="my-day">
-    <table class="table-bordered p-4">
+    <table class="table-bordered p-4 table">
         <thead>
             <tr>
                 <ng-template [ngIf]="!ordinaire" >
                     <th
                         colspan="2">
-                        <h1 class="head-2"> {{date| date:"E"}} </h1>
+                        <h1> {{date| date:"E"}} </h1>
                         <h2> {{date| date:"d/MM/yyyy"}} </h2>
 
                         <div class="jour-ferier" *ngIf="date.getDay()==6" >Ferier Ouvrable</div>
@@ -14,7 +14,7 @@
                 </ng-template>
                 <ng-template [ngIf]="ordinaire">
                     <th>
-                        <h1 class="head-2"> {{date| date:"E"}} </h1>
+                        <h1> {{date| date:"E"}} </h1>
                         <h2> {{date| date:"d/MM/yyyy"}} </h2>
                         <div class="jour-ferier" *ngIf="date.getDay()==6" >Ferier Ouvrable</div>
                     </th>
@@ -26,7 +26,7 @@
             <tr>
                 <ng-template [ngIf]="!ordinaire">
                     <td>
-                       <div class="bg-blue text-white text-center fw-bold py-2" >
+                       <div class="bg-mprimary text-white text-center fw-bold py-2" >
                             <span >JOUR</span>
                        </div>
                     </td>

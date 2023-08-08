@@ -27,7 +27,8 @@
                                 </th>
                                 <td>
                                     <p class="d-flex gap-2 align-items-center flex-column">
-                                        <span class="w-max-content ng-star-inserted d-flex align-items-center gap-2" *ngFor="let ferier of feriers, let i = index">
+                                        <span class="w-max-content ng-star-inserted d-flex align-items-center gap-2"
+                                            *ngFor="let ferier of feriers, let i = index">
                                             <input type="date" id="debut" class="form-control " required="true"
                                                 [name]="'jour'+i" [(ngModel)]="ferier.jour">
                                             <select class="form-select" aria-label="Default select example"
@@ -53,17 +54,15 @@
             </div>
             <div class="m-3 p-3 part2 d-flex flex-column">
                 <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Personnel</h1>
-                <mat-form-field class="example-form-field" appearance="fill" *ngFor="let ind of arrayNumPeriode">
-                    <mat-label>Selectionner le superviseur N° {{ind}} </mat-label>
-                    <input matInput type="text" [(ngModel)]="superviseur[ind]" required="">
-                    <button *ngIf="superviseur" matSuffix mat-icon-button aria-label="Clear" (click)="superviseur">
-                        <mat-icon>close</mat-icon>
-                    </button>
+                <mat-form-field class="example-full-width" appearance="fill" *ngFor="let ind of arrayNumPeriode">
+                    <mat-label>Nom du superviseur N°{{ind+1}} </mat-label>
+                    <input matInput placeholder="Un superviseur du mois" [(ngModel)]="superviseur[ind]" required>
                 </mat-form-field>
             </div>
         </div>
         <div class="text-end px-4 ">
-            <button mat-raised-button color="btn-bordeau" type="submit">Generer <i class="bi bi-table"></i>
+            <button mat-raised-button color="btn-bordeau" type="submit" (click)="generer()">Generer <i
+                    class="bi bi-table"></i>
             </button>
         </div>
     </div>
