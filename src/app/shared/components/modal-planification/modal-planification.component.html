@@ -1,0 +1,70 @@
+<app-head-modal-default nameModal="Configuration" icon="<i class='bi bi-gear'><i>" [(open)]="open">
+    <div>
+        <div class="d-flex">
+            <div class=" m-3 p-3 part1">
+                <h1 class="h1"><i class="bi bi-alarm"></i> Temps</h1>
+                <form>
+                    <table class="table table-striped">
+                        <tbody>
+                            <tr class="align-middle">
+                                <th>
+                                    <p> <label for="select-month"> Periode </label> </p>
+                                </th>
+                                <td>
+                                    <p>
+                                        <select class="form-select" name="periode" [(ngModel)]="periode"
+                                            aria-label="Default select example" id="select-month">
+                                            <option value=1>1 mois</option>
+                                            <option value=2>2 mois</option>
+                                            <option value=3 selected>3 mois</option>
+                                        </select>
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <p class="w-max-content"><label for="debut">Jours Feriés</label></p>
+                                </th>
+                                <td>
+                                    <p class="d-flex gap-2 align-items-center flex-column">
+                                        <span class="w-max-content ng-star-inserted d-flex align-items-center gap-2" *ngFor="let ferier of feriers, let i = index">
+                                            <input type="date" id="debut" class="form-control " required="true"
+                                                [name]="'jour'+i" [(ngModel)]="ferier.jour">
+                                            <select class="form-select" aria-label="Default select example"
+                                                [name]="'type'+i" [(ngModel)]="ferier.type" id="select-ferier">
+                                                <option value="ouvrabla">Ferié Ouvrable</option>
+                                                <option value="non ouvrable">Ferié Non Ouvrable </option>
+                                                <option value="simple" selected>Simple</option>
+                                            </select>
+                                            <i class="bi bi-plus-circle plus-x text-primary" *ngIf="feriers.length-1==i"
+                                                (click)="ajoutFerier()"></i>
+                                            <i class="bi bi-x-circle plus-x text-danger" *ngIf="feriers.length!=0"
+                                                (click)="suprFerier(i)"></i>
+                                        </span>
+                                        <i class="bi bi-plus-circle plus-x text-primary" *ngIf="feriers.length==0"
+                                            (click)="ajoutFerier()"></i>
+                                    </p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </form>
+            </div>
+            <div class="m-3 p-3 part2 d-flex flex-column">
+                <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Personnel</h1>
+                <mat-form-field class="example-form-field" appearance="fill" *ngFor="let ind of arrayNumPeriode">
+                    <mat-label>Selectionner le superviseur N° {{ind}} </mat-label>
+                    <input matInput type="text" [(ngModel)]="superviseur[ind]" required="">
+                    <button *ngIf="superviseur" matSuffix mat-icon-button aria-label="Clear" (click)="superviseur">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="text-end px-4 ">
+            <button mat-raised-button color="btn-bordeau" type="submit">Generer <i class="bi bi-table"></i>
+            </button>
+        </div>
+    </div>
+</app-head-modal-default>

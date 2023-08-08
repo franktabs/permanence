@@ -6,9 +6,12 @@ import { KeyOfAllType, TypePersonnel } from '../utils/types-map';
 })
 export class DisplayKeyPipe implements PipeTransform {
 
-  transform(value: string): string {
+  transform(value: string, type:"remplacement"|"absence"|"personnel"|"any"="any"): string {
     let val : KeyOfAllType = value as any;
-    if(val ==="contact1"){
+    if(val==="nom" && type ==="remplacement"){
+      return "Remplaceur"
+    }
+    else if(val ==="contact1"){
       return "contact 1"
     }else if(val==="libAge"){
       return "secteur"

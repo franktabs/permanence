@@ -1,5 +1,6 @@
 {
     "commentTranslate.multiLineMerge": false,
     "commentTranslate.targetLanguage": "fr",
-    "commentTranslate.hover.enabled": true
+    "commentTranslate.hover.enabled": true,
+    "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace"
 }

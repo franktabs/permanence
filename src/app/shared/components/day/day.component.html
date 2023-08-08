@@ -1,0 +1,42 @@
+<div class="my-day">
+    <table class="table-bordered p-4">
+        <thead>
+            <tr class="bg-light">
+                <ng-template [ngIf]="!ordinaire" >
+                    <th
+                        colspan="2">
+                        <h1 class="head-2"> {{date| date:"E"}} </h1>
+                        <h2> {{date| date:"d/MM/yyyy"}} </h2>
+                    </th>
+                </ng-template>
+                <ng-template [ngIf]="ordinaire">
+                    <th>
+                        <h1 class="head-2"> {{date| date:"E"}} </h1>
+                        <h2> {{date| date:"d/MM/yyyy"}} </h2>
+                    </th>
+                </ng-template>
+            </tr>
+        </thead>
+
+        <tbody>
+            <tr>
+                <ng-template [ngIf]="!ordinaire">
+                    <td *ngIf="date.getDay()!=5 || date.getDay()!=6 || typeFerier=='ouvrable'">
+                        <h1 > JOUR </h1>
+                        <h2> JEAN</h2>
+                    </td>
+                    <td>
+                        <h1 > NUIT </h1>
+                        <h2> ANDRE </h2>
+                    </td>
+                </ng-template>
+                <ng-template [ngIf]="ordinaire" >
+                    <td>
+                        <h1>NUIT</h1>
+                        <h2>Audrey</h2>
+                    </td>
+                </ng-template>
+            </tr>
+        </tbody>
+    </table>
+</div>

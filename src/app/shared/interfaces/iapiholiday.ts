@@ -5,5 +5,7 @@ export interface IApiHoliday{
     submissionDate: string,
     personnel?:IApiPersonnel,
     start:string,
-    end:string
+    end:string,
+    userId:number|null,
+    type:"PERMISSION"|"MISSION"|"CONGE"
 }

@@ -4,6 +4,7 @@
         "start": "2023-11-15",
         "end": "2023-11-20",
         "submissionDate": "2023-06-08",
+        "type":"PERMISSION",
         "personnel":    {
             "id": 1,
             "firstname": "Rodrigue Christian",

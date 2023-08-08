@@ -9,6 +9,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatIconModule} from "@angular/material/icon"
 
 const moduleMaterial = [
   MatPaginatorModule,
@@ -20,7 +21,8 @@ const moduleMaterial = [
   MatFormFieldModule,
   MatInputModule,
   MatDialogModule,
-  BrowserAnimationsModule
+  BrowserAnimationsModule,
+  MatIconModule
 ]
 
 @NgModule({

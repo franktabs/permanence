@@ -1,0 +1,26 @@
+@import "colors";
+
+tr{
+    font-size: 1.2em;
+}
+
+tr p{
+    padding: 0px .3em;
+}
+
+
+.form-control:focus{
+    border-color: $bordeau-color;
+    box-shadow: 2px 2px 1em $bordeau-color;
+}
+
+.mat-btn-bordeau{
+    background-color: $bordeau-color;
+    color: white;
+}
+
+tbody{
+    tr th{
+        color: $bordeau-color;
+    }
+}

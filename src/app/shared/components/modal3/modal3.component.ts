@@ -3,7 +3,7 @@ import { AuthService } from '../../services/auth.service';
 import { IAbsence } from '../../interfaces/iabsence';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
-import { IApiAbsence } from '../../interfaces/iapiabsence';
+import { IApiRemplacement } from '../../interfaces/iapiremplacement';
 
 //Tous les absences d'un utlisateur
 @Component({
@@ -16,15 +16,15 @@ export class Modal3Component implements OnInit, OnChanges {
   @Input() close: boolean = true;
   @Output() closeChange: EventEmitter<boolean> = new EventEmitter();
 
-  @Input() tabs: IApiAbsence[] | null = null;
+  @Input() tabs: IApiRemplacement[] | null = null;
 
-  public _tabAbsences: IApiAbsence[] | null = [];
+  public _tabAbsences: IApiRemplacement[] | null = [];
 
   public user!:TypePersonnel;
 
   constructor(private userAuth: AuthService) { }
 
-  set tabAbsences(value:IApiAbsence[]|null){
+  set tabAbsences(value:IApiRemplacement[]|null){
     this._tabAbsences = value
   }
 
@@ -51,6 +51,10 @@ export class Modal3Component implements OnInit, OnChanges {
 
   up() {
     this.closeChange.emit(true)
+  }
+
+  validateAbsence(absence:IAbsence, val:boolean){
+    
   }
 
 }

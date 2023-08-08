@@ -1,4 +1,4 @@
-import { IApiAbsence } from './iapiabsence';
+import { IApiRemplacement } from './iapiremplacement';
 import { IApiDepartement } from './iapidepartement';
 import { IApiHoliday } from './iapiholiday';
 
@@ -19,7 +19,7 @@ export interface IApiPersonnel {
   isAbsent: boolean | null;
   isVacancy: boolean | null;
   isEligible: boolean | null;
-  absentList?: IApiAbsence[] | null;
+  absentList?: IApiRemplacement[] | null;
   vacancies?: IApiHoliday[] | null;
   departement?: IApiDepartement | null;
 }

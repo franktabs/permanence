@@ -33,6 +33,18 @@
     max-width: calc(100% - 500px);
 }
 
+.form-control:focus{
+    border-color: $bordeau-color;
+    box-shadow: 2px 2px 1em $bordeau-color;
+}
+
+
+.sh-search{
+    border: 1px solid white;
+}
+
+
+
 // .trier{
 //     border-top: 1px black ridge;
 //     border-bottom: 1px black ridge;

@@ -42,6 +42,12 @@ export class Table1Component
   public errorMessage: string = '';
   public openModal: boolean = false;
   public row: TypePersonnel | null = null;
+  @Input() icon!: string;
+  @Input() title!: string;
+  @Input() personnels: TypePersonnel[] | null = null;
+  @Input() search: string = '';
+
+  private destroy$!: Subject<boolean>;
 
   @ViewChild(MatPaginator, { static: false })
   set paginator(value: MatPaginator) {
@@ -49,7 +55,7 @@ export class Table1Component
       this.dataSource.paginator = value;
     }
   }
-  @ViewChild(MatSort) sort!:MatSort
+  @ViewChild(MatSort) sort!: MatSort;
   // set sort(value: MatSort) {
   //   // if(!value){
   //     console.log("valeur de sort", value, )
@@ -61,12 +67,6 @@ export class Table1Component
 
   // @ViewChild(MatSort) sort!: MatSort;
 
-  @Input() icon!: string;
-  @Input() title!: string;
-  @Input() personnels!: TypePersonnel[] | null;
-
-  private destroy$!: Subject<boolean>;
-
   constructor(
     private http: HttpClient,
     private dialog: MatDialog,
@@ -77,16 +77,20 @@ export class Table1Component
   ngOnInit(): void {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
-
   }
   ngOnChanges(changes: SimpleChanges): void {
+
     if (changes['personnels']) {
+      
       this.dataSource = new MatTableDataSource<TypePersonnel>(
         changes['personnels'].currentValue
       );
-      this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
 
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
+    }
+    if (changes['search']) {
+      this.dataSource.filter = this.search.trim();
     }
   }
   ngOnDestroy(): void {
@@ -127,5 +131,10 @@ export class Table1Component
     // this.dialog.open(UserInfoModalComponent, {
     //   data: row
     // })
+  }
+
+  customFilter(filterValue: string, item: TypePersonnel): boolean {
+    console.log('element à filtrer', item, 'avec la chaine', filterValue);
+    return Object.values(item).includes(filterValue);
   }
 }

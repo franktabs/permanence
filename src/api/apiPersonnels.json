@@ -25,6 +25,7 @@
                 "submissionDate": "2023-08-01 09:44:34.654",
                 "start": "2023-11-01",
                 "end": "2023-11-08",
+                "nom": "Daniel Martin",
                 "personnel": {
                     "id": 1,
                     "firstname": "Rodrigue Christian",
@@ -47,11 +48,12 @@
         ],
         "vacancies": [
             {
-                "id":1,
+                "id": 1,
                 "start": "2023-11-15",
                 "end": "2023-11-20",
                 "submissionDate": "2023-06-08",
-                "personnel":    {
+                "type": "PERMISSION",
+                "personnel": {
                     "id": 1,
                     "firstname": "Rodrigue Christian",
                     "emailaddress": "rodrigue_toukam@afrilandfirstbank.com",

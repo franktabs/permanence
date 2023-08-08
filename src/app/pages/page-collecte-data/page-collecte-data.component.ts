@@ -4,7 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject, takeUntil, tap } from 'rxjs';
 import { OuputTypeCard1 } from 'src/app/shared/components/card1/card1.component';
-import { IApiAbsence } from 'src/app/shared/interfaces/iapiabsence';
+import { IApiRemplacement } from 'src/app/shared/interfaces/iapiremplacement';
 import { IApiDirection } from 'src/app/shared/interfaces/iapidirection';
 import { IApiHoliday } from 'src/app/shared/interfaces/iapiholiday';
 import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
@@ -72,8 +72,9 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   public isTableFilter: boolean = false;
   public userAuth!: TypePersonnel | null;
   public destroy$!: Subject<boolean>;
-  public dataSource: MatTableDataSource<TypePersonnel> =
-  new MatTableDataSource<TypePersonnel>([]);
+  public dataSource: MatTableDataSource<TypePersonnel> = new MatTableDataSource<TypePersonnel>([]);
+  public search:string = "";
+
 
   @ViewChild(MatPaginator, { static: false })
   set paginator(value: MatPaginator) {
@@ -88,10 +89,9 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     this._data_apiPersonnels = value;
     
     if (this._data_apiPersonnels && this.allPersonnels) {
-      this.dataSource = new MatTableDataSource<TypePersonnel>(
-        this._data_apiPersonnels
-      );
+      this.dataSource.data = this._data_apiPersonnels;
       this.dataSource.paginator = this.paginator;
+      console.log("DataSource =>", this.dataSource)
       if (this._data_apiPersonnels.length < this.allPersonnels.length) {
         this.isTableFilter = true;
       } else {
@@ -179,7 +179,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
         let isTake = false;
-        let unkAbsences:IApiAbsence[] = items.absences as any
+        let unkAbsences:IApiRemplacement[] = items.absences as any
         if (unkAbsences) {
           for (let oneAbsence of unkAbsences) {
             if (oneAbsence.start) {
@@ -222,11 +222,9 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       .getAllData<IApiPersonnel[]>({ for: 'personnels' })
       .subscribe((obs) => {
         let dataMap = mapJSON<IApiPersonnel, IPersonnel>(obs, mapPersonnel)
-        let allUserPersonnel = dataMap.filter((items) => {
-          return !items.admin && !items.superviseur;
-        });
-        this.data_apiPersonnels = allUserPersonnel;
+        let allUserPersonnel = dataMap;
         this.allPersonnels = allUserPersonnel;
+        this.data_apiPersonnels = allUserPersonnel;
         this.allUsers = allUserPersonnel;
       });
   }

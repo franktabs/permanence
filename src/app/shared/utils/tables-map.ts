@@ -2,7 +2,7 @@ import { IApiPersonnel } from '../interfaces/iapipersonnel';
 import { IPersonnel } from '../interfaces/ipersonnel';
 import { IApiDirection } from '../interfaces/iapidirection';
 import { IDirection } from '../interfaces/idirection';
-import { IApiAbsence } from '../interfaces/iapiabsence';
+import { IApiRemplacement } from '../interfaces/iapiremplacement';
 import { IAbsence } from '../interfaces/iabsence';
 import { IApiHoliday } from '../interfaces/iapiholiday';
 import { IHolidays } from '../interfaces/iholidays';
@@ -22,7 +22,7 @@ export const mapPersonnel: TypeFormatJSON<
 
 
 export const mapAbsence: TypeFormatJSON<
-  IApiAbsence,
+  IApiRemplacement,
   IAbsence
 >['correspondance'] = {
   validate: 'isValid',

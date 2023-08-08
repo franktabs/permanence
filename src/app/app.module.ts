@@ -1,4 +1,4 @@
-import { NgModule, OnInit } from '@angular/core';
+import { LOCALE_ID, NgModule, OnInit } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -38,6 +38,15 @@ import { PageAbsenceComponent } from './pages/page-absence/page-absence.componen
 import { PageRapportComponent } from './pages/page-rapport/page-rapport.component';
 import { DisplayKeyPipe } from './shared/pipes/display-key.pipe';
 import { MyDivDirective } from './shared/directives/my-div.directive';
+import { ModalPlanificationComponent } from './shared/components/modal-planification/modal-planification.component';
+import { HeadModalDefaultComponent } from './shared/components/head-modal-default/head-modal-default.component';
+import { DayComponent } from './shared/components/day/day.component';
+import { FromDatePipe } from './shared/pipes/from-date.pipe';
+import { registerLocaleData } from '@angular/common';
+import localeFr from '@angular/common/locales/fr';
+
+
+registerLocaleData(localeFr)
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +75,11 @@ import { MyDivDirective } from './shared/directives/my-div.directive';
     PageAbsenceComponent,
     PageRapportComponent,
     DisplayKeyPipe,
-    MyDivDirective
+    MyDivDirective,
+    ModalPlanificationComponent,
+    HeadModalDefaultComponent,
+    DayComponent,
+    FromDatePipe
   ],
   imports: [
     BrowserModule,
@@ -78,7 +91,7 @@ import { MyDivDirective } from './shared/directives/my-div.directive';
     ReactiveFormsModule,
     
   ],
-  providers: [ApiService, AuthService, AuthGuard, LoadDataGuard],
+  providers: [ApiService, AuthService, AuthGuard, LoadDataGuard, {provide: LOCALE_ID, useValue:"fr-FR"}],
   bootstrap: [AppComponent]
 })
 export class AppModule {

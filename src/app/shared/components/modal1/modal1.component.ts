@@ -4,7 +4,7 @@ import { IHolidays } from '../../interfaces/iholidays';
 import { IAbsence } from '../../interfaces/iabsence';
 import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
 import { IApiHoliday } from '../../interfaces/iapiholiday';
-import { IApiAbsence } from '../../interfaces/iapiabsence';
+import { IApiRemplacement } from '../../interfaces/iapiremplacement';
 
 
 
@@ -29,7 +29,7 @@ export class Modal1Component implements OnInit, OnChanges {
 
   public keyRowHoliday: Array<keyof IHolidays> = [];
 
-  public infoAbsence: { keys: Array<keyof IApiAbsence> | null, value: IApiAbsence | null } = { keys: null, value: null };
+  public infoAbsence: { keys: Array<keyof IApiRemplacement> | null, value: IApiRemplacement | null } = { keys: null, value: null };
 
   constructor() { }
   ngOnChanges(changes: SimpleChanges): void {
@@ -54,9 +54,9 @@ export class Modal1Component implements OnInit, OnChanges {
           return false
         }) as any;
       }
-      let unkAbsences:IApiAbsence[] = obj1.absences as any;
+      let unkAbsences:IApiRemplacement[] = obj1.absences as any;
       if (unkAbsences && unkAbsences.length) {
-        let absence: IApiAbsence | null = unkAbsences[0]
+        let absence: IApiRemplacement | null = unkAbsences[0]
         for (let oneAbsence of unkAbsences ) {
           let seconde = Math.floor((+new Date(oneAbsence.start) - (+new Date())) / 1000);
           if (seconde > 0) {
@@ -67,7 +67,7 @@ export class Modal1Component implements OnInit, OnChanges {
         if (absence) {
           this.infoAbsence.value = absence;
           this.infoAbsence.keys = Object.keys(absence).filter((item) => {
-            let item1: keyof IApiAbsence = item as any;
+            let item1: keyof IApiRemplacement = item as any;
             if (absence && typeof absence[item1] == "string") {
               return true
             }

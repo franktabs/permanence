@@ -1,0 +1,40 @@
+@import "colors";
+
+
+.form-control:focus, .form-select:focus{
+    border-color: $bordeau-color;
+    box-shadow: 2px 2px 1em $bordeau-color;
+}
+
+.mat-btn-bordeau{
+    background-color: $bordeau-color;
+    color: white;
+}
+
+.part1{
+    border-right: 1px solid black;
+}
+
+.part1, .part2{
+
+    h1{
+        font-style: italic;
+    }
+}
+
+tbody{
+    tr th{
+        color: $bordeau-color;
+    }
+}
+
+.plus-x:hover{
+    cursor: pointer;
+    color: $for-blue-color;
+    font-weight: bold;
+}
+
+.plus-x:active{
+    color: $bordeau-color;
+    font-weight: normal;
+}

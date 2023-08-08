@@ -27,7 +27,7 @@
                 <div class="p-3 part2 d-flex flex-column gap-3">
                     <div>
                         <h1>
-                            <i class="bi bi-calendar2-week"> </i> Sur les Congés
+                            <i class="bi bi-calendar2-week"> </i> Sur les Abscences
                         </h1>
                         <table *ngIf="keyRowHoliday.length; else emptyHoliday " class="table table-hover">
 
@@ -48,15 +48,15 @@
                     <div class="ligne2"></div>
                     <div>
                         <h1>
-                            <i class="bi bi-motherboard"></i> Sur les Absences
+                            <i class="bi bi-motherboard"></i> Sur les Remplacements
                         </h1>
-                        <i>(Non traité)</i>
+                        
                         <table *ngIf="infoAbsence.value ; else emptyAbsence " class="table table-hover m-0">
 
                             <tbody>
                                 <ng-container *ngFor="let elmt2 of infoAbsence.keys">
                                     <tr *ngIf=" infoAbsence.value[elmt2] as ifDone" class="p-2">
-                                        <th class="text-capitalize"><div class="w-max-content"> {{elmt2 | displayKey }}  </div>  </th>
+                                        <th class="text-capitalize"><div class="w-max-content"> {{elmt2 | displayKey:"remplacement" }}  </div>  </th>
                                         <td> {{ifDone }} </td>
                                     </tr>
                                 </ng-container>

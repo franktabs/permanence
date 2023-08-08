@@ -4,26 +4,61 @@
 
 <div mat-dialog-content>
     <div class="d-flex">
-        <div class="m-3 p-3 part1">
-            <h1> <i class="bi bi-card-text"></i> A propos</h1>
-            <table class="table table-hover ">
-                <thead>
-                    <tr>
-                        <th>Matricule</th>
-                        <th>Noms</th>
-                        <th>Prénoms</th>
-                    </tr>
-                </thead>
+        <form >
+            <table class="table table-striped">
                 <tbody>
-                    <tr>
-                        <td>{{userInfo.matricule}}</td>
-                        <td>{{userInfo.nom}}</td>
-                        <td>{{userInfo.prenom}}</td>
+                    <tr class="align-middle">
+                        <th>
+                            <p> <label for="motif">Motif*</label> </p>
+                        </th>
+                        <td>
+                            <p>
+                                <input type="text" id="motif" formControlName="motif"
+                                    placeholder="Votre Motif" class="form-control" required>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr class="align-middle">
+                        <th>
+                            <p><label for="debut">Jour de debut*</label></p>
+                        </th>
+                        <td>
+                            <p>
+                                <input type="date" id="debut" formControlName="start" class="form-control"
+                                    required="true">
+                            </p>
+                        </td>
+                    </tr>
+                    <tr class="align-middle">
+                        <th>
+                            <p><label for="fin">Jour de fin*</label></p>
+                        </th>
+                        <td>
+                            <p>
+                                <input type="date" id="fin" formControlName="end" class="form-control"
+                                    required>
+                            </p>
+                        </td>
+                    </tr>
+                    <tr class="align-middle">
+                        <th>
+                            <p><label for="commentaire">Commenter</label></p>
+                        </th>
+                        <td>
+                            <p>
+                                <textarea id="commentaire" formControlName="message"
+                                    class="form-control" rows="3"
+                                    placeholder="Faite un petit commentaire"></textarea>
+                            </p>
+                        </td>
                     </tr>
                 </tbody>
-
             </table>
-        </div>
-        
-           
+
+            <div class="text-end">
+                <button mat-raised-button color="btn-bordeau" type="submit"
+                    >Generer <i class="bi bi-table"></i> </button>
+            </div>
+        </form>
+    </div>
 </div>
