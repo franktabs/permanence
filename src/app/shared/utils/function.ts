@@ -96,3 +96,15 @@ export function formater(
   console.log(nombreFormat);
   return nombreFormat;
 }
+
+export function countDate(date1:Date, date2:Date) {
+
+  const timestamp1 = date1.getTime();
+  const timestamp2 = date2.getTime();
+
+  const differenceMs = Math.abs(timestamp2 - timestamp1);
+
+  const differenceDays = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
+  console.log("il y a ", differenceDays, "de difference")
+  return differenceDays;
+}

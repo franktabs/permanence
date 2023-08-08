@@ -1,7 +1,28 @@
+@import "colors";
+
 .my-day{
 
+    thead tr{
+        background-color: $bordeau-color;
+        color: white;
+        text-transform: capitalize;
+    }
+
+    th{
+        padding: 1em;
+    }
     h1, h2{
         text-align: center;
-        
+        font-weight: bold;
     }
+}
+
+.jour-ferier{
+    font-style: italic;
+    background-color: white;
+    border-radius: 50%;
+    text-align: center;
+    padding: .5em;
+    color: black;
+    font-weight: normal;
 }

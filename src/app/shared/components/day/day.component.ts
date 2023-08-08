@@ -1,20 +1,34 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 
 @Component({
   selector: 'app-day',
   templateUrl: './day.component.html',
   styleUrls: ['./day.component.scss']
 })
-export class DayComponent implements OnInit {
+export class DayComponent implements OnInit, OnChanges {
 
   @Input() date!:Date;
   @Input() typeFerier:"ouvrable"|"non ouvrable"|"simple" = "simple";
   public ordinaire:boolean = true;
 
+  
+
   constructor() { }
 
   ngOnInit(): void {
-    this.ordinaire = this.date.getDay()!=5 || this.date.getDay()!=6 || this.typeFerier=='ouvrable'
+    
   }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if(changes["date"]){
+      let newDate = changes["date"].currentValue ;
+      this.ordinaire = newDate.getDay()!=0 && newDate.getDay()!=6 && this.typeFerier=='simple';
+      console.log("valeur de ordinaire", this.ordinaire)
+    }
+  }
+
+
+ 
+
 
 }

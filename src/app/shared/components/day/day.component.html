@@ -1,18 +1,22 @@
 <div class="my-day">
     <table class="table-bordered p-4">
         <thead>
-            <tr class="bg-light">
+            <tr>
                 <ng-template [ngIf]="!ordinaire" >
                     <th
                         colspan="2">
                         <h1 class="head-2"> {{date| date:"E"}} </h1>
                         <h2> {{date| date:"d/MM/yyyy"}} </h2>
+
+                        <div class="jour-ferier" *ngIf="date.getDay()==6" >Ferier Ouvrable</div>
+
                     </th>
                 </ng-template>
                 <ng-template [ngIf]="ordinaire">
                     <th>
                         <h1 class="head-2"> {{date| date:"E"}} </h1>
                         <h2> {{date| date:"d/MM/yyyy"}} </h2>
+                        <div class="jour-ferier" *ngIf="date.getDay()==6" >Ferier Ouvrable</div>
                     </th>
                 </ng-template>
             </tr>
@@ -21,19 +25,46 @@
         <tbody>
             <tr>
                 <ng-template [ngIf]="!ordinaire">
-                    <td *ngIf="date.getDay()!=5 || date.getDay()!=6 || typeFerier=='ouvrable'">
-                        <h1 > JOUR </h1>
-                        <h2> JEAN</h2>
+                    <td>
+                       <div class="bg-blue text-white text-center fw-bold py-2" >
+                            <span >JOUR</span>
+                       </div>
                     </td>
                     <td>
-                        <h1 > NUIT </h1>
-                        <h2> ANDRE </h2>
+                        <div class="bg-dark text-white text-center fw-bold py-2">
+                            <span>NUIT</span>
+                        </div>
                     </td>
                 </ng-template>
                 <ng-template [ngIf]="ordinaire" >
                     <td>
-                        <h1>NUIT</h1>
-                        <h2>Audrey</h2>
+                        <div class="bg-dark text-white text-center fw-bold py-2">
+                            <span>NUIT</span>
+                        </div>
+                    </td>
+                </ng-template>
+            </tr>
+            <tr>
+                <ng-template [ngIf]="!ordinaire">
+                    <!-- Jour  -->
+                    <td>
+                       <div class="p-2" >
+                            <span >FRANK</span>
+                       </div>
+                    </td>
+                    <!-- Nuit -->
+                    <td>
+                        <div class="p-2">
+                            <span>junior</span>
+                        </div>
+                    </td>
+                </ng-template>
+                <ng-template [ngIf]="ordinaire" >
+                    <!-- Juste la Nuit -->
+                    <td>
+                        <div class="p-2">
+                            <span>Arthur</span>
+                        </div>
                     </td>
                 </ng-template>
             </tr>

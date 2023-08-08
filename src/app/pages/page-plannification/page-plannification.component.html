@@ -8,8 +8,8 @@
         <div>
             <button mat-raised-button color="primary"  (click)="handleModalPlanification()" > <i class="bi bi-calendar3" ></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
         </div>
-        <div class="mt-5" >
-            <app-day [date]="start" ></app-day>
+        <div class="mt-5 d-flex flex-wrap gap-3" >
+            <app-day *ngFor="let day of tabDays" [date]="addDay(day)" ></app-day>
         </div>
     </div>
 </div>
