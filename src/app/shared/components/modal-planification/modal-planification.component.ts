@@ -21,7 +21,7 @@ type Ferier = { jour: string; type: 'ouvrable' | 'non ouvrable' | 'simple' };
 export type DataPlanning = {
   periode: number | string;
   feriers: Ferier[];
-  superviseur: string[];
+  superviseur: string[] | TypePersonnel[] | null[];
 };
 
 @Component({
@@ -32,13 +32,14 @@ export type DataPlanning = {
 export class ModalPlanificationComponent implements OnInit {
   @Output() openChange: EventEmitter<boolean> = new EventEmitter();
   @Output() dataEmit: EventEmitter<DataPlanning> = new EventEmitter();
-  public superviseur: string[] = ['', '', ''];
+
+  public superviseur: string[] | TypePersonnel[]| null[] = ['', '', ''];
   private _periode: number = 3;
   public arrayNumPeriode: number[] = [1, 2, 3];
   public feriers: Ferier[] = [];
 
 
-  private _options!:TypePersonnel[];
+  public options!:TypePersonnel[];
   public controlSuperviseur = new FormControl<string | TypePersonnel>("");
   public filteredOptions$!:Observable<TypePersonnel[]>
 
@@ -53,33 +54,10 @@ export class ModalPlanificationComponent implements OnInit {
     this.api.getAllData<IApiPersonnel[]>({for:"personnels"}).subscribe((subs)=>{
       let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
       this.options = transSubs;
-
     });
 
   }
 
-  set options (value:TypePersonnel[]){
-    this._options = value;
-    this.filteredOptions$ = this.controlSuperviseur.valueChanges.pipe(
-      startWith(""),
-      map(value => {
-        let name = ""
-        if(typeof value =="string"){
-
-           name = value 
-
-        }else if(value) {
-          let unkOption : string = value.nom as string
-          name = unkOption;
-        }
-        return name ? this._filter(name as string).slice(0, 5) : this.options.slice(0, 5);
-      }),
-    )
-  }
-
-  get options(){
-    return this._options;
-  }
 
   @Input()
   set open(bool: boolean) {
@@ -88,21 +66,6 @@ export class ModalPlanificationComponent implements OnInit {
     }
   }
 
-  displayFn(personnel:TypePersonnel):string{
-    if(personnel){
-      let unkName:string = personnel.nom as string;
-      return unkName
-    }
-    return ""
-  }
-
-  private _filter(name:string):TypePersonnel[]{
-    const filterValue = name.toLowerCase();
-    return this.options.filter(option =>{
-      let unkOption : string = option.nom as any
-      return unkOption.toLowerCase().includes(filterValue)
-    });
-  }
 
   public set periode(n: number | string) {
     if (typeof n == 'string') {
@@ -134,7 +97,13 @@ export class ModalPlanificationComponent implements OnInit {
       feriers: this.feriers,
       superviseur: this.superviseur,
     };
+    console.log("données config planning", data);
     this.dataEmit.emit(data);
     this.openChange.emit(false);
+  }
+
+  public receiveSuperviseur(i:number, event:any){
+    console.log("reception de event", event)
+    this.superviseur[i] = event
   }
 }
