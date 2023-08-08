@@ -72,7 +72,7 @@ export class ModalPlanificationComponent implements OnInit {
           let unkOption : string = value.nom as string
           name = unkOption;
         }
-        return name ? this._filter(name as string) : this.options.slice();
+        return name ? this._filter(name as string).slice(0, 5) : this.options.slice(0, 5);
       }),
     )
   }

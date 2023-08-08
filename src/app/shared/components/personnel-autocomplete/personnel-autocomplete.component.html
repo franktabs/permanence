@@ -1,0 +1,10 @@
+<mat-form-field class="example-full-width" appearance="fill">
+    <mat-label>Nom du superviseur </mat-label>
+    <input matInput placeholder="Un superviseur du mois" [formControl]="controlSuperviseur" [matAutocomplete]="auto"
+        required>
+    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
+        <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option">
+            {{option.nom}}
+        </mat-option>
+    </mat-autocomplete>
+</mat-form-field>
