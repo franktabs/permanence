@@ -7,7 +7,14 @@ import {
   Output,
   SimpleChanges,
 } from '@angular/core';
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, map, startWith } from 'rxjs';
+import { ApiService } from '../../services/api.service';
+import { TypePersonnel } from '../../utils/types-map';
+import { FormControl } from '@angular/forms';
+import { IApiPersonnel } from '../../interfaces/iapipersonnel';
+import { mapJSON } from '../../utils/function';
+import { IPersonnel } from '../../interfaces/ipersonnel';
+import { mapPersonnel } from '../../utils/tables-map';
 
 type Ferier = { jour: string; type: 'ouvrable' | 'non ouvrable' | 'simple' };
 
@@ -30,18 +37,71 @@ export class ModalPlanificationComponent implements OnInit {
   public arrayNumPeriode: number[] = [1, 2, 3];
   public feriers: Ferier[] = [];
 
+
+  private _options!:TypePersonnel[];
+  public controlSuperviseur = new FormControl<string | TypePersonnel>("");
+  public filteredOptions$!:Observable<TypePersonnel[]>
+
   // public numberFerier:number[] = [1];
   // public tailleFerier:number = this.ferier.length;
 
-  constructor() {}
+  constructor(private api:ApiService) {}
 
-  ngOnInit(): void {}
+
+  ngOnInit(): void {
+
+    this.api.getAllData<IApiPersonnel[]>({for:"personnels"}).subscribe((subs)=>{
+      let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
+      this.options = transSubs;
+
+    });
+
+  }
+
+  set options (value:TypePersonnel[]){
+    this._options = value;
+    this.filteredOptions$ = this.controlSuperviseur.valueChanges.pipe(
+      startWith(""),
+      map(value => {
+        let name = ""
+        if(typeof value =="string"){
+
+           name = value 
+
+        }else if(value) {
+          let unkOption : string = value.nom as string
+          name = unkOption;
+        }
+        return name ? this._filter(name as string) : this.options.slice();
+      }),
+    )
+  }
+
+  get options(){
+    return this._options;
+  }
 
   @Input()
   set open(bool: boolean) {
     if (bool == false) {
       this.openChange.emit(false);
     }
+  }
+
+  displayFn(personnel:TypePersonnel):string{
+    if(personnel){
+      let unkName:string = personnel.nom as string;
+      return unkName
+    }
+    return ""
+  }
+
+  private _filter(name:string):TypePersonnel[]{
+    const filterValue = name.toLowerCase();
+    return this.options.filter(option =>{
+      let unkOption : string = option.nom as any
+      return unkOption.toLowerCase().includes(filterValue)
+    });
   }
 
   public set periode(n: number | string) {
