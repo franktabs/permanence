@@ -30,6 +30,8 @@ export class PagePlannificationComponent implements OnInit {
     pointDate: [],
   };
 
+  
+
   constructor() {}
 
   ngOnInit(): void {}
@@ -43,7 +45,7 @@ export class PagePlannificationComponent implements OnInit {
     console.log('données recus');
     if (value) {
       console.log('données pret');
-      this.generatePlanning(+value.periode+3);
+      this.generatePlanning(+value.periode);
     }
   }
 

@@ -11,9 +11,9 @@
                     class="bi bi-calendar3"></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
         </div>
         <div class="mt-5" *ngFor="let point of remplissage.pointDate, let i = index">
-            <h1> Superviseur : {{displaySuperviseur(i)}} </h1>
+            <h1> Superviseur : {{displaySuperviseur(i) || "Aucun défini" }} </h1>
             <div class="ligne"></div>
-            <div class='planning'>
+            <div class='planning mt-2'>
                 <ng-container *ngFor="let day of genTabNum(point, i-1)">
                     <app-day [date]="addDay(day + (remplissage.pointDate[i-1]||0))"
                         [feriers]="dataPlanning ? dataPlanning.feriers:[]"></app-day>
