@@ -5,4 +5,5 @@ export interface IPlanning{
     end:string;
     periode:number;
     validate:boolean;
+    submissionDate:string;
 }

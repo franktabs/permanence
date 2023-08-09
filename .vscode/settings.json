@@ -2,5 +2,6 @@
     "commentTranslate.multiLineMerge": false,
     "commentTranslate.targetLanguage": "fr",
     "commentTranslate.hover.enabled": true,
-    "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace"
+    "editor.fontFamily": "'JetBrains Mono', Consolas, 'Courier New', monospace",
+    "editor.fontSize": 12
 }

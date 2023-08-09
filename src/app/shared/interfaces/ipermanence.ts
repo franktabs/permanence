@@ -12,7 +12,9 @@ export interface IPermanence {
     | 'saturday_night'
     | 'sunday_jour'
     | 'sunday_night';
-  personnels?: IApiPersonnel[] | null;
+  personnels_jour?: IApiPersonnel[] | null;
+  personnels_nuit?: IApiPersonnel[] | null;
   superviseur?: IApiPersonnel | null;
-  planning: IPlanning;
+  planning?: IPlanning;
+  
 }

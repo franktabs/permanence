@@ -1,6 +1,18 @@
 import { Component, OnInit } from '@angular/core';
 import { DataPlanning } from 'src/app/shared/components/modal-planification/modal-planification.component';
-import { checkPointDate, countDate } from 'src/app/shared/utils/function';
+import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
+import { IPermanence } from 'src/app/shared/interfaces/ipermanence';
+import { IPersonnel } from 'src/app/shared/interfaces/ipersonnel';
+import { IPlanning } from 'src/app/shared/interfaces/iplanning';
+import { ApiService } from 'src/app/shared/services/api.service';
+import {
+  checkPointDate,
+  countDate,
+  mapJSON,
+  stringDate,
+} from 'src/app/shared/utils/function';
+import { mapPersonnel } from 'src/app/shared/utils/tables-map';
+import { TypePersonnel } from 'src/app/shared/utils/types-map';
 
 type Remplissage = {
   month: number;
@@ -21,7 +33,6 @@ export class PagePlannificationComponent implements OnInit {
 
   public start: Date = new Date('2023-08-13');
   public tabDays: number[] = [];
-
   private _dataPlanning: DataPlanning | null = null;
 
   public remplissage: Remplissage = {
@@ -30,14 +41,45 @@ export class PagePlannificationComponent implements OnInit {
     pointDate: [],
   };
 
-  
+  public group1: IApiPersonnel[] = [];
+  public group2: IApiPersonnel[] = [];
+  public group3: IApiPersonnel[] = [];
 
-  constructor() {}
+  public plannings: IPlanning[] = [];
+  public permanences: IPermanence[] = [];
 
-  ngOnInit(): void {}
+  constructor(private api: ApiService) {}
+
+  ngOnInit(): void {
+    this.api.getAllData<IPlanning[]>({ for: 'plannings' }).subscribe((subs) => {
+      this.plannings = subs;
+    });
+
+    this.api
+      .getAllData<IApiPersonnel[]>({ for: 'personnels' })
+      .subscribe((subs) => {
+        subs.forEach((person, ind) => {
+          if (person.fonction.toLowerCase().includes('responsable du tfj')) {
+            this.group1.push(person);
+          } else if (
+            person.departement?.name?.toLowerCase().includes('production') ||
+            person.departement?.name?.toLowerCase().includes('collaborative')
+          ) {
+            this.group2.push(person);
+          } else if (
+            person.departement?.name?.toLowerCase().includes('logiciels') ||
+            person.departement?.name?.toLowerCase().includes('réseau') ||
+            person.departement?.name?.toLowerCase().includes('sécurité')
+          ) {
+            this.group3.push(person);
+          }
+        });
+      });
+  }
 
   handleModalPlanification() {
     this.openModalPlanification = true;
+    this.fillPlanning();
   }
 
   set dataPlanning(value: DataPlanning | null) {
@@ -137,15 +179,150 @@ export class PagePlannificationComponent implements OnInit {
     let dayMinus = 0;
     let date = new Date(this.start.getTime());
     date.setDate(date.getDate() + lastPoint);
-    console.log("for ", n, "la date est ", date.getDay())
-    if (date.getDay() ==1 || date.getDay()==0) {
+    if (date.getDay() == 1 || date.getDay() == 0) {
       dayMinus = -1;
     }
     let indiceMinus = 0;
-    if(i>0) {
-      indiceMinus = -1
-      dayMinus = 0
+    if (i > 0) {
+      indiceMinus = -1;
+      dayMinus = 0;
     }
-    return Array.from({ length: diffPoint + dayMinus  }, (_, ind) => ind + 1 + indiceMinus);
+    return Array.from(
+      { length: diffPoint + dayMinus },
+      (_, ind) => ind + 1 + indiceMinus
+    );
+  }
+
+  findMan(
+    person: IApiPersonnel,
+    group: IApiPersonnel[],
+    index: number,
+    date?: Date
+  ) {
+    if (person.sexe == 'F') {
+      if (date)
+        console.log(
+          'Le',
+          stringDate(date),
+          'fille rencontré',
+          person.firstname,
+          'group',
+          group
+        );
+      let lastPosition = index;
+      let i = lastPosition;
+      while (person.sexe == 'F') {
+        i = (i + 1) % group.length;
+        person = group[i];
+      }
+      let temps = group[lastPosition];
+      group[lastPosition] = person;
+      group[i] = temps;
+    }
+    if (date)
+      console.log(
+        'Le',
+        stringDate(date),
+        'personne retourné',
+        person.firstname,
+        'group',
+        group
+      );
+
+    return person;
+  }
+
+  fillPlanning() {
+    let decalage = 0;
+    let group1 = [...this.group1];
+    let group2 = [...this.group2];
+    let group3 = [...this.group3];
+
+    console.log('constitution group 3', this.group3);
+
+    let nbrGroup1 = group1.length;
+    let nbrGroup2 = group2.length;
+    let nbrGroup3 = group3.length;
+
+    let repartiGroup2 = 0;
+    let repartiGroup3 = 0;
+
+    this.permanences.forEach((permanence, index) => {
+      let date = new Date(permanence.date);
+      if (date.getDay() != 0 && date.getDay() != 6) {
+        if (permanence.type == 'simple') {
+          let person1 = group1[(index - decalage) % nbrGroup1];
+          let lastPosition = (index - decalage) % nbrGroup1;
+          person1 = this.findMan(person1, group1, lastPosition);
+
+          let person2 = group3[repartiGroup3++ % nbrGroup3];
+          lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+          person2 = this.findMan(person2, group3, lastPosition, date);
+          // if (person1.sexe == 'F') {
+          //   let i = lastPosition;
+          //   while (person1.sexe == 'F') {
+          //     i = (i + 1) % nbrGroup1;
+          //     person1 = group1[i];
+          //   }
+          //   let temps = group1[lastPosition];
+          //   group1[lastPosition] = person1;
+          //   group1[i] = temps;
+          // }
+
+          if (person1.sexe == 'M' && person2.sexe == 'M') {
+            permanence.personnels_nuit?.push(person1, person2);
+          }
+        }
+      } else if (date.getDay() == 6) {
+        if (permanence.type == 'simple') {
+          let permanenceLundi = this.permanences[index - 5];
+          console.log('permanenceLundi, ', permanenceLundi);
+          if (
+            permanence.personnels_jour != null &&
+            permanenceLundi.personnels_nuit != null
+          ) {
+            permanence.personnels_jour[0] = permanenceLundi.personnels_nuit[0];
+
+            let person1 = group2[repartiGroup2++ % nbrGroup2];
+            let person2 = group2[repartiGroup2++ % nbrGroup2];
+            let person3 = group2[repartiGroup2++ % nbrGroup2];
+            let person4 = group3[repartiGroup3++ % nbrGroup3];
+            let person5 = group3[repartiGroup3++ % nbrGroup3];
+
+            permanence.personnels_jour?.push(person1, person2, person4);
+
+            let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+            person3 = this.findMan(person3, group2, lastPosition);
+
+            lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+            person5 = this.findMan(person5, group3, lastPosition);
+
+            permanence.personnels_nuit?.push(person5, person3);
+          }
+        }
+      } else if (date.getDay() == 0) {
+        decalage++;
+
+        if (permanence.type == 'simple') {
+          let person1 = group2[repartiGroup2++ % nbrGroup2];
+          let person2 = group2[repartiGroup2++ % nbrGroup2];
+
+          let person3 = group3[repartiGroup3++ % nbrGroup3];
+          let person4 = group3[repartiGroup3++ % nbrGroup3];
+
+          console.log(person1, person2, person3, person4);
+          permanence.personnels_jour?.push(person1);
+
+          let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+          person2 = this.findMan(person2, group2, lastPosition);
+          permanence.personnels_nuit?.push(person2);
+
+          lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+          person4 = this.findMan(person4, group3, lastPosition);
+          permanence.personnels_jour?.push(person3);
+          permanence.personnels_nuit?.push(person4);
+        }
+      }
+    });
   }
 }

@@ -22,4 +22,5 @@ export interface IApiPersonnel {
   absentList?: IApiRemplacement[] | null;
   vacancies?: IApiHoliday[] | null;
   departement?: IApiDepartement | null;
+  screenname?:string|null;
 }

@@ -11,7 +11,7 @@ import { TypeAbsence } from '../utils/types-map';
 import { IApiRemplacement } from '../interfaces/iapiremplacement';
 
 export interface TypeApi {
-  for: 'holidays' | 'directions' | 'personnels' | 'absences';
+  for: 'holidays' | 'directions' | 'personnels' | 'absences' | 'plannings';
 }
 
 @Injectable({
@@ -29,6 +29,8 @@ export class ApiService {
   public readonly URL_POST_ABSENCES= this.IP+"/person/absence/create/";
 
   public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
+
+  public readonly URL_PLANNINGS = 'api/plannings.json';
 
 
   // public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
@@ -53,7 +55,10 @@ export class ApiService {
       lien = this.URL_HOLIDAYS;
     } else if (props.for === 'personnels') {
       lien = this.URL_PERSONNELS;
-    }
+    } 
+     else if (props.for === 'plannings') {
+      lien = this.URL_PLANNINGS;
+    } 
     if (lien) {
       return this.http.get<T>(lien).pipe(
         tap((values) => {

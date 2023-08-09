@@ -15,8 +15,9 @@ import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { mapJSON } from '../../utils/function';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { mapPersonnel } from '../../utils/tables-map';
+import { IPermanence } from '../../interfaces/ipermanence';
 
-export type Ferier = { jour: string; type: 'ouvrable' | 'non ouvrable' | 'simple' };
+export type Ferier = { jour: string; type: IPermanence["type"] };
 
 export type DataPlanning = {
   periode: number | string;

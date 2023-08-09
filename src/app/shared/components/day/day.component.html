@@ -4,7 +4,7 @@
             <tr>
                 <ng-template [ngIf]="!ordinaire" >
                     <th
-                        [ngClass]="{'bg-mprimary-light':date.getDay()==6 || typeFerier=='ouvrable', 'bg-danger':typeFerier=='non ouvrable'}"
+                        [ngClass]="{'bg-mprimary-light':date.getDay()==6 || typeFerier=='ouvrable', 'bg-danger':typeFerier=='non_ouvrable'}"
                         colspan="2">
                         <h1> {{date| date:"E"}} </h1>
                         <h2> {{date| date:"d/MM/yyyy"}} </h2>
@@ -43,26 +43,29 @@
                     </td>
                 </ng-template>
             </tr>
+            <!-- body nom personnel -->
             <tr>
                 <ng-template [ngIf]="!ordinaire">
-                    <!-- Jour  -->
+                    <!-- Jour nom personnel  -->
                     <td>
-                       <div class="p-2" >
-                            <span >FRANK</span>
-                       </div>
+                        <div class="border-bottom border-1 border-black" *ngFor="let person of permanence.personnels_jour">
+                            <span class="day-person"> {{person.firstname}} </span>
+                        </div>
                     </td>
-                    <!-- Nuit -->
+                    <!-- Nuit nom personnel -->
                     <td>
-                        <div class="p-2">
-                            <span>junior</span>
+                        <div class="border-bottom border-1 border-black" *ngFor="let person of permanence.personnels_nuit">
+                            <span class="day-person"> {{person.firstname}} </span>
                         </div>
                     </td>
                 </ng-template>
+
+
                 <ng-template [ngIf]="ordinaire" >
-                    <!-- Juste la Nuit -->
+                    <!-- Juste la Nuit nom personnel -->
                     <td>
-                        <div class="p-2">
-                            <span>Arthur</span>
+                        <div class="border-bottom border-1 border-black" *ngFor="let person of permanence.personnels_nuit">
+                            <span class="day-person"> {{person.firstname}} </span>
                         </div>
                     </td>
                 </ng-template>
