@@ -3,3 +3,9 @@
     display: grid;
     grid-template-columns: repeat(7, 1fr);
 }
+
+.ligne{
+    background-color: black;
+    height: 1px;
+    margin: 2px;
+}

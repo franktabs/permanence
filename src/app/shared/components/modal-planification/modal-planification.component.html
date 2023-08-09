@@ -68,7 +68,7 @@
                     <input matInput placeholder="Un superviseur du mois"  [(ngModel)]="superviseur[ind]" required>
                 </mat-form-field> -->
                 <app-personnel-autocomplete (dataPerson)="receiveSuperviseur(ind, $event)" *ngFor="let ind of arrayNumPeriode"
-                    forLabel="Nom du superviseur N°{{ind+1}} " forPlaceholder="Superviseur du mois"
+                    forLabel="Nom du superviseur N°{{ind}} " forPlaceholder="Superviseur du mois"
                     [options]="options"
                     name="superviseur{{ind}}"
                     >

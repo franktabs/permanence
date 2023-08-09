@@ -1,18 +1,24 @@
 <div class="page">
-    <app-modal-planification [(open)]="openModalPlanification"  *ngIf="openModalPlanification" (dataEmit)="receiveData($event)" ></app-modal-planification>
+    <app-modal-planification [(open)]="openModalPlanification" *ngIf="openModalPlanification"
+        (dataEmit)="receiveData($event)"></app-modal-planification>
     <span class="title">
         <i class="bi bi-calendar3"> Planification /</i>
     </span>
-    <div class="mt-5" >
-        <h1 class="head-3 color-bordeau" > Plannification de Permanence</h1>
+    <div class="mt-5">
+        <h1 class="head-3 color-bordeau"> Plannification de Permanence</h1>
         <div>
-            <button mat-raised-button color="primary"  (click)="handleModalPlanification()" > <i class="bi bi-calendar3" ></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
+            <button mat-raised-button color="primary" (click)="handleModalPlanification()"> <i
+                    class="bi bi-calendar3"></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
         </div>
-        <div class="mt-5 planning" >
-            <ng-container *ngFor="let day of tabDays">
-                
-                <app-day  [date]="addDay(day)" [feriers]="dataPlanning ? dataPlanning.feriers:[]" ></app-day>
-            </ng-container>
+        <div class="mt-5" *ngFor="let point of remplissage.pointDate, let i = index">
+            <h1> Superviseur : {{displaySuperviseur(i)}} </h1>
+            <div class="ligne"></div>
+            <div class='planning'>
+                <ng-container *ngFor="let day of genTabNum(point, i-1)">
+                    <app-day [date]="addDay(day + (remplissage.pointDate[i-1]||0))"
+                        [feriers]="dataPlanning ? dataPlanning.feriers:[]"></app-day>
+                </ng-container>
+            </div>
         </div>
     </div>
 </div>

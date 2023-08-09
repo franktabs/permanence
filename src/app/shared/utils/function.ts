@@ -112,3 +112,15 @@ export function countDate(date1:Date, date2:Date) {
 export function isEqualDate(date1:Date, date2:Date):boolean{
   return date1.getDate()==date2.getDate()&&date1.getMonth()==date2.getMonth()&&date1.getFullYear()==date2.getFullYear();
 }
+
+export function checkPointDate(end:Date){
+  // end.setMonth(end.getMonth() + m);
+  if (end.getDay() == 1 && end.getDate() == 1) {
+    end.setDate(end.getDate() - 1);
+  } else {
+    while (end.getDay() != 0) {
+      end.setDate(end.getDate() + 1);
+    }
+  }
+  return end;
+}

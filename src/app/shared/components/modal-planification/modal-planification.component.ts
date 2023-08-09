@@ -103,7 +103,6 @@ export class ModalPlanificationComponent implements OnInit {
   }
 
   public receiveSuperviseur(i:number, event:any){
-    console.log("reception de event", event)
-    this.superviseur[i] = event
+    this.superviseur[i-1] = event
   }
 }
