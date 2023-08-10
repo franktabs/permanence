@@ -8,6 +8,7 @@ import { ApiService } from 'src/app/shared/services/api.service';
 import {
   checkPointDate,
   countDate,
+  isEqualDate,
   mapJSON,
   shuffleArray,
   stringDate,
@@ -36,6 +37,8 @@ export class PagePlannificationComponent implements OnInit {
   public tabDays: number[] = [];
   private _dataPlanning: DataPlanning | null = null;
 
+  // public action:"CONSULTATE"|"CREATE" = "CONSULTATE"
+
   public remplissage: Remplissage = {
     month: -1,
     superviseur: 0,
@@ -55,7 +58,7 @@ export class PagePlannificationComponent implements OnInit {
     this.api.getAllData<IPlanning[]>({ for: 'plannings' }).subscribe((subs) => {
       this.plannings = subs;
     });
-    
+
     this.api
       .getAllData<IApiPersonnel[]>({ for: 'personnels' })
       .subscribe((subs) => {
@@ -82,7 +85,6 @@ export class PagePlannificationComponent implements OnInit {
 
   handleModalPlanification() {
     this.openModalPlanification = true;
-    this.fillPlanning();
     console.log("permanences", this.permanences)
   }
 
@@ -98,6 +100,7 @@ export class PagePlannificationComponent implements OnInit {
   }
 
   generatePlanning(m: number) {
+    this.permanences=[];
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
     let fistDate = new Date();
     let thatDate = new Date(fistDate.getFullYear(), fistDate.getMonth(), 1);
@@ -126,6 +129,9 @@ export class PagePlannificationComponent implements OnInit {
     }
     let nbrDays = countDate(start, end);
 
+
+    
+
     let oneDay = new Date(start.getTime());
     oneDay.setDate(oneDay.getDate() + nbrDays);
 
@@ -133,7 +139,31 @@ export class PagePlannificationComponent implements OnInit {
     if (end.getDate() < oneDay.getDate()) {
       dayMinus = -1;
     }
+
     this.start = start;
+
+
+    for(let j = 0; j< nbrDays + 1 + dayMinus; j++){
+      let datePermanence = this.addDay(j);
+      let ferierPermanence = this.dataPlanning?.feriers
+      let permanence:IPermanence = {date:stringDate(datePermanence)||"", type:"simple", personnels_jour:[], personnels_nuit:[]}
+      this.permanences.push(permanence)
+      if(ferierPermanence && ferierPermanence.length){
+        for (let ferier of ferierPermanence) {
+          let thisDate = new Date(ferier.jour);
+          if (
+            isEqualDate(datePermanence, thisDate) &&
+            (ferier.type == 'ouvrable' || ferier.type == 'non_ouvrable')
+          ) {
+            permanence.type = ferier.type;
+            break;
+          } 
+        }
+      }
+    }
+
+    this.fillPlanning()
+
     this.tabDays = Array.from(
       { length: nbrDays + 1 + dayMinus },
       (_, ind) => ind

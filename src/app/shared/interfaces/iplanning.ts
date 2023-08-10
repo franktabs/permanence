@@ -1,3 +1,4 @@
+import { IPermanence } from "./ipermanence";
 
 export interface IPlanning{
     id?:number;
@@ -6,4 +7,5 @@ export interface IPlanning{
     periode:number;
     isValid:boolean;
     submissionDate:string;
+    permanences:IPermanence[]
 }

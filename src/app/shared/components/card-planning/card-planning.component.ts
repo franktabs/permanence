@@ -1,5 +1,6 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { IPlanning } from '../../interfaces/iplanning';
+import { IPermanence } from '../../interfaces/ipermanence';
 
 @Component({
   selector: 'app-card-planning',
@@ -10,9 +11,15 @@ export class CardPlanningComponent implements OnInit {
 
   @Input() planning!:IPlanning;
 
+  @Output() permanencesEmit:EventEmitter<IPermanence[]> = new EventEmitter()
+
   constructor() { }
 
   ngOnInit(): void {
   }
 
+
+  handleClick(){
+    this.permanencesEmit.emit(this.planning.permanences)
+  }
 }
