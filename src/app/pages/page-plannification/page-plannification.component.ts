@@ -37,6 +37,8 @@ export class PagePlannificationComponent implements OnInit {
   public tabDays: number[] = [];
   private _dataPlanning: DataPlanning | null = null;
 
+  public visiblePlanning: boolean = false;
+
   // public action:"CONSULTATE"|"CREATE" = "CONSULTATE"
 
   public remplissage: Remplissage = {
@@ -79,13 +81,11 @@ export class PagePlannificationComponent implements OnInit {
           }
         });
       });
-
-    
   }
 
   handleModalPlanification() {
     this.openModalPlanification = true;
-    console.log("permanences", this.permanences)
+    console.log('permanences', this.permanences);
   }
 
   set dataPlanning(value: DataPlanning | null) {
@@ -99,8 +99,29 @@ export class PagePlannificationComponent implements OnInit {
     return this._dataPlanning;
   }
 
+  voirPlanning(planning: IPlanning) {
+    this.visiblePlanning = false;
+    this.permanences = planning.permanences;
+    this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
+    this.buildPointDate(new Date(planning.start), planning.periode);
+    this.visiblePlanning = true;
+  }
+
+  buildPointDate(start: Date, m: number) {
+    this.start = start;
+    let end = new Date(start.getFullYear(), start.getMonth(), 1);
+    for (let i = 1; i <= m; i++) {
+      let newDate = new Date(end.getTime());
+      newDate.setMonth(newDate.getMonth() + i);
+      let datePoint = checkPointDate(newDate);
+      let coutDay = countDate(start, datePoint);
+      this.remplissage.pointDate.push(coutDay);
+    }
+  }
+
   generatePlanning(m: number) {
-    this.permanences=[];
+    this.visiblePlanning = false;
+    this.permanences = [];
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
     let fistDate = new Date();
     let thatDate = new Date(fistDate.getFullYear(), fistDate.getMonth(), 1);
@@ -129,9 +150,6 @@ export class PagePlannificationComponent implements OnInit {
     }
     let nbrDays = countDate(start, end);
 
-
-    
-
     let oneDay = new Date(start.getTime());
     oneDay.setDate(oneDay.getDate() + nbrDays);
 
@@ -142,13 +160,17 @@ export class PagePlannificationComponent implements OnInit {
 
     this.start = start;
 
-
-    for(let j = 0; j< nbrDays + 1 + dayMinus; j++){
+    for (let j = 0; j < nbrDays + 1 + dayMinus; j++) {
       let datePermanence = this.addDay(j);
-      let ferierPermanence = this.dataPlanning?.feriers
-      let permanence:IPermanence = {date:stringDate(datePermanence)||"", type:"simple", personnels_jour:[], personnels_nuit:[]}
-      this.permanences.push(permanence)
-      if(ferierPermanence && ferierPermanence.length){
+      let ferierPermanence = this.dataPlanning?.feriers;
+      let permanence: IPermanence = {
+        date: stringDate(datePermanence) || '',
+        type: 'simple',
+        personnels_jour: [],
+        personnels_nuit: [],
+      };
+      this.permanences.push(permanence);
+      if (ferierPermanence && ferierPermanence.length) {
         for (let ferier of ferierPermanence) {
           let thisDate = new Date(ferier.jour);
           if (
@@ -157,18 +179,18 @@ export class PagePlannificationComponent implements OnInit {
           ) {
             permanence.type = ferier.type;
             break;
-          } 
+          }
         }
       }
     }
 
-    this.fillPlanning()
+    this.fillPlanning();
+    this.visiblePlanning = true;
 
     this.tabDays = Array.from(
       { length: nbrDays + 1 + dayMinus },
       (_, ind) => ind
     );
-
   }
 
   addDay(d: number) {
@@ -231,7 +253,6 @@ export class PagePlannificationComponent implements OnInit {
     date?: Date
   ) {
     if (person.sexe == 'F') {
-
       let lastPosition = index;
       let i = lastPosition;
       while (person.sexe == 'F') {
@@ -243,7 +264,6 @@ export class PagePlannificationComponent implements OnInit {
       group[i] = temps;
     }
 
-
     return person;
   }
 
@@ -252,7 +272,6 @@ export class PagePlannificationComponent implements OnInit {
     let group1 = shuffleArray([...this.group1]);
     let group2 = shuffleArray([...this.group2]);
     let group3 = shuffleArray([...this.group3]);
-
 
     let nbrGroup1 = group1.length;
     let nbrGroup2 = group2.length;

@@ -11,7 +11,7 @@ export class CardPlanningComponent implements OnInit {
 
   @Input() planning!:IPlanning;
 
-  @Output() permanencesEmit:EventEmitter<IPermanence[]> = new EventEmitter()
+  @Output() planningEmit:EventEmitter<IPlanning> = new EventEmitter()
 
   constructor() { }
 
@@ -20,6 +20,6 @@ export class CardPlanningComponent implements OnInit {
 
 
   handleClick(){
-    this.permanencesEmit.emit(this.planning.permanences)
+    this.planningEmit.emit(this.planning)
   }
 }
