@@ -10,8 +10,8 @@
             <button mat-raised-button color="primary" (click)="handleModalPlanification()"> <i
                     class="bi bi-calendar3"></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
         </div>
-        <div>
-
+        <div class="mt-5 d-flex gap-4 align-items-center flex-wrap" *ngFor="let planning of plannings">
+            <app-card-planning [planning]="planning"></app-card-planning>
         </div>
         <div class="mt-5" *ngFor="let point of remplissage.pointDate, let i = index">
             <h1> Superviseur : {{displaySuperviseur(i) || "Aucun défini" }} </h1>
@@ -23,6 +23,12 @@
                             [permanences]="permanences"
                         ></app-day>
                 </ng-container>
+                <!-- <ng-container *ngFor="let day of genTabNum(point, i-1)">
+                    <app-day  [date]="addDay(day + (remplissage.pointDate[i-1]||0))"
+                        [feriers]="dataPlanning ? dataPlanning.feriers:[]"
+                            [permanences]="permanences"
+                        ></app-day>
+                </ng-container> -->
             </div>
         </div>
     </div>

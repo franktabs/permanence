@@ -74,7 +74,7 @@ export class ModalPlanificationComponent implements OnInit {
     } else this._periode = n;
     this.arrayNumPeriode = Array.from(
       { length: this._periode },
-      (_, index) => index
+      (_, index) => index+1
     );
   }
 
@@ -83,7 +83,7 @@ export class ModalPlanificationComponent implements OnInit {
   }
 
   public ajoutFerier() {
-    this.feriers.push({ jour: '', type: 'simple' });
+    this.feriers.push({ jour: '', type: 'ouvrable' });
     // this.numberFerier = Array.from({ length: this.ferier.length }, (_, index) => index + 1);
   }
 

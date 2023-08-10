@@ -33,8 +33,8 @@
                                                 [name]="'jour'+i" [(ngModel)]="ferier.jour">
                                             <select class="form-select" aria-label="Default select example"
                                                 [name]="'type'+i" [(ngModel)]="ferier.type" id="select-ferier">
-                                                <option value="ouvrable" selected>Ferié Ouvrable</option>
-                                                <option value="non ouvrable">Ferié Non Ouvrable </option>
+                                                <option value="non_ouvrable">Ferié Non Ouvrable </option>
+                                                <option value="ouvrable"  selected>Ferié Ouvrable</option>
                                             </select>
                                             <i class="bi bi-plus-circle plus-x text-primary" *ngIf="feriers.length-1==i"
                                                 (click)="ajoutFerier()"></i>

@@ -45,6 +45,7 @@ import { FromDatePipe } from './shared/pipes/from-date.pipe';
 import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { PersonnelAutocompleteComponent } from './shared/components/personnel-autocomplete/personnel-autocomplete.component';
+import { CardPlanningComponent } from './shared/components/card-planning/card-planning.component';
 
 
 registerLocaleData(localeFr)
@@ -81,7 +82,8 @@ registerLocaleData(localeFr)
     HeadModalDefaultComponent,
     DayComponent,
     FromDatePipe,
-    PersonnelAutocompleteComponent
+    PersonnelAutocompleteComponent,
+    CardPlanningComponent
   ],
   imports: [
     BrowserModule,

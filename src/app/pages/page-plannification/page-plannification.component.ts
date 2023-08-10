@@ -9,6 +9,7 @@ import {
   checkPointDate,
   countDate,
   mapJSON,
+  shuffleArray,
   stringDate,
 } from 'src/app/shared/utils/function';
 import { mapPersonnel } from 'src/app/shared/utils/tables-map';
@@ -54,7 +55,7 @@ export class PagePlannificationComponent implements OnInit {
     this.api.getAllData<IPlanning[]>({ for: 'plannings' }).subscribe((subs) => {
       this.plannings = subs;
     });
-
+    
     this.api
       .getAllData<IApiPersonnel[]>({ for: 'personnels' })
       .subscribe((subs) => {
@@ -75,18 +76,19 @@ export class PagePlannificationComponent implements OnInit {
           }
         });
       });
+
+    
   }
 
   handleModalPlanification() {
     this.openModalPlanification = true;
     this.fillPlanning();
+    console.log("permanences", this.permanences)
   }
 
   set dataPlanning(value: DataPlanning | null) {
     this._dataPlanning = value;
-    console.log('données recus');
     if (value) {
-      console.log('données pret');
       this.generatePlanning(+value.periode);
     }
   }
@@ -137,7 +139,6 @@ export class PagePlannificationComponent implements OnInit {
       (_, ind) => ind
     );
 
-    console.log('all checkpoint', this.remplissage);
   }
 
   addDay(d: number) {
@@ -200,15 +201,7 @@ export class PagePlannificationComponent implements OnInit {
     date?: Date
   ) {
     if (person.sexe == 'F') {
-      if (date)
-        console.log(
-          'Le',
-          stringDate(date),
-          'fille rencontré',
-          person.firstname,
-          'group',
-          group
-        );
+
       let lastPosition = index;
       let i = lastPosition;
       while (person.sexe == 'F') {
@@ -219,26 +212,17 @@ export class PagePlannificationComponent implements OnInit {
       group[lastPosition] = person;
       group[i] = temps;
     }
-    if (date)
-      console.log(
-        'Le',
-        stringDate(date),
-        'personne retourné',
-        person.firstname,
-        'group',
-        group
-      );
+
 
     return person;
   }
 
   fillPlanning() {
     let decalage = 0;
-    let group1 = [...this.group1];
-    let group2 = [...this.group2];
-    let group3 = [...this.group3];
+    let group1 = shuffleArray([...this.group1]);
+    let group2 = shuffleArray([...this.group2]);
+    let group3 = shuffleArray([...this.group3]);
 
-    console.log('constitution group 3', this.group3);
 
     let nbrGroup1 = group1.length;
     let nbrGroup2 = group2.length;
@@ -276,7 +260,6 @@ export class PagePlannificationComponent implements OnInit {
       } else if (date.getDay() == 6) {
         if (permanence.type == 'simple') {
           let permanenceLundi = this.permanences[index - 5];
-          console.log('permanenceLundi, ', permanenceLundi);
           if (
             permanence.personnels_jour != null &&
             permanenceLundi.personnels_nuit != null
@@ -310,7 +293,6 @@ export class PagePlannificationComponent implements OnInit {
           let person3 = group3[repartiGroup3++ % nbrGroup3];
           let person4 = group3[repartiGroup3++ % nbrGroup3];
 
-          console.log(person1, person2, person3, person4);
           permanence.personnels_jour?.push(person1);
 
           let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;

@@ -78,7 +78,11 @@ body {
 }
 
 .color-bordeau {
-    color: $bordeau-color;
+    color: $bordeau-color !important;
+}
+
+.color-bleu{
+    color: #3F51B5 !important;
 }
 
 .head-2 {
