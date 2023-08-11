@@ -1,18 +1,20 @@
 @import "colors";
 
-.my-day{
+.my-day {
 
-    table thead tr th{
+    table thead tr th {
         background-color: gray;
         color: white;
         text-transform: capitalize;
         height: 100%;
     }
 
-    th{
+    th {
         padding: .5em 1em;
     }
-    h1, h2{
+
+    h1,
+    h2 {
         font-size: 1em;
         text-align: center;
         margin: 0 !important;
@@ -20,7 +22,7 @@
     }
 }
 
-.jour-ferier{
+.jour-ferier {
     font-style: italic;
     background-color: white;
     border-radius: 50%;
@@ -31,6 +33,16 @@
     font-size: 1em;
 }
 
-.day-person{
+.day-person {
     white-space: nowrap;
+}
+
+.div-person {
+    cursor: pointer !important;
+    border-bottom: 1px solid black !important;
+    &:hover {
+        font-weight: bold;
+        color: $bordeau-color;
+        border-color: $bordeau-color  !important;
+    }
 }

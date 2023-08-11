@@ -46,6 +46,9 @@ import { registerLocaleData } from '@angular/common';
 import localeFr from '@angular/common/locales/fr';
 import { PersonnelAutocompleteComponent } from './shared/components/personnel-autocomplete/personnel-autocomplete.component';
 import { CardPlanningComponent } from './shared/components/card-planning/card-planning.component';
+import { ParaComponent } from './parametres/para/para.component';
+import { ModificationComponent } from './parametres/modification/modification.component';
+import { ModalPermanenceComponent } from './shared/components/modal-permanence/modal-permanence.component';
 
 
 registerLocaleData(localeFr)
@@ -83,7 +86,10 @@ registerLocaleData(localeFr)
     DayComponent,
     FromDatePipe,
     PersonnelAutocompleteComponent,
-    CardPlanningComponent
+    CardPlanningComponent,
+    ParaComponent,
+    ModificationComponent,
+    ModalPermanenceComponent
   ],
   imports: [
     BrowserModule,

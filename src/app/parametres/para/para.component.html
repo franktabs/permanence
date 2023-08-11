@@ -1,0 +1,25 @@
+<div class="table-container">
+  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+    <!-- Other column definitions -->
+    <!-- libelle Column -->
+    <ng-container matColumnDef="libelle">
+      <th mat-header-cell *matHeaderCellDef>Libele</th>
+      <td mat-cell *matCellDef="let element">{{element.libelle}}</td>
+    </ng-container>
+
+    <!-- code Column -->
+    <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef>Code</th>
+      <td mat-cell *matCellDef="let element">{{element.code}}</td>
+    </ng-container>
+    <!-- value Column -->
+    <ng-container matColumnDef="value">
+      <th mat-header-cell *matHeaderCellDef>Value</th>
+      <td mat-cell *matCellDef="let element" (click)="editValue(element)">{{element.value}}</td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row (click)="editValue(row)" [class.demo-row-is-clicked]="selectedRow === row"
+      *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>

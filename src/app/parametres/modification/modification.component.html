@@ -1,0 +1,15 @@
+<h1 mat-dialog-title class="fw-bold" >Nouvelle valeur de <span style="color: brown;"> {{row.libelle}}</span> </h1>
+<div mat-dialog-content >
+  <input type="text" [(ngModel)]="value" name="yu" class="value form-control" placeholder="Entrer une nouvelle valeur">
+</div>
+<div mat-dialog-actions class="text-end">
+  <button mat-flat-button color="primary" (click)="updateValue()">Modifier</button>
+</div>
+<!-- 
+<form class="example-form">
+  <mat-form-field class="example-full-width" appearance="fill">
+    <p>New value of <span style="color: brown;"> {{libelle}}</span> </p>
+    <input type="text" [(ngModel)]="value" name="yu" class="value" placeholder="value">
+    <button mat-flat-button color="primary" (click)="updateValue()">Update</button>
+  </mat-form-field>
+</form> -->

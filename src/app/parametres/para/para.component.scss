@@ -1,0 +1,27 @@
+@import "colors";
+
+.demo-table {
+    width: 100%;
+  }
+  
+  .mat-row .mat-cell {
+    border-bottom: 1px solid transparent;
+    border-top: 1px solid black ;
+    cursor: pointer;
+  }
+  
+  .mat-row:hover .mat-cell {
+    border-color: rgb(222, 222, 222);
+    background-color: rgb(222, 222, 222);
+    // font-weight: bolder;
+  }
+  
+  .table-container {
+    width: 60%;
+    margin: 0 auto;
+    // background-color: aqua;
+  }
+.table-container button{
+  align-content: center;
+  margin:5px 70px;
+}

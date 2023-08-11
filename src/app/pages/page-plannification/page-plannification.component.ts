@@ -160,6 +160,8 @@ export class PagePlannificationComponent implements OnInit {
 
     this.start = start;
 
+    let newPlanning:IPlanning = {start:stringDate(this.start), end:stringDate(end), permanences:[], periode:m, isValid:null, submissionDate:stringDate(new Date())}
+
     for (let j = 0; j < nbrDays + 1 + dayMinus; j++) {
       let datePermanence = this.addDay(j);
       let ferierPermanence = this.dataPlanning?.feriers;
@@ -183,8 +185,9 @@ export class PagePlannificationComponent implements OnInit {
         }
       }
     }
-
+    newPlanning.permanences = this.permanences;
     this.fillPlanning();
+    this.plannings.unshift(newPlanning);
     this.visiblePlanning = true;
 
     this.tabDays = Array.from(

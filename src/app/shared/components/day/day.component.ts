@@ -6,8 +6,12 @@ import {
   SimpleChanges,
 } from '@angular/core';
 import { Ferier } from '../modal-planification/modal-planification.component';
-import { isEqualDate, stringDate } from '../../utils/function';
+import { formatJSON, isEqualDate, stringDate } from '../../utils/function';
 import { IPermanence } from '../../interfaces/ipermanence';
+import { TypePersonnel } from '../../utils/types-map';
+import { IApiPersonnel } from '../../interfaces/iapipersonnel';
+import { IPersonnel } from '../../interfaces/ipersonnel';
+import { mapPersonnel } from '../../utils/tables-map';
 
 @Component({
   selector: 'app-day',
@@ -22,6 +26,10 @@ export class DayComponent implements OnInit, OnChanges {
   public date!: Date;
   // @Input() feriers: Ferier[] = [];
   @Input() permanence!: IPermanence;
+
+  public openModal:boolean = false;
+
+  public row!: TypePersonnel;
 
   constructor() {}
 
@@ -38,8 +46,6 @@ export class DayComponent implements OnInit, OnChanges {
         this.date.getDay() != 6 &&
         this.typeFerier == 'simple';
     }
-
-
     // if (changes['date']) {
     //   let newDate = changes['date'].currentValue;
 
@@ -126,4 +132,10 @@ export class DayComponent implements OnInit, OnChanges {
     //   this.permanences.push(this.permanence)
     // }
   }
+
+  handleClick(person:IApiPersonnel){
+    this.row = formatJSON<IApiPersonnel, IPersonnel>({obj:person, correspondance:mapPersonnel})
+    this.openModal = true;
+  }
+
 }

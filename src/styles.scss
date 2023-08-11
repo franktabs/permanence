@@ -100,3 +100,43 @@ body {
 .head-1-5 {
     font-size: 1.5em !important;
 }
+
+.my-card{
+    transition: .2s;
+    box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
+    border: 1px solid transparent;
+    &:hover{
+        transform: translateY(-.5em);
+        border: 1px blue dashed;
+    }
+
+    &:active{
+        box-shadow: inset 1px 1px 10px #868686c2 ;
+    }
+}
+
+.mat-btn-bordeau{
+    background-color: $bordeau-color;
+    color: white;
+}
+
+.mat-btn-noir{
+    background-color: black;
+    color: white;
+}
+
+.mat-btn-rouge{
+    background-color: $for-red-color;
+    color: white;
+}
+
+.no-shadow{
+    box-shadow: none !important;
+}
+
+.no-border{
+    border: none !important;
+    &:hover{
+        border: none !important;
+    }
+}

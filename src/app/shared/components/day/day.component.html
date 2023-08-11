@@ -1,4 +1,5 @@
-<div class="my-day">
+<app-modal1 [(isOpen)]="openModal" *ngIf="openModal" [rows]="row"></app-modal1>
+<div class="my-day my-card no-shadow no-border">
     <table class="table-bordered p-4 table border-black">
         <thead>
             <tr>
@@ -48,13 +49,13 @@
                 <ng-template [ngIf]="!ordinaire">
                     <!-- Jour nom personnel  -->
                     <td>
-                        <div class="border-bottom border-1 border-black" *ngFor="let person of permanence.personnels_jour">
-                            <span class="day-person"> {{person.firstname}} </span>
+                        <div class="div-person" *ngFor="let person of permanence.personnels_jour" (click)="handleClick(person)" >
+                            <span class="day-person"   > {{person.firstname}} </span>
                         </div>
-                    </td>
+                    </td> 
                     <!-- Nuit nom personnel -->
                     <td>
-                        <div class="border-bottom border-1 border-black" *ngFor="let person of permanence.personnels_nuit">
+                        <div class="div-person" *ngFor="let person of permanence.personnels_nuit" (click)="handleClick(person)">
                             <span class="day-person"> {{person.firstname}} </span>
                         </div>
                     </td>
@@ -64,7 +65,7 @@
                 <ng-template [ngIf]="ordinaire" >
                     <!-- Juste la Nuit nom personnel -->
                     <td>
-                        <div class="border-bottom border-1 border-black" *ngFor="let person of permanence.personnels_nuit">
+                        <div class="div-person"  *ngFor="let person of permanence.personnels_nuit" (click)="handleClick(person)" >
                             <span class="day-person"> {{person.firstname}} </span>
                         </div>
                     </td>

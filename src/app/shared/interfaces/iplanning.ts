@@ -5,7 +5,7 @@ export interface IPlanning{
     start:string;
     end:string;
     periode:number;
-    isValid:boolean;
+    isValid:boolean|null;
     submissionDate:string;
     permanences:IPermanence[]
 }

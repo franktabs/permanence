@@ -22,4 +22,8 @@ export class CardPlanningComponent implements OnInit {
   handleClick(){
     this.planningEmit.emit(this.planning)
   }
+
+  handleSave(){
+    console.log()
+  }
 }

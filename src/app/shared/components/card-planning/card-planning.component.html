@@ -1,4 +1,4 @@
-<div class="bg-white shadow-lg">
+<div class="bg-white shadow-lg my-card" >
     <div class="p-2">
         <div class="fs-6 fst-italic border-bottom border-1 border-black text-center pb-2 text-capitalize">
             <ng-container [ngSwitch]="planning.isValid"  >
@@ -33,11 +33,11 @@
                     <table class="table table-hover">
                         <tbody>
                             <tr>
-                                <th class="color-bordeau color-bleu fw-bold">Mois</th>
+                                <th class="color-bordeau color-bleu fw-bold">Periode</th>
                                 <td> {{ planning.periode }} mois </td>
                             </tr>
                             <tr>
-                                <th class="color-bordeau color-bleu fw-bold ">Periode</th>
+                                <th class="color-bordeau color-bleu fw-bold ">Dates</th>
                                 <td class="text-capitalize" >du <span class="fw-bold fst-italic"> {{ planning.start }} </span>  -- <span class="fw-bold fst-italic"> {{ planning.end }} </span> </td>
                             </tr>
                         </tbody>
@@ -45,8 +45,16 @@
                 </div>
             </div>
         </div>
-        <div class="text-end border-top border-1 border-black pt-2">
-            <button mat-raised-button color="primary" (click)="handleClick()" >Voir <i class="bi-eye bi"></i> </button>
+        <div class="d-flex justify-content-between border-top border-1 border-black pt-2">
+
+            <div class="d-flex gap-2">
+                <button mat-raised-button  class="mat-btn-noir " >Valider <i class="bi bi-calendar2-check"></i> </button>
+            <button mat-raised-button  class="mat-btn-rouge" >Rejeter <i class="bi-eye bi-x-lg"></i> </button>
+            </div>
+            <div class="d-flex gap-2">
+                <button mat-raised-button class="mat-btn-bordeau"  (click)="handleSave()" >Enregistrer <i class="bi-eye bi-save"></i> </button>
+            <button mat-raised-button color="primary" (click)="handleClick()" > Voir <i class="bi-eye bi"></i> </button>
+            </div>
         </div>
     </div>
 </div>

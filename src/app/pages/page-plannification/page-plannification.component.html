@@ -10,8 +10,8 @@
             <button mat-raised-button color="primary" (click)="handleModalPlanification()"> <i
                     class="bi bi-calendar3"></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
         </div>
-        <div class="mt-5 d-flex gap-4 align-items-center flex-wrap" *ngFor="let planning of plannings">
-            <app-card-planning [planning]="planning" (planningEmit)="voirPlanning($event)" ></app-card-planning>
+        <div class="mt-5 d-flex gap-4 align-items-center flex-wrap" >
+            <app-card-planning *ngFor="let planning of plannings" [planning]="planning" (planningEmit)="voirPlanning($event)" ></app-card-planning>
         </div>
         <ng-container *ngIf="visiblePlanning">
             <div class="mt-5" *ngFor="let point of remplissage.pointDate, let i = index">
@@ -27,3 +27,5 @@
         </ng-container>
     </div>
 </div>
+
+<app-modal-permanence   ></app-modal-permanence>
