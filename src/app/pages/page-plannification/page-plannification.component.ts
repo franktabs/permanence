@@ -59,11 +59,15 @@ export class PagePlannificationComponent implements OnInit {
   public group3: IApiPersonnel[] = [];
 
   public plannings: IPlanning[] = [];
+
+  public planningVisible: IPlanning | null = null;
+
   public permanences: IPermanence[] = [];
 
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
+
     this.api.getAllData<IPlanning[]>({ for: 'plannings' }).subscribe((subs) => {
       this.plannings = subs;
     });
@@ -108,11 +112,16 @@ export class PagePlannificationComponent implements OnInit {
 
   voirPlanning(planning: IPlanning) {
     this.visiblePlanning = false;
-    let thePermanences:IPermanence[] = []
-    for(let theMonth of planning.months){
-      
+    let thePermanences: IPermanence[] = [];
+    this.planningVisible = planning;
+    for (let theMonth of planning.months) {
+      if (theMonth.permanences) {
+        for (let permanence of theMonth.permanences) {
+          thePermanences.push(permanence);
+        }
+      }
     }
-    this.permanences = planning.permanences;
+    this.permanences = thePermanences;
 
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
     this.buildPointDate(new Date(planning.start), planning.periode);
@@ -176,7 +185,7 @@ export class PagePlannificationComponent implements OnInit {
           name: stringMonth(newStartDay.getMonth()),
           numero: newStartDay.getMonth(),
           start: stringDate(newStartDay),
-          permanences:[]
+          permanences: [],
         });
       }
       let newSuperviseur = this.dataPlanning?.superviseur[i - 1];
@@ -248,10 +257,11 @@ export class PagePlannificationComponent implements OnInit {
       }
     }
     // newPlanning.permanences = this.permanences;
+    this.planningVisible = newPlanning;
     this.fillPlanning();
     this.plannings.unshift(newPlanning);
     this.visiblePlanning = true;
-
+    console.log("le plannings visible", this.planningVisible);
     this.tabDays = Array.from(
       { length: nbrDays + 1 + dayMinus },
       (_, ind) => ind
@@ -279,11 +289,11 @@ export class PagePlannificationComponent implements OnInit {
   }
 
   displaySuperviseur(n: number): string {
-    let dataSuperviseur = this.dataPlanning?.superviseur[n];
+    let dataSuperviseur = this.planningVisible?.months[n].superviseur;
     if (typeof dataSuperviseur === 'string') {
       return dataSuperviseur;
     } else if (dataSuperviseur) {
-      return dataSuperviseur.nom as string;
+      return dataSuperviseur.firstname as string;
     }
     return '';
   }

@@ -22,8 +22,8 @@ export class ApiService {
   public readonly IP = 'http://localhost:8000/api';
 
   // public readonly URL_PERSONNELS = this.IP+'/person/allPersons';
-  public readonly URL_PERSONNELS = this.IP + '/personnel';
-  // public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
+  // public readonly URL_PERSONNELS = this.IP + '/personnel';
+  public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
 
   public readonly URL_ABSENCES = 'api/apiAbsences.json';
   public readonly URL_POST_ABSENCES = this.IP + '/person/absence/create/';
@@ -33,8 +33,8 @@ export class ApiService {
   public readonly URL_PLANNINGS = 'api/plannings.json';
 
   // public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
-  public readonly URL_DIRECTIONS = this.IP +'/direction';
-  // public readonly URL_DIRECTIONS = 'api/apiDirections.json';
+  // public readonly URL_DIRECTIONS = this.IP +'/direction';
+  public readonly URL_DIRECTIONS = 'api/apiDirections.json';
 
   constructor(private http: HttpClient) {}
 

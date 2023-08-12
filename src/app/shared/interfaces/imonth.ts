@@ -8,7 +8,7 @@ export interface IMonth {
     numero:number;
     start:string;
     end?:string;
-    superviseur?:IApiPersonnel;
+    superviseur?:IApiPersonnel|null;
     planning?:IPlanning;
     permanences?:IPermanence[];
 }
