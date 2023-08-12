@@ -8,6 +8,7 @@ import { IApiHoliday } from '../interfaces/iapiholiday';
 import { IHolidays } from '../interfaces/iholidays';
 import { IApiDepartement } from '../interfaces/iapidepartement';
 import { TypeFormatJSON } from './function';
+import { TypePersonnel } from './types-map';
 
 // export const mapDirection:TypeFormatJSON<IApiDirection, IDirection>["correspondance"]
 export const mapDirection: TypeFormatJSON<
@@ -20,6 +21,10 @@ export const mapPersonnel: TypeFormatJSON<
   IPersonnel
 >['correspondance'] = {firstname:"nom", emailaddress:"email", telephoneCisco:"contact1", telephoneMobile:"contact2", absentList:"absences", vacancies:"holidays"}
 
+export const mapReversePersonnel:TypeFormatJSON<
+  TypePersonnel,
+  IApiPersonnel
+>["correspondance"] = {nom:"firstname", email:"emailaddress", contact1:"telephoneCisco",contact2:"telephoneMobile", absences:"absentList", holidays:"vacancies" }
 
 export const mapAbsence: TypeFormatJSON<
   IApiRemplacement,

@@ -97,23 +97,26 @@ export function formater(
   return nombreFormat;
 }
 
-export function countDate(date1:Date, date2:Date) {
-
+export function countDate(date1: Date, date2: Date) {
   const timestamp1 = date1.getTime();
   const timestamp2 = date2.getTime();
 
   const differenceMs = Math.abs(timestamp2 - timestamp1);
 
   const differenceDays = Math.ceil(differenceMs / (1000 * 60 * 60 * 24));
-  console.log("il y a ", differenceDays, "de difference")
+  console.log('il y a ', differenceDays, 'de difference');
   return differenceDays;
 }
 
-export function isEqualDate(date1:Date, date2:Date):boolean{
-  return date1.getDate()==date2.getDate()&&date1.getMonth()==date2.getMonth()&&date1.getFullYear()==date2.getFullYear();
+export function isEqualDate(date1: Date, date2: Date): boolean {
+  return (
+    date1.getDate() == date2.getDate() &&
+    date1.getMonth() == date2.getMonth() &&
+    date1.getFullYear() == date2.getFullYear()
+  );
 }
 
-export function checkPointDate(end:Date){
+export function checkPointDate(end: Date) {
   // end.setMonth(end.getMonth() + m);
   if (end.getDay() == 1 && end.getDate() == 1) {
     end.setDate(end.getDate() - 1);
@@ -125,14 +128,50 @@ export function checkPointDate(end:Date){
   return end;
 }
 
-export function stringDate(date:Date){
-  return date.getFullYear()+"-"+(date.getMonth()+1 ).toString().padStart(2,"0") +"-"+date.getDate().toString().padStart(2,"0") 
+export function stringDate(date: Date) {
+  return (
+    date.getFullYear() +
+    '-' +
+    (date.getMonth() + 1).toString().padStart(2, '0') +
+    '-' +
+    date.getDate().toString().padStart(2, '0')
+  );
 }
 
-export function shuffleArray<T>(array:T[]): T[] {
+export function shuffleArray<T>(array: T[]): T[] {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [array[i], array[j]] = [array[j], array[i]];
   }
   return array;
+}
+
+export function stringMonth(i: number): string {
+  if (i == 0) {
+    return 'janvier';
+  } else if (i == 1) {
+    return 'fevrier';
+  } else if (i == 2) {
+    return 'mars';
+  } else if (i == 3) {
+    return 'avril';
+  } else if (i == 4) {
+    return 'mai';
+  } else if (i == 5) {
+    return 'juin';
+  } else if (i == 6) {
+    return 'juillet';
+  } else if (i == 7) {
+    return 'aout';
+  } else if (i == 8) {
+    return 'septembre';
+  } else if (i == 9) {
+    return 'octobre';
+  } else if (i == 10) {
+    return 'novembre';
+  } else if (i == 11) {
+    return 'decembre';
+  } else {
+    return 'aucun mois';
+  }
 }

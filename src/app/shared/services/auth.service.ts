@@ -9,7 +9,7 @@ import { TypePersonnel } from '../utils/types-map';
 export class AuthService {
 
   //admin:17
-  public readonly DEFAULT_PERSON:number = 17;
+  public readonly DEFAULT_PERSON:number = 15;
 
   private _user:TypePersonnel|null=null;
 

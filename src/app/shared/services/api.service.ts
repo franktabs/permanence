@@ -18,31 +18,28 @@ export interface TypeApi {
   providedIn: 'root',
 })
 export class ApiService {
-  public readonly IP = 'http://192.168.2.64:8080/gestion';
-
+  // public readonly IP = 'http://192.168.2.64:8080/gestion';
+  public readonly IP = 'http://localhost:8000/api';
 
   // public readonly URL_PERSONNELS = this.IP+'/person/allPersons';
-  public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
-
+  public readonly URL_PERSONNELS = this.IP + '/personnel';
+  // public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
 
   public readonly URL_ABSENCES = 'api/apiAbsences.json';
-  public readonly URL_POST_ABSENCES= this.IP+"/person/absence/create/";
+  public readonly URL_POST_ABSENCES = this.IP + '/person/absence/create/';
 
   public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
 
   public readonly URL_PLANNINGS = 'api/plannings.json';
 
-
   // public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
-  public readonly URL_DIRECTIONS = 'api/apiDirections.json';
-
+  public readonly URL_DIRECTIONS = this.IP +'/direction';
+  // public readonly URL_DIRECTIONS = 'api/apiDirections.json';
 
   constructor(private http: HttpClient) {}
 
-  public postData<T>(url:string,data: T): Observable<T> {
-    return this.http
-      .post(url, data)
-      .pipe(catchError(this.displayError) as any);
+  public postData<T>(url: string, data: T): Observable<T> {
+    return this.http.post(url, data).pipe(catchError(this.displayError) as any);
   }
 
   public getAllData<T>(props: TypeApi): Observable<T> {
@@ -55,10 +52,9 @@ export class ApiService {
       lien = this.URL_HOLIDAYS;
     } else if (props.for === 'personnels') {
       lien = this.URL_PERSONNELS;
-    } 
-     else if (props.for === 'plannings') {
+    } else if (props.for === 'plannings') {
       lien = this.URL_PLANNINGS;
-    } 
+    }
     if (lien) {
       return this.http.get<T>(lien).pipe(
         tap((values) => {
@@ -66,7 +62,7 @@ export class ApiService {
           // let tabs = values as any
           // if(props.for==="directions"){
           //   for(let value of tabs){
-              
+
           //     this.http.post(this.IP+"/direction/create", value).pipe(
           //       tap(elm=>console.log("insertion de ", elm)),
           //       catchError(this.displayError)
@@ -84,12 +80,14 @@ export class ApiService {
             console.error(err.status);
           }
           return throwError(
-            () => new Error('Erreur produit au chargement de données, '+lien)
+            () => new Error('Erreur produit au chargement de données, ' + lien)
           );
         })
       );
     } else {
-      return throwError(() => new Error('Erreur chargement url api !!! '+lien));
+      return throwError(
+        () => new Error('Erreur chargement url api !!! ' + lien)
+      );
     }
   }
 

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { DataPlanning } from 'src/app/shared/components/modal-planification/modal-planification.component';
 import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
+import { IMonth } from 'src/app/shared/interfaces/imonth';
 import { IPermanence } from 'src/app/shared/interfaces/ipermanence';
 import { IPersonnel } from 'src/app/shared/interfaces/ipersonnel';
 import { IPlanning } from 'src/app/shared/interfaces/iplanning';
@@ -8,12 +9,17 @@ import { ApiService } from 'src/app/shared/services/api.service';
 import {
   checkPointDate,
   countDate,
+  formatJSON,
   isEqualDate,
   mapJSON,
   shuffleArray,
   stringDate,
+  stringMonth,
 } from 'src/app/shared/utils/function';
-import { mapPersonnel } from 'src/app/shared/utils/tables-map';
+import {
+  mapPersonnel,
+  mapReversePersonnel,
+} from 'src/app/shared/utils/tables-map';
 import { TypePersonnel } from 'src/app/shared/utils/types-map';
 
 type Remplissage = {
@@ -39,6 +45,7 @@ export class PagePlannificationComponent implements OnInit {
 
   public visiblePlanning: boolean = false;
 
+  public months: IMonth[] = [];
   // public action:"CONSULTATE"|"CREATE" = "CONSULTATE"
 
   public remplissage: Remplissage = {
@@ -101,7 +108,12 @@ export class PagePlannificationComponent implements OnInit {
 
   voirPlanning(planning: IPlanning) {
     this.visiblePlanning = false;
+    let thePermanences:IPermanence[] = []
+    for(let theMonth of planning.months){
+      
+    }
     this.permanences = planning.permanences;
+
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
     this.buildPointDate(new Date(planning.start), planning.periode);
     this.visiblePlanning = true;
@@ -123,6 +135,7 @@ export class PagePlannificationComponent implements OnInit {
     this.visiblePlanning = false;
     this.permanences = [];
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
+    this.months = [];
     let fistDate = new Date();
     let thatDate = new Date(fistDate.getFullYear(), fistDate.getMonth(), 1);
     thatDate.setMonth(thatDate.getMonth() + 1);
@@ -133,13 +146,51 @@ export class PagePlannificationComponent implements OnInit {
       start.setDate(start.getDate() + 1);
     }
 
+    let newPlanning: IPlanning = {
+      start: stringDate(start),
+      periode: m,
+      isValid: null,
+      submissionDate: stringDate(new Date()),
+      months: [],
+    };
+
+    let month: IMonth = {
+      name: stringMonth(start.getMonth()),
+      numero: start.getMonth(),
+      start: stringDate(start),
+      permanences: [],
+    };
+
+    newPlanning.months.push(month);
+
     for (let i = 1; i <= m; i++) {
+      let newMonth = newPlanning.months[i - 1];
       let newDate = new Date(end.getTime());
       newDate.setMonth(newDate.getMonth() + i);
       let datePoint = checkPointDate(newDate);
+      newMonth.end = stringDate(datePoint);
+      if (i + 1 <= m) {
+        let newStartDay = new Date(datePoint.getTime());
+        newStartDay.setDate(datePoint.getDate() + 1);
+        newPlanning.months.push({
+          name: stringMonth(newStartDay.getMonth()),
+          numero: newStartDay.getMonth(),
+          start: stringDate(newStartDay),
+          permanences:[]
+        });
+      }
+      let newSuperviseur = this.dataPlanning?.superviseur[i - 1];
+      if (newSuperviseur && !(typeof newSuperviseur == 'string')) {
+        let formatSuperviseur = formatJSON<TypePersonnel, IApiPersonnel>({
+          obj: newSuperviseur,
+          correspondance: mapReversePersonnel,
+        });
+        newMonth.superviseur = formatSuperviseur;
+      }
       let coutDay = countDate(start, datePoint);
       this.remplissage.pointDate.push(coutDay);
     }
+
     end.setMonth(end.getMonth() + m);
     if (end.getDay() == 1 && end.getDate() == 1) {
       end.setDate(end.getDate() - 1);
@@ -148,6 +199,9 @@ export class PagePlannificationComponent implements OnInit {
         end.setDate(end.getDate() + 1);
       }
     }
+
+    newPlanning.end = stringDate(end);
+
     let nbrDays = countDate(start, end);
 
     let oneDay = new Date(start.getTime());
@@ -159,8 +213,6 @@ export class PagePlannificationComponent implements OnInit {
     }
 
     this.start = start;
-
-    let newPlanning:IPlanning = {start:stringDate(this.start), end:stringDate(end), permanences:[], periode:m, isValid:null, submissionDate:stringDate(new Date())}
 
     for (let j = 0; j < nbrDays + 1 + dayMinus; j++) {
       let datePermanence = this.addDay(j);
@@ -184,8 +236,18 @@ export class PagePlannificationComponent implements OnInit {
           }
         }
       }
+      for (let theMonth of newPlanning.months) {
+        if (theMonth.end) {
+          if (
+            theMonth.start <= permanence.date &&
+            permanence.date <= theMonth.end
+          ) {
+            theMonth.permanences?.push(permanence);
+          }
+        }
+      }
     }
-    newPlanning.permanences = this.permanences;
+    // newPlanning.permanences = this.permanences;
     this.fillPlanning();
     this.plannings.unshift(newPlanning);
     this.visiblePlanning = true;
