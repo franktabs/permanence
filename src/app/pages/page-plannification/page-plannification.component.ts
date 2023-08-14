@@ -4,6 +4,8 @@ import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
 import { IMonth } from 'src/app/shared/interfaces/imonth';
 import { IPermanence } from 'src/app/shared/interfaces/ipermanence';
 import { IPersonnel } from 'src/app/shared/interfaces/ipersonnel';
+import { IPersonnelNuit } from 'src/app/shared/interfaces/ipersonnelNuit';
+import { IPersonnelJour } from 'src/app/shared/interfaces/ipersonneljour';
 import { IPlanning } from 'src/app/shared/interfaces/iplanning';
 import { ApiService } from 'src/app/shared/services/api.service';
 import {
@@ -67,9 +69,8 @@ export class PagePlannificationComponent implements OnInit {
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-
-    this.api.getAllData<IPlanning[]>({ for: 'plannings' }).subscribe((subs) => {
-      this.plannings = subs;
+    this.api.getAllData<IPlanning[]| undefined>({ for: 'plannings' }).subscribe((subs) => {
+      if(subs) this.plannings = subs;
     });
 
     this.api
@@ -114,6 +115,7 @@ export class PagePlannificationComponent implements OnInit {
     this.visiblePlanning = false;
     let thePermanences: IPermanence[] = [];
     this.planningVisible = planning;
+    if(planning.months)
     for (let theMonth of planning.months) {
       if (theMonth.permanences) {
         for (let permanence of theMonth.permanences) {
@@ -168,11 +170,20 @@ export class PagePlannificationComponent implements OnInit {
       numero: start.getMonth(),
       start: stringDate(start),
       permanences: [],
+      superviseur: null,
+      planning: null,
     };
 
+    let month_planning: IPlanning = { ...newPlanning };
+    month_planning.months = [];
+    month.planning = month_planning;
+
+    if(newPlanning.months)
     newPlanning.months.push(month);
 
+    if(newPlanning.months)
     for (let i = 1; i <= m; i++) {
+
       let newMonth = newPlanning.months[i - 1];
       let newDate = new Date(end.getTime());
       newDate.setMonth(newDate.getMonth() + i);
@@ -181,12 +192,18 @@ export class PagePlannificationComponent implements OnInit {
       if (i + 1 <= m) {
         let newStartDay = new Date(datePoint.getTime());
         newStartDay.setDate(datePoint.getDate() + 1);
-        newPlanning.months.push({
+        let nextMonth: IMonth = {
           name: stringMonth(newStartDay.getMonth()),
           numero: newStartDay.getMonth(),
           start: stringDate(newStartDay),
           permanences: [],
-        });
+          planning: null,
+          superviseur: null,
+        };
+        newPlanning.months.push(newMonth);
+        let month_planning: IPlanning = { ...newPlanning };
+        month_planning.months = [];
+        nextMonth.planning = month_planning;
       }
       let newSuperviseur = this.dataPlanning?.superviseur[i - 1];
       if (newSuperviseur && !(typeof newSuperviseur == 'string')) {
@@ -231,6 +248,7 @@ export class PagePlannificationComponent implements OnInit {
         type: 'simple',
         personnels_jour: [],
         personnels_nuit: [],
+        month: null,
       };
       this.permanences.push(permanence);
       if (ferierPermanence && ferierPermanence.length) {
@@ -245,12 +263,17 @@ export class PagePlannificationComponent implements OnInit {
           }
         }
       }
+
+      if(newPlanning.months)
       for (let theMonth of newPlanning.months) {
         if (theMonth.end) {
           if (
             theMonth.start <= permanence.date &&
             permanence.date <= theMonth.end
           ) {
+            let permanence_month: IMonth = { ...theMonth };
+            delete permanence_month.permanences;
+            permanence.month = permanence_month;
             theMonth.permanences?.push(permanence);
           }
         }
@@ -261,7 +284,7 @@ export class PagePlannificationComponent implements OnInit {
     this.fillPlanning();
     this.plannings.unshift(newPlanning);
     this.visiblePlanning = true;
-    console.log("le plannings visible", this.planningVisible);
+    console.log('le plannings visible', this.planningVisible);
     this.tabDays = Array.from(
       { length: nbrDays + 1 + dayMinus },
       (_, ind) => ind
@@ -289,11 +312,13 @@ export class PagePlannificationComponent implements OnInit {
   }
 
   displaySuperviseur(n: number): string {
-    let dataSuperviseur = this.planningVisible?.months[n].superviseur;
-    if (typeof dataSuperviseur === 'string') {
-      return dataSuperviseur;
-    } else if (dataSuperviseur) {
-      return dataSuperviseur.firstname as string;
+    if(this.planningVisible?.months){
+      let dataSuperviseur = this.planningVisible.months[n].superviseur;
+      if (typeof dataSuperviseur === 'string') {
+        return dataSuperviseur;
+      } else if (dataSuperviseur) {
+        return dataSuperviseur.firstname as string;
+      }
     }
     return '';
   }
@@ -352,11 +377,16 @@ export class PagePlannificationComponent implements OnInit {
     let nbrGroup2 = group2.length;
     let nbrGroup3 = group3.length;
 
+    console.log('groupe formé', group1, group2, group3);
+
     let repartiGroup2 = 0;
     let repartiGroup3 = 0;
 
     this.permanences.forEach((permanence, index) => {
       let date = new Date(permanence.date);
+      let personnel_permanence = { ...permanence };
+      delete personnel_permanence.personnels_jour;
+      delete personnel_permanence.personnels_nuit;
       if (date.getDay() != 0 && date.getDay() != 6) {
         if (permanence.type == 'simple') {
           let person1 = group1[(index - decalage) % nbrGroup1];
@@ -378,7 +408,17 @@ export class PagePlannificationComponent implements OnInit {
           // }
 
           if (person1.sexe == 'M' && person2.sexe == 'M') {
-            permanence.personnels_nuit?.push(person1, person2);
+            let person1Nuit: IPersonnelNuit = {
+              permanence:personnel_permanence,
+              personnel: person1,
+              responsable: true,
+            };
+            let person2Nuit: IPersonnelNuit = {
+              permanence:personnel_permanence,
+              personnel: person2,
+              responsable: false,
+            };
+            permanence.personnels_nuit?.push(person1Nuit, person2Nuit);
           }
         }
       } else if (date.getDay() == 6) {
@@ -396,7 +436,26 @@ export class PagePlannificationComponent implements OnInit {
             let person4 = group3[repartiGroup3++ % nbrGroup3];
             let person5 = group3[repartiGroup3++ % nbrGroup3];
 
-            permanence.personnels_jour?.push(person1, person2, person4);
+            let person1Jour: IPersonnelJour = {
+              permanence: personnel_permanence,
+              personnel: person1,
+              responsable: true,
+            };
+            let person2Jour: IPersonnelJour = {
+              personnel: person2,
+              responsable: false,
+              permanence:personnel_permanence
+            };
+            let person4Jour: IPersonnelJour = {
+              personnel: person4,
+              responsable: false,
+              permanence:personnel_permanence
+            };
+            permanence.personnels_jour?.push(
+              person1Jour,
+              person2Jour,
+              person4Jour
+            );
 
             let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
             person3 = this.findMan(person3, group2, lastPosition);
@@ -404,7 +463,18 @@ export class PagePlannificationComponent implements OnInit {
             lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
             person5 = this.findMan(person5, group3, lastPosition);
 
-            permanence.personnels_nuit?.push(person5, person3);
+            let person5Nuit: IPersonnelNuit = {
+              personnel: person5,
+              responsable: true,
+              permanence:personnel_permanence
+            };
+            let person3Nuit: IPersonnelNuit = {
+              personnel: person3,
+              responsable: false,
+              permanence:personnel_permanence
+            };
+
+            permanence.personnels_nuit?.push(person5Nuit, person3Nuit);
           }
         }
       } else if (date.getDay() == 0) {
@@ -417,16 +487,39 @@ export class PagePlannificationComponent implements OnInit {
           let person3 = group3[repartiGroup3++ % nbrGroup3];
           let person4 = group3[repartiGroup3++ % nbrGroup3];
 
-          permanence.personnels_jour?.push(person1);
+          let person1Jour: IPersonnelJour = {
+            personnel: person1,
+            responsable: true,
+            permanence:personnel_permanence
+          };
+          permanence.personnels_jour?.push(person1Jour);
 
           let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
           person2 = this.findMan(person2, group2, lastPosition);
-          permanence.personnels_nuit?.push(person2);
+
+          let person2Nuit: IPersonnelNuit = {
+            personnel: person2,
+            responsable: true,
+            permanence:personnel_permanence
+          };
+          permanence.personnels_nuit?.push(person2Nuit);
 
           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
           person4 = this.findMan(person4, group3, lastPosition);
-          permanence.personnels_jour?.push(person3);
-          permanence.personnels_nuit?.push(person4);
+
+          let person3Jour: IPersonnelJour = {
+            personnel: person3,
+            responsable: false,
+            permanence:personnel_permanence
+          };
+
+          let person4Nuit: IPersonnelNuit = {
+            personnel: person4,
+            responsable: false,
+            permanence:personnel_permanence
+          };
+          permanence.personnels_jour?.push(person3Jour);
+          permanence.personnels_nuit?.push(person4Nuit);
         }
       }
     });

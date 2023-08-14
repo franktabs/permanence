@@ -8,5 +8,5 @@ export interface IPlanning{
     periode:number;
     isValid:boolean|null;
     submissionDate:string;
-    months:IMonth[]
+    months?:IMonth[]
 }

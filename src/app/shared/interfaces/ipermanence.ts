@@ -1,4 +1,7 @@
 import { IApiPersonnel } from './iapipersonnel';
+import { IMonth } from './imonth';
+import { IPersonnelNuit } from './ipersonnelNuit';
+import { IPersonnelJour } from './ipersonneljour';
 import { IPlanning } from './iplanning';
 
 export interface IPermanence {
@@ -12,9 +15,7 @@ export interface IPermanence {
     | 'saturday_night'
     | 'sunday_jour'
     | 'sunday_night';
-  personnels_jour?: IApiPersonnel[] | null;
-  personnels_nuit?: IApiPersonnel[] | null;
-  superviseur?: IApiPersonnel | null;
-  planning?: IPlanning;
-  
+  personnels_jour?: IPersonnelJour[] ;
+  personnels_nuit?: IPersonnelNuit[] ; 
+  month:IMonth|null; 
 }

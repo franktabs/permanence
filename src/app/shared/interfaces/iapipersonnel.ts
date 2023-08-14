@@ -1,6 +1,8 @@
 import { IApiRemplacement } from './iapiremplacement';
 import { IApiDepartement } from './iapidepartement';
 import { IApiHoliday } from './iapiholiday';
+import { IPersonnelJour } from './ipersonneljour';
+import { IPersonnelNuit } from './ipersonnelNuit';
 
 export interface IApiPersonnel {
   id: number | null;
@@ -15,12 +17,13 @@ export interface IApiPersonnel {
   agent: boolean | null;
   service: string;
   libAge: string;
-  permanence: string | null;
   isAbsent: boolean | null;
   isVacancy: boolean | null;
   isEligible: boolean | null;
   absentList?: IApiRemplacement[] | null;
   vacancies?: IApiHoliday[] | null;
-  departement?: IApiDepartement | null;
+  departement: IApiDepartement ;
   screenname?:string|null;
+  personnels_jour?:IPersonnelJour[];
+  personnels_nuit?:IPersonnelNuit[]
 }

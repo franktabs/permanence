@@ -18,6 +18,7 @@ export interface IPersonnel {
     email:string|null;
     contact1:string|null;
     contact2:string|null;
+    
 }
 
 
