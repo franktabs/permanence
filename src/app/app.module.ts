@@ -51,6 +51,8 @@ import { ModificationComponent } from './parametres/modification/modification.co
 import { ModalPermanenceComponent } from './shared/components/modal-permanence/modal-permanence.component';
 import { LoaderService } from './shared/services/loader.service';
 import { LoaderComponent } from './shared/components/loader/loader.component';
+import { AlertMaterialComponent } from './shared/components/alert-material/alert-material.component';
+import { AlertService } from './shared/services/alert.service';
 
 
 registerLocaleData(localeFr)
@@ -92,7 +94,8 @@ registerLocaleData(localeFr)
     ParaComponent,
     ModificationComponent,
     ModalPermanenceComponent,
-    LoaderComponent
+    LoaderComponent,
+    AlertMaterialComponent
   ],
   imports: [
     BrowserModule,
@@ -104,7 +107,7 @@ registerLocaleData(localeFr)
     ReactiveFormsModule,
     
   ],
-  providers: [ApiService, AuthService, AuthGuard, LoadDataGuard, LoaderService, {provide: LOCALE_ID, useValue:"fr-FR"}],
+  providers: [ApiService, AuthService, AuthGuard, LoadDataGuard, LoaderService,AlertService, {provide: LOCALE_ID, useValue:"fr-FR"}],
   bootstrap: [AppComponent]
 })
 export class AppModule {

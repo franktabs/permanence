@@ -13,7 +13,7 @@ export class AppComponent implements OnInit, OnDestroy{
   public isConnected:boolean = false;
   constructor(private auth:AuthService, private loader:LoaderService){}
 
-  public loaderVisible:boolean = true;
+  public loaderVisible:boolean = false;
   public destroys$!:Subject<boolean>;
 
   

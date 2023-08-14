@@ -48,11 +48,11 @@
         <div class="d-flex justify-content-between border-top border-1 border-black pt-2">
 
             <div class="d-flex gap-2">
-                <button mat-raised-button  class="mat-btn-noir " >Valider <i class="bi bi-calendar2-check"></i> </button>
-            <button mat-raised-button  class="mat-btn-rouge" >Rejeter <i class="bi-eye bi-x-lg"></i> </button>
+                <button mat-raised-button  class="mat-btn-noir " *ngIf="planning.isValid==null || planning.isValid==false" (click)="decisionPlanning(true)" >Valider <i class="bi bi-calendar2-check"></i> </button>
+            <button mat-raised-button  class="mat-btn-rouge"  *ngIf="planning.isValid==null || planning.isValid==true" (click)="decisionPlanning(false)"  >Rejeter <i class="bi-eye bi-x-lg"></i> </button>
             </div>
             <div class="d-flex gap-2">
-                <button mat-raised-button class="mat-btn-bordeau"  (click)="handleSave()" >Enregistrer <i class="bi-eye bi-save"></i> </button>
+                <button mat-raised-button class="mat-btn-bordeau" *ngIf="!planning.id"  (click)="handleSave()" >Enregistrer <i class="bi-eye bi-save"></i> </button>
             <button mat-raised-button color="primary" (click)="handleClick()" > Voir <i class="bi-eye bi"></i> </button>
             </div>
         </div>

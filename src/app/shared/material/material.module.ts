@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatIconModule} from "@angular/material/icon"
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatSnackBarModule} from "@angular/material/snack-bar"
 
 const moduleMaterial = [
   MatPaginatorModule,
@@ -24,7 +25,8 @@ const moduleMaterial = [
   MatDialogModule,
   BrowserAnimationsModule,
   MatIconModule,
-  MatAutocompleteModule
+  MatAutocompleteModule,
+  MatSnackBarModule
 ]
 
 @NgModule({

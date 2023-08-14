@@ -5,6 +5,8 @@ import { ApiService } from '../../services/api.service';
 import { concatMap, from, map, of } from 'rxjs';
 import { IMonth } from '../../interfaces/imonth';
 import axios from 'axios';
+import { LoaderService } from '../../services/loader.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-card-planning',
@@ -17,13 +19,14 @@ export class CardPlanningComponent implements OnInit {
 
   @Output() planningEmit:EventEmitter<IPlanning> = new EventEmitter()
 
-  constructor(private api:ApiService) { }
+  constructor(private api:ApiService, private loader:LoaderService, private alert:AlertService) { }
 
   ngOnInit(): void {
   }
 
 
   handleClick(){
+    this.alert.alertMaterial({title:"Executé", message:"Bien executé"}, 2);
     this.planningEmit.emit(this.planning)
   }
 
@@ -90,7 +93,7 @@ export class CardPlanningComponent implements OnInit {
     }catch(e){
       console.error("Voici les erreurs et difficulté",e);
     }
-    
+
 
 
     // from([this.api.URL_PLANNINGS]).pipe(
@@ -131,4 +134,26 @@ export class CardPlanningComponent implements OnInit {
     //   }
     // )
   }
+
+  
+  async decisionPlanning(value:boolean|null){
+    this.loader.loader_modal$.next(true);
+    let planningCopy:IPlanning = JSON.parse(JSON.stringify(this.planning))
+    delete planningCopy.months;
+    planningCopy.isValid = true;
+    try{
+      let response = await axios.post(this.api.URL_PLANNINGS, planningCopy);
+      if(response.data.id){
+        this.planning.isValid = value;
+        this.alert.alertMaterial({title:"Executé", message:"Bien executé"}, 2);
+      }
+    }catch(e){
+      console.error("Voici une erreur", e)
+    }
+    this.loader.loader_modal$.next(false);
+    
+  }
+  
+
+
 }
