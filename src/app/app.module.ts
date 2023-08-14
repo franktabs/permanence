@@ -49,6 +49,8 @@ import { CardPlanningComponent } from './shared/components/card-planning/card-pl
 import { ParaComponent } from './parametres/para/para.component';
 import { ModificationComponent } from './parametres/modification/modification.component';
 import { ModalPermanenceComponent } from './shared/components/modal-permanence/modal-permanence.component';
+import { LoaderService } from './shared/services/loader.service';
+import { LoaderComponent } from './shared/components/loader/loader.component';
 
 
 registerLocaleData(localeFr)
@@ -89,7 +91,8 @@ registerLocaleData(localeFr)
     CardPlanningComponent,
     ParaComponent,
     ModificationComponent,
-    ModalPermanenceComponent
+    ModalPermanenceComponent,
+    LoaderComponent
   ],
   imports: [
     BrowserModule,
@@ -101,7 +104,7 @@ registerLocaleData(localeFr)
     ReactiveFormsModule,
     
   ],
-  providers: [ApiService, AuthService, AuthGuard, LoadDataGuard, {provide: LOCALE_ID, useValue:"fr-FR"}],
+  providers: [ApiService, AuthService, AuthGuard, LoadDataGuard, LoaderService, {provide: LOCALE_ID, useValue:"fr-FR"}],
   bootstrap: [AppComponent]
 })
 export class AppModule {

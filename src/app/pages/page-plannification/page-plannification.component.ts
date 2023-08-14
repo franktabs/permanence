@@ -121,8 +121,12 @@ export class PagePlannificationComponent implements OnInit {
         for (let permanence of theMonth.permanences) {
           thePermanences.push(permanence);
         }
+
       }
     }
+    thePermanences.sort((permanence1, permanence2)=>{
+      return permanence1.date.localeCompare(permanence2.date)
+    })
     this.permanences = thePermanences;
 
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
