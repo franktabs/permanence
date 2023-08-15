@@ -1,24 +1,83 @@
 <app-head-modal-default nameModal="Permanence" icon="<i class='bi bi-calendar-day'><i>" [(open)]="open">
     <div>
-        <div class="d-flex p-2">
-            <div class="part1 p-3  ">
-                <div class="d-flex flex-column gap-3">
-                    <div class="w-max-content">
-                        <span>(Jour Simple) </span>
-                        <button class="btn btn-primary">Modifier</button>
+        <div>
+            <div class="d-flex p-2 permanence-body">
+                <div class="part1 p-3  ">
+                    <div class="d-flex flex-column gap-3">
+                        <div class="w-max-content">
+                            <select class="form-select" name="typeFerier" [(ngModel)]="formFerier"
+                                aria-label="Default select example">
+                                <option value="simple">Jour simple</option>
+                                <option value="ouvrable">Jour ferié Ouvrable</option>
+                                <option value="non_ouvrable">Jour ferié Non ouvrable </option>
+                            </select>
+                        </div>
+                        <div class="d-flex flex-column align-items-start mt-3">
+                            <span class="head-4 fw-bold text-capitalize">{{date| date:"EEEE"}}</span>
+                            <span class="head-3 mt-5">{{date| date:"dd/MM/yyyy"}}</span>
+                        </div>
                     </div>
-                    <div class="d-flex flex-column align-items-start mt-3">
-                        <span class="head-4 fw-bold">LUNDI</span>
-                        <span class="head-3 mt-3">2023-04-12</span>
+                </div>
+                <div class="part2 p-3">
+                    <div class="d-flex gap-2">
+
+                        <div class="my-border-right p-2">
+                            <h1 class="fw-bold my-border-bottom pe-3"> <i class="bi bi-moon-stars"></i> Personnes de
+                                Nuit</h1>
+                            <div class="d-flex flex-column ms-2">
+                                <ng-container *ngIf="formPersonnelNuit">
+
+                                    <ng-container *ngFor="let ind of numArrayNuit">
+
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <app-personnel-autocomplete (dataPerson)="dataNuitPersonnel(ind, $event)"
+                                                forLabel="Personne de permanence" forPlaceholder="selectionner un nom"
+                                                [options]="options" name="personnelnuit{{ind}}"
+                                                [initialValue]="formPersonnelNuit[ind]"></app-personnel-autocomplete>
+                                            <i class="bi bi-plus-circle plus-x text-primary"
+                                                *ngIf="numArrayNuit.length-1==ind" (click)="ajoutPersonNuit()"></i>
+                                            <i class="bi bi-x-circle plus-x text-danger" *ngIf="numArrayNuit.length!=0"
+                                                (click)="suprPersonNuit(ind)"></i>
+                                        </div>
+                                    </ng-container>
+
+                                </ng-container>
+                                <i class="bi bi-plus-circle plus-x text-primary" *ngIf="numArrayNuit.length==0"
+                                    (click)="ajoutPersonNuit()"></i>
+                            </div>
+                        </div>
+                        <div class="p-2">
+                            <h1 class="fw-bold my-border-bottom"><i class="bi bi-brightness-high"></i> Personne du Jour
+                            </h1>
+                            <div class="d-flex flex-column ms-2">
+                                <ng-container *ngIf="formPersonnelJour">
+
+                                    <ng-container *ngFor="let ind of numArrayJour">
+
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <app-personnel-autocomplete (dataPerson)="dataJourPersonnel(ind, $event)"
+                                                forLabel="Personne de permanence" forPlaceholder="selectionner un nom"
+                                                [options]="options" name="personnelJour{{ind}}"
+                                                [initialValue]="formPersonnelJour[ind]"></app-personnel-autocomplete>
+                                            <i class="bi bi-plus-circle plus-x text-primary"
+                                                *ngIf="numArrayJour.length-1==ind" (click)="ajoutPersonJour()"></i>
+                                            <i class="bi bi-x-circle plus-x text-danger" *ngIf="numArrayJour.length!=0"
+                                                (click)="suprPersonJour(ind)"></i>
+                                        </div>
+                                    </ng-container>
+
+                                </ng-container>
+                                <i class="bi bi-plus-circle plus-x text-primary" *ngIf="numArrayJour.length==0"
+                                    (click)="ajoutPersonJour()"></i>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
-            <div class="part2 p-3">
-                <div class="d-flex flex-column gap-2">
-                    <input type="text" class="form-control">
-                    <input type="text" class="form-control">
-                    <input type="text" class="form-control">
-                </div>
+            <div class="text-end my-border-top pt-2">
+                <button mat-raised-button color="primary" (click)="modifier()">Modifier <i class="bi bi-text-left"></i>
+                </button>
             </div>
         </div>
     </div>

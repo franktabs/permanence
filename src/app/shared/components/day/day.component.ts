@@ -21,13 +21,15 @@ import { mapPersonnel } from '../../utils/tables-map';
 export class DayComponent implements OnInit, OnChanges {
   public ordinaire: boolean = true;
 
+  public visibleModalPermanence: boolean = false;
+
   public typeFerier: IPermanence['type'] = 'simple';
   // @Input() permanences!:IPermanence[] ;
   public date!: Date;
   // @Input() feriers: Ferier[] = [];
   @Input() permanence!: IPermanence;
 
-  public openModal:boolean = false;
+  public openModal: boolean = false;
 
   public row!: TypePersonnel;
 
@@ -133,9 +135,11 @@ export class DayComponent implements OnInit, OnChanges {
     // }
   }
 
-  handleClick(person:IApiPersonnel){
-    this.row = formatJSON<IApiPersonnel, IPersonnel>({obj:person, correspondance:mapPersonnel})
+  handleClick(person: IApiPersonnel) {
+    this.row = formatJSON<IApiPersonnel, IPersonnel>({
+      obj: person,
+      correspondance: mapPersonnel,
+    });
     this.openModal = true;
   }
-
 }

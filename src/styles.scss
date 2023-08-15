@@ -140,3 +140,27 @@ body {
         border: none !important;
     }
 }
+
+.my-border-top{
+    border-top: 1px black solid;
+}
+.my-border-bottom{
+    border-bottom: 1px black solid;
+}
+.my-border-left{
+    border-left: 1px black solid;
+}
+.my-border-right{
+    border-right: 1px black solid;
+}
+
+.plus-x:hover{
+    cursor: pointer;
+    color: $for-blue-color;
+    font-weight: bold;
+}
+
+.plus-x:active{
+    color: $bordeau-color;
+    font-weight: normal;
+}

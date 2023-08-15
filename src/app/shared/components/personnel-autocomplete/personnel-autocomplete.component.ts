@@ -6,6 +6,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  ViewChild,
 } from '@angular/core';
 import { TypePersonnel } from '../../utils/types-map';
 import { FormControl } from '@angular/forms';
@@ -15,6 +16,7 @@ import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { mapJSON } from '../../utils/function';
 import { mapPersonnel } from '../../utils/tables-map';
+import { MatAutocompleteTrigger } from '@angular/material/autocomplete';
 
 @Component({
   selector: 'app-personnel-autocomplete',
@@ -28,8 +30,10 @@ export class PersonnelAutocompleteComponent implements OnInit, OnChanges {
   @Input() forPlaceholder: string = 'message';
   @Input() name: string = '';
   @Input() options!: TypePersonnel[];
-  public controlSuperviseur = new FormControl<string | TypePersonnel>('');
+  @Input() initialValue!: TypePersonnel|string;
+  public controlSuperviseur = new FormControl<string | TypePersonnel>('frank');
   public filteredOptions$!: Observable<TypePersonnel[]>;
+
 
   constructor(private api: ApiService) {}
 
@@ -39,11 +43,10 @@ export class PersonnelAutocompleteComponent implements OnInit, OnChanges {
     });
   }
 
-  
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['options']) {
-      if(changes['options'].currentValue){
+      if (changes['options'].currentValue) {
         this.options = changes['options'].currentValue;
 
         this.filteredOptions$ = this.controlSuperviseur.valueChanges.pipe(
@@ -62,7 +65,11 @@ export class PersonnelAutocompleteComponent implements OnInit, OnChanges {
           })
         );
       }
-
+    }
+    if(changes['initialValue']){
+      let initialValue:TypePersonnel = changes['initialValue'].currentValue;
+      console.log("initialValue", initialValue)
+      this.controlSuperviseur.setValue(initialValue);
     }
   }
 

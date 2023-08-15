@@ -34,7 +34,7 @@
                                             <select class="form-select" aria-label="Default select example"
                                                 [name]="'type'+i" [(ngModel)]="ferier.type" id="select-ferier">
                                                 <option value="non_ouvrable">Ferié Non Ouvrable </option>
-                                                <option value="ouvrable"  selected>Ferié Ouvrable</option>
+                                                <option value="ouvrable" selected>Ferié Ouvrable</option>
                                             </select>
                                             <i class="bi bi-plus-circle plus-x text-primary" *ngIf="feriers.length-1==i"
                                                 (click)="ajoutFerier()"></i>
@@ -66,12 +66,9 @@
                     <mat-label>Nom du superviseur N°{{ind+1}} </mat-label>
                     <input matInput placeholder="Un superviseur du mois"  [(ngModel)]="superviseur[ind]" required>
                 </mat-form-field> -->
-                <app-personnel-autocomplete (dataPerson)="receiveSuperviseur(ind, $event)" *ngFor="let ind of arrayNumPeriode"
-                    forLabel="Nom du superviseur N°{{ind}} " forPlaceholder="Superviseur du mois"
-                    [options]="options"
-                    name="superviseur{{ind}}"
-                    >
-
+                <app-personnel-autocomplete (dataPerson)="receiveSuperviseur(ind, $event)"
+                    *ngFor="let ind of arrayNumPeriode" forLabel="Nom du superviseur N°{{ind}} "
+                    forPlaceholder="Superviseur du mois" [options]="options" name="superviseur{{ind}}">
                 </app-personnel-autocomplete>
             </div>
         </div>

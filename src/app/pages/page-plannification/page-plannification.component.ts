@@ -47,6 +47,8 @@ export class PagePlannificationComponent implements OnInit {
 
   public visiblePlanning: boolean = false;
 
+  public visibleModalPermanence: boolean = false;
+
   public months: IMonth[] = [];
   // public action:"CONSULTATE"|"CREATE" = "CONSULTATE"
 
@@ -69,9 +71,11 @@ export class PagePlannificationComponent implements OnInit {
   constructor(private api: ApiService) {}
 
   ngOnInit(): void {
-    this.api.getAllData<IPlanning[]| undefined>({ for: 'plannings' }).subscribe((subs) => {
-      if(subs) this.plannings = subs;
-    });
+    this.api
+      .getAllData<IPlanning[] | undefined>({ for: 'plannings' })
+      .subscribe((subs) => {
+        if (subs) this.plannings = subs;
+      });
 
     this.api
       .getAllData<IApiPersonnel[]>({ for: 'personnels' })
@@ -115,18 +119,17 @@ export class PagePlannificationComponent implements OnInit {
     this.visiblePlanning = false;
     let thePermanences: IPermanence[] = [];
     this.planningVisible = planning;
-    if(planning.months)
-    for (let theMonth of planning.months) {
-      if (theMonth.permanences) {
-        for (let permanence of theMonth.permanences) {
-          thePermanences.push(permanence);
+    if (planning.months)
+      for (let theMonth of planning.months) {
+        if (theMonth.permanences) {
+          for (let permanence of theMonth.permanences) {
+            thePermanences.push(permanence);
+          }
         }
-
       }
-    }
-    thePermanences.sort((permanence1, permanence2)=>{
-      return permanence1.date.localeCompare(permanence2.date)
-    })
+    thePermanences.sort((permanence1, permanence2) => {
+      return permanence1.date.localeCompare(permanence2.date);
+    });
     this.permanences = thePermanences;
 
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
@@ -182,44 +185,42 @@ export class PagePlannificationComponent implements OnInit {
     month_planning.months = [];
     month.planning = month_planning;
 
-    if(newPlanning.months)
-    newPlanning.months.push(month);
+    if (newPlanning.months) newPlanning.months.push(month);
 
-    if(newPlanning.months)
-    for (let i = 1; i <= m; i++) {
-
-      let newMonth = newPlanning.months[i - 1];
-      let newDate = new Date(end.getTime());
-      newDate.setMonth(newDate.getMonth() + i);
-      let datePoint = checkPointDate(newDate);
-      newMonth.end = stringDate(datePoint);
-      if (i + 1 <= m) {
-        let newStartDay = new Date(datePoint.getTime());
-        newStartDay.setDate(datePoint.getDate() + 1);
-        let nextMonth: IMonth = {
-          name: stringMonth(newStartDay.getMonth()),
-          numero: newStartDay.getMonth(),
-          start: stringDate(newStartDay),
-          permanences: [],
-          planning: null,
-          superviseur: null,
-        };
-        newPlanning.months.push(newMonth);
-        let month_planning: IPlanning = { ...newPlanning };
-        month_planning.months = [];
-        nextMonth.planning = month_planning;
+    if (newPlanning.months)
+      for (let i = 1; i <= m; i++) {
+        let newMonth = newPlanning.months[i - 1];
+        let newDate = new Date(end.getTime());
+        newDate.setMonth(newDate.getMonth() + i);
+        let datePoint = checkPointDate(newDate);
+        newMonth.end = stringDate(datePoint);
+        if (i + 1 <= m) {
+          let newStartDay = new Date(datePoint.getTime());
+          newStartDay.setDate(datePoint.getDate() + 1);
+          let nextMonth: IMonth = {
+            name: stringMonth(newStartDay.getMonth()),
+            numero: newStartDay.getMonth(),
+            start: stringDate(newStartDay),
+            permanences: [],
+            planning: null,
+            superviseur: null,
+          };
+          newPlanning.months.push(newMonth);
+          let month_planning: IPlanning = { ...newPlanning };
+          month_planning.months = [];
+          nextMonth.planning = month_planning;
+        }
+        let newSuperviseur = this.dataPlanning?.superviseur[i - 1];
+        if (newSuperviseur && !(typeof newSuperviseur == 'string')) {
+          let formatSuperviseur = formatJSON<TypePersonnel, IApiPersonnel>({
+            obj: newSuperviseur,
+            correspondance: mapReversePersonnel,
+          });
+          newMonth.superviseur = formatSuperviseur;
+        }
+        let coutDay = countDate(start, datePoint);
+        this.remplissage.pointDate.push(coutDay);
       }
-      let newSuperviseur = this.dataPlanning?.superviseur[i - 1];
-      if (newSuperviseur && !(typeof newSuperviseur == 'string')) {
-        let formatSuperviseur = formatJSON<TypePersonnel, IApiPersonnel>({
-          obj: newSuperviseur,
-          correspondance: mapReversePersonnel,
-        });
-        newMonth.superviseur = formatSuperviseur;
-      }
-      let coutDay = countDate(start, datePoint);
-      this.remplissage.pointDate.push(coutDay);
-    }
 
     end.setMonth(end.getMonth() + m);
     if (end.getDay() == 1 && end.getDate() == 1) {
@@ -268,20 +269,22 @@ export class PagePlannificationComponent implements OnInit {
         }
       }
 
-      if(newPlanning.months)
-      for (let theMonth of newPlanning.months) {
-        if (theMonth.end) {
-          if (
-            theMonth.start <= permanence.date &&
-            permanence.date <= theMonth.end
-          ) {
-            let permanence_month: IMonth = { ...theMonth };
-            delete permanence_month.permanences;
-            permanence.month = permanence_month;
-            theMonth.permanences?.push(permanence);
+      if (newPlanning.months)
+        for (let theMonth of newPlanning.months) {
+          if (theMonth.end) {
+            if (
+              theMonth.start <= permanence.date &&
+              permanence.date <= theMonth.end
+            ) {
+              let permanence_month: IMonth = JSON.parse(
+                JSON.stringify(theMonth)
+              );
+              delete permanence_month.permanences;
+              permanence.month = permanence_month;
+              theMonth.permanences?.push(permanence);
+            }
           }
         }
-      }
     }
     // newPlanning.permanences = this.permanences;
     this.planningVisible = newPlanning;
@@ -316,7 +319,7 @@ export class PagePlannificationComponent implements OnInit {
   }
 
   displaySuperviseur(n: number): string {
-    if(this.planningVisible?.months){
+    if (this.planningVisible?.months) {
       let dataSuperviseur = this.planningVisible.months[n].superviseur;
       if (typeof dataSuperviseur === 'string') {
         return dataSuperviseur;
@@ -388,7 +391,9 @@ export class PagePlannificationComponent implements OnInit {
 
     this.permanences.forEach((permanence, index) => {
       let date = new Date(permanence.date);
-      let personnel_permanence = { ...permanence };
+      let personnel_permanence: IPermanence = JSON.parse(
+        JSON.stringify(permanence)
+      );
       delete personnel_permanence.personnels_jour;
       delete personnel_permanence.personnels_nuit;
       if (date.getDay() != 0 && date.getDay() != 6) {
@@ -413,12 +418,12 @@ export class PagePlannificationComponent implements OnInit {
 
           if (person1.sexe == 'M' && person2.sexe == 'M') {
             let person1Nuit: IPersonnelNuit = {
-              permanence:personnel_permanence,
+              permanence: personnel_permanence,
               personnel: person1,
               responsable: true,
             };
             let person2Nuit: IPersonnelNuit = {
-              permanence:personnel_permanence,
+              permanence: personnel_permanence,
               personnel: person2,
               responsable: false,
             };
@@ -448,12 +453,12 @@ export class PagePlannificationComponent implements OnInit {
             let person2Jour: IPersonnelJour = {
               personnel: person2,
               responsable: false,
-              permanence:personnel_permanence
+              permanence: personnel_permanence,
             };
             let person4Jour: IPersonnelJour = {
               personnel: person4,
               responsable: false,
-              permanence:personnel_permanence
+              permanence: personnel_permanence,
             };
             permanence.personnels_jour?.push(
               person1Jour,
@@ -470,12 +475,12 @@ export class PagePlannificationComponent implements OnInit {
             let person5Nuit: IPersonnelNuit = {
               personnel: person5,
               responsable: true,
-              permanence:personnel_permanence
+              permanence: personnel_permanence,
             };
             let person3Nuit: IPersonnelNuit = {
               personnel: person3,
               responsable: false,
-              permanence:personnel_permanence
+              permanence: personnel_permanence,
             };
 
             permanence.personnels_nuit?.push(person5Nuit, person3Nuit);
@@ -494,7 +499,7 @@ export class PagePlannificationComponent implements OnInit {
           let person1Jour: IPersonnelJour = {
             personnel: person1,
             responsable: true,
-            permanence:personnel_permanence
+            permanence: personnel_permanence,
           };
           permanence.personnels_jour?.push(person1Jour);
 
@@ -504,7 +509,7 @@ export class PagePlannificationComponent implements OnInit {
           let person2Nuit: IPersonnelNuit = {
             personnel: person2,
             responsable: true,
-            permanence:personnel_permanence
+            permanence: personnel_permanence,
           };
           permanence.personnels_nuit?.push(person2Nuit);
 
@@ -514,13 +519,13 @@ export class PagePlannificationComponent implements OnInit {
           let person3Jour: IPersonnelJour = {
             personnel: person3,
             responsable: false,
-            permanence:personnel_permanence
+            permanence: personnel_permanence,
           };
 
           let person4Nuit: IPersonnelNuit = {
             personnel: person4,
             responsable: false,
-            permanence:personnel_permanence
+            permanence: personnel_permanence,
           };
           permanence.personnels_jour?.push(person3Jour);
           permanence.personnels_nuit?.push(person4Nuit);

@@ -26,18 +26,20 @@ export class CardPlanningComponent implements OnInit {
 
 
   handleClick(){
-    this.alert.alertMaterial({title:"Executé", message:"Bien executé"}, 2);
     this.planningEmit.emit(this.planning)
   }
 
   async handleSave(){
+    this.loader.loader_modal$.next(true);
+
     let planningCopy = JSON.parse(JSON.stringify(this.planning));
     let monthsCopy = planningCopy.months;
     let permanences = null;
     let personnels_jours = null;
     let personnels_nuits = null;
     delete planningCopy.months;
-
+    let i = 0;
+    let n = 0
     try{
 
       let response = await axios.post(this.api.URL_PLANNINGS, planningCopy)
@@ -88,11 +90,19 @@ export class CardPlanningComponent implements OnInit {
             }
           }
         }
+        this.alert.alertMaterial({title:"success", message:"Enregistrement effectué avec succès"});
+
+
       }
 
     }catch(e){
+      this.alert.alertMaterial({title:"error", message:"Erreur lors de la sauvegarde"});
       console.error("Voici les erreurs et difficulté",e);
+    }finally{
+
+      this.loader.loader_modal$.next(false);
     }
+
 
 
 
@@ -145,9 +155,10 @@ export class CardPlanningComponent implements OnInit {
       let response = await axios.post(this.api.URL_PLANNINGS, planningCopy);
       if(response.data.id){
         this.planning.isValid = value;
-        this.alert.alertMaterial({title:"Executé", message:"Bien executé"}, 2);
+        this.alert.alertMaterial({title:"success", message:"Bien executé"});
       }
     }catch(e){
+      this.alert.alertMaterial({title:"error", message:"Une erreur s'est produite"})
       console.error("Voici une erreur", e)
     }
     this.loader.loader_modal$.next(false);

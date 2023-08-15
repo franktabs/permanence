@@ -1,9 +1,26 @@
 <div>
-    <div class="w-100 text-center fw-bold fs-4 text-danger" >
-        <span> {{data.title}} </span>
+    <div class="w-100 text-center fw-bold fs-4" >
+        <ng-container [ngSwitch]="data.title"  >
+
+            <span *ngSwitchCase="'information'" >
+                INFORMATION <i class="bi bi-info-circle-fill" ></i>
+            </span>
+
+            <span class="text-success" *ngSwitchCase="'success'" >
+                SUCCES DE L'OPERATION <i class="bi bi-check-circle-fill" ></i>
+            </span>
+
+            <span class="text-danger" *ngSwitchCase="'error'">
+                ECHEC DE L'OPERATION <i class="bi bi-x-circle-fill" ></i>
+            </span>
+            <span *ngSwitchDefault >
+                Problème rencontré
+            </span>
+
+        </ng-container>
     </div>
     <div class="w-100 text-center p-2">
-        <span> {{data.message}} </span>
+        <span class="text-capitalize" > {{data.message}} </span>
     </div>
 </div>
 
