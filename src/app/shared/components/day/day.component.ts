@@ -24,10 +24,13 @@ export class DayComponent implements OnInit, OnChanges {
   public visibleModalPermanence: boolean = false;
 
   private _typeFerier: IPermanence['type'] = 'simple';
+
   // @Input() permanences!:IPermanence[] ;
   public date!: Date;
   // @Input() feriers: Ferier[] = [];
   @Input() permanence!: IPermanence;
+
+  
 
   public openModal: boolean = false;
 
@@ -145,11 +148,17 @@ export class DayComponent implements OnInit, OnChanges {
   }
 
   handleClick(person: IApiPersonnel) {
-    this.row = person
+    this.row = person;
     // this.row = formatJSON<IApiPersonnel, IPersonnel>({
     //   obj: person,
     //   correspondance: mapPersonnel,
     // });
     this.openModal = true;
+  }
+
+  refresh(val:boolean){
+    if(val){
+      this.typeFerier=this.permanence.type;
+    }
   }
 }

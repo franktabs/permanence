@@ -16,6 +16,9 @@ import { IPersonnel } from '../../interfaces/ipersonnel';
 import { mapPersonnel } from '../../utils/tables-map';
 import { IPersonnelJour } from '../../interfaces/ipersonneljour';
 import { IPersonnelNuit } from '../../interfaces/ipersonnelNuit';
+import { AlertService } from '../../services/alert.service';
+import { LoaderService } from '../../services/loader.service';
+import axios from 'axios';
 
 @Component({
   selector: 'app-modal-permanence',
@@ -43,6 +46,8 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
   public numArrayJour: number[] = [];
   public numArrayNuit: number[] = [];
 
+  @Output() refresh: EventEmitter<boolean> = new EventEmitter(false);
+
   @Input()
   set open(bool: boolean) {
     if (bool == false) {
@@ -50,13 +55,17 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
     }
   }
 
-  constructor(private api: ApiService) {}
+  constructor(
+    private api: ApiService,
+    private alert: AlertService,
+    private loader: LoaderService
+  ) {}
 
   ngOnInit(): void {
     this.api
       .getAllData<IApiPersonnel[]>({ for: 'personnels' })
       .subscribe((subs) => {
-        let transSubs = subs
+        let transSubs = subs;
         // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
         this.options = transSubs;
       });
@@ -78,7 +87,7 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
         let i = 0;
         for (let person of thisPermanence.personnels_jour) {
           let personIApiPersonnel = person.personnel;
-          let personTypePersonnel = personIApiPersonnel
+          let personTypePersonnel = personIApiPersonnel;
           // let personTypePersonnel = formatJSON<IApiPersonnel, IPersonnel>({
           //   obj: personIApiPersonnel,
           //   correspondance: mapPersonnel,
@@ -90,7 +99,7 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
       if (thisPermanence.personnels_nuit)
         for (let person of thisPermanence.personnels_nuit) {
           let personIApiPersonnel = person.personnel;
-          let personTypePersonnel = personIApiPersonnel
+          let personTypePersonnel = personIApiPersonnel;
           // let personTypePersonnel = formatJSON<IApiPersonnel, IPersonnel>({
           //   obj: personIApiPersonnel,
           //   correspondance: mapPersonnel,
@@ -150,7 +159,6 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
     console.log('après suppression', this.personnelNuitDatas);
   }
 
-
   suprPersonJour(i: number) {
     console.log('indice suppression', i, this.personnelJourDatas);
     this.formPersonnelJour = this.personnelJourDatas;
@@ -162,30 +170,148 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
     console.log('après suppression', this.personnelJourDatas);
   }
 
-  modifier(){
-    let personnel_jour:IPersonnelJour[]=[]
-    let personnel_nuit:IPersonnelNuit[]=[]
-    let attrPermanence:IPermanence = JSON.parse(JSON.stringify(this.permanence));
-    delete attrPermanence.personnels_jour;
-    delete attrPermanence.personnels_nuit;
-    for(let personnel of this.personnelJourDatas){
-      if(typeof personnel !="string"){
-        personnel_jour.push({responsable:false, "permanence":attrPermanence, "personnel":personnel})
+  async modifier() {
+    this.loader.loader_modal$.next(true);
+    let personnel_jour: IPersonnelJour[] = [];
+    let personnel_nuit: IPersonnelNuit[] = [];
+
+    let errors = false;
+    for (let verification of this.personnelJourDatas) {
+      if (typeof verification == 'string') {
+        errors = true;
+        break;
+      } else if (!verification) {
+        errors = true;
+        break;
       }
     }
-    for(let personnel of this.personnelNuitDatas){
-      if(typeof personnel !="string"){
-        personnel_nuit.push({responsable:false, "permanence":attrPermanence, "personnel":personnel})
+    if (!errors) {
+      for (let verification of this.personnelNuitDatas) {
+        if (typeof verification == 'string') {
+          errors = true;
+          break;
+        } else if (!verification) {
+          errors = true;
+          break;
+        }
       }
     }
 
+    if (errors) {
+      this.alert.alertMaterial(
+        { message: 'Veuillez renseignez tous les champs', title: 'error' },
+        5
+      );
+    } else {
+      let attrPermanence: IPermanence = JSON.parse(
+        JSON.stringify(this.permanence)
+      );
+      delete attrPermanence.personnels_jour;
+      delete attrPermanence.personnels_nuit;
+      attrPermanence.month = null;
 
-    console.log("données permanence", personnel_jour,personnel_nuit, this.formFerier)
-    this.permanence.type=this.formFerier;
-    this.permanence.personnels_jour=personnel_jour
-    this.permanence.personnels_nuit=personnel_nuit
-    console.log("permanence modal sortie", this.permanence)
-    this.openChange.emit(false)
+      if (this.permanence.id) {
+        try {
+          let response = await axios.get(
+            this.api.URL_PERMANENCES + '/' + this.permanence.id
+          );
+          console.log('get de la permanence', response.data);
+          attrPermanence = JSON.parse(JSON.stringify(response.data));
+          delete attrPermanence.personnels_jour;
+          delete attrPermanence.personnels_nuit;
+          attrPermanence.month = null;
+        } catch (e) {
+          console.error("Voici l'erreur rencontré", e);
+          this.alert.alertMaterial(
+            { message: "Une erreur s'est produite", title: 'error' },
+            5
+          );
+        }
+      }
 
+      let first = 1;
+      for (let personnel of this.personnelJourDatas) {
+        if (typeof personnel != 'string') {
+          personnel_jour.push({
+            responsable: first == 1 ? true : false,
+            permanence: attrPermanence,
+            personnel: personnel,
+          });
+        }
+      }
+      first = 1;
+      for (let personnel of this.personnelNuitDatas) {
+        if (typeof personnel != 'string') {
+          personnel_nuit.push({
+            responsable: first == 1 ? true : false,
+            permanence: attrPermanence,
+            personnel: personnel,
+          });
+        }
+      }
+
+      console.log(
+        'données permanence',
+        personnel_jour,
+        personnel_nuit,
+        this.formFerier
+      );
+
+      if (this.permanence.id) {
+        try {
+          let response = await axios.delete(
+            this.api.URL_PERMANENCES +
+              '/entirely-personnel/' +
+              this.permanence.id
+          );
+          console.log('operation de suppression effectuer', response.data);
+          for (let personnel of personnel_jour) {
+            response = await axios.post(
+              this.api.URL_PERSONNEL_JOURS,
+              personnel
+            );
+            console.log('insertion de ', response.data);
+          }
+          for (let personnel of personnel_nuit) {
+            response = await axios.post(
+              this.api.URL_PERSONNEL_NUITS,
+              personnel
+            );
+            console.log('insertion de ', response.data);
+          }
+
+          this.permanence.type = this.formFerier;
+          this.permanence.personnels_jour = personnel_jour;
+          this.permanence.personnels_nuit = personnel_nuit;
+          this.refresh.emit(true);
+          this.openChange.emit(false);
+
+          this.alert.alertMaterial({
+            message: 'Enregistrement effectué',
+            title: 'success',
+          });
+        } catch (e) {
+          console.log("voici l'erreur", e);
+          this.alert.alertMaterial(
+            { message: "Une erreur s'est produite", title: 'error' },
+            5
+          );
+        }
+      } else {
+        this.permanence.type = this.formFerier;
+        this.permanence.personnels_jour = personnel_jour;
+        this.permanence.personnels_nuit = personnel_nuit;
+        this.refresh.emit(true);
+        this.openChange.emit(false);
+        this.alert.alertMaterial({
+          message: 'Modification effectué',
+          title: 'success',
+        });
+      }
+
+      console.log('permanence modal sortie', this.permanence);
+    }
+
+    this.loader.loader_modal$.next(false);
   }
 }
