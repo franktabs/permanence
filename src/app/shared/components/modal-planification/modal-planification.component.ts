@@ -16,8 +16,10 @@ import { mapJSON } from '../../utils/function';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { mapPersonnel } from '../../utils/tables-map';
 import { IPermanence } from '../../interfaces/ipermanence';
+import { LoaderService } from '../../services/loader.service';
+import { AlertService } from '../../services/alert.service';
 
-export type Ferier = { jour: string; type: IPermanence["type"] };
+export type Ferier = { jour: string; type: IPermanence['type'] };
 
 export type DataPlanning = {
   periode: number | string;
@@ -34,32 +36,33 @@ export class ModalPlanificationComponent implements OnInit {
   @Output() openChange: EventEmitter<boolean> = new EventEmitter();
   @Output() dataEmit: EventEmitter<DataPlanning> = new EventEmitter();
 
-  public superviseur: string[] | TypePersonnel[]| null[] = ['', '', ''];
+  public superviseur: string[] | TypePersonnel[] | null[] = ['', '', ''];
   private _periode: number = 3;
   public arrayNumPeriode: number[] = [1, 2, 3];
   public feriers: Ferier[] = [];
 
-
-  public options!:TypePersonnel[];
-  public controlSuperviseur = new FormControl<string | TypePersonnel>("");
-  public filteredOptions$!:Observable<TypePersonnel[]>
+  public options!: TypePersonnel[];
+  public controlSuperviseur = new FormControl<string | TypePersonnel>('');
+  public filteredOptions$!: Observable<TypePersonnel[]>;
 
   // public numberFerier:number[] = [1];
   // public tailleFerier:number = this.ferier.length;
 
-  constructor(private api:ApiService) {}
-
+  constructor(
+    private api: ApiService,
+    private loader: LoaderService,
+    private alert: AlertService
+  ) {}
 
   ngOnInit(): void {
-
-    this.api.getAllData<IApiPersonnel[]>({for:"personnels"}).subscribe((subs)=>{
-      let transSubs = subs;
-      // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
-      this.options = transSubs;
-    });
-
+    this.api
+      .getAllData<IApiPersonnel[]>({ for: 'personnels' })
+      .subscribe((subs) => {
+        let transSubs = subs;
+        // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
+        this.options = transSubs;
+      });
   }
-
 
   @Input()
   set open(bool: boolean) {
@@ -68,14 +71,13 @@ export class ModalPlanificationComponent implements OnInit {
     }
   }
 
-
   public set periode(n: number | string) {
     if (typeof n == 'string') {
       this._periode = +n;
     } else this._periode = n;
     this.arrayNumPeriode = Array.from(
       { length: this._periode },
-      (_, index) => index+1
+      (_, index) => index + 1
     );
   }
 
@@ -94,17 +96,38 @@ export class ModalPlanificationComponent implements OnInit {
   }
 
   public generer() {
+    this.loader.loader_modal$.next(true); 
     let data = {
       periode: this.periode,
       feriers: this.feriers,
       superviseur: this.superviseur,
     };
-    console.log("données config planning", data);
-    this.dataEmit.emit(data);
-    this.openChange.emit(false);
+    let errors = false;
+    for (let i = 0; i < +this.periode; i++) {
+      let person = this.superviseur[i];
+      if (!person || typeof person == 'string') {
+        errors = true;
+        break;
+      }
+    }
+    for (let ferier of this.feriers) {
+      if (!ferier.jour) {
+        errors = true;
+        break;
+      }
+    }
+    if (errors) {
+      this.loader.loader_modal$.next(false);
+      this.alert.alertFormulaire();
+    } else {
+      console.log('données config planning', data);
+      this.dataEmit.emit(data);
+      this.openChange.emit(false);
+    }
+    this.loader.loader_modal$.next(false);
   }
 
-  public receiveSuperviseur(i:number, event:any){
-    this.superviseur[i-1] = event
+  public receiveSuperviseur(i: number, event: any) {
+    this.superviseur[i - 1] = event;
   }
 }

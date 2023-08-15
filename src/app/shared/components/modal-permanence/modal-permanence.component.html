@@ -22,32 +22,7 @@
                     <div class="d-flex gap-2">
 
                         <div class="my-border-right p-2">
-                            <h1 class="fw-bold my-border-bottom pe-3"> <i class="bi bi-moon-stars"></i> Personnes de
-                                Nuit</h1>
-                            <div class="d-flex flex-column ms-2">
-                                <ng-container *ngIf="formPersonnelNuit">
-
-                                    <ng-container *ngFor="let ind of numArrayNuit">
-
-                                        <div class="d-flex gap-2 align-items-center">
-                                            <app-personnel-autocomplete (dataPerson)="dataNuitPersonnel(ind, $event)"
-                                                forLabel="Personne de permanence" forPlaceholder="selectionner un nom"
-                                                [options]="options" name="personnelnuit{{ind}}"
-                                                [initialValue]="formPersonnelNuit[ind]"></app-personnel-autocomplete>
-                                            <i class="bi bi-plus-circle plus-x text-primary"
-                                                *ngIf="numArrayNuit.length-1==ind" (click)="ajoutPersonNuit()"></i>
-                                            <i class="bi bi-x-circle plus-x text-danger" *ngIf="numArrayNuit.length!=0"
-                                                (click)="suprPersonNuit(ind)"></i>
-                                        </div>
-                                    </ng-container>
-
-                                </ng-container>
-                                <i class="bi bi-plus-circle plus-x text-primary" *ngIf="numArrayNuit.length==0"
-                                    (click)="ajoutPersonNuit()"></i>
-                            </div>
-                        </div>
-                        <div class="p-2">
-                            <h1 class="fw-bold my-border-bottom"><i class="bi bi-brightness-high"></i> Personne du Jour
+                            <h1 class="fw-bold my-border-bottom pe-3"><i class="bi bi-brightness-high"></i> Personne du Jour
                             </h1>
                             <div class="d-flex flex-column ms-2">
                                 <ng-container *ngIf="formPersonnelJour">
@@ -69,6 +44,77 @@
                                 </ng-container>
                                 <i class="bi bi-plus-circle plus-x text-primary" *ngIf="numArrayJour.length==0"
                                     (click)="ajoutPersonJour()"></i>
+                            </div>
+                            <!-- <h1 class="fw-bold my-border-bottom pe-3"> <i class="bi bi-moon-stars"></i> Personnes de
+                                Nuit</h1>
+                            <div class="d-flex flex-column ms-2">
+                                <ng-container *ngIf="formPersonnelNuit">
+
+                                    <ng-container *ngFor="let ind of numArrayNuit">
+
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <app-personnel-autocomplete (dataPerson)="dataNuitPersonnel(ind, $event)"
+                                                forLabel="Personne de permanence" forPlaceholder="selectionner un nom"
+                                                [options]="options" name="personnelnuit{{ind}}"
+                                                [initialValue]="formPersonnelNuit[ind]"></app-personnel-autocomplete>
+                                            <i class="bi bi-plus-circle plus-x text-primary"
+                                                *ngIf="numArrayNuit.length-1==ind" (click)="ajoutPersonNuit()"></i>
+                                            <i class="bi bi-x-circle plus-x text-danger" *ngIf="numArrayNuit.length!=0"
+                                                (click)="suprPersonNuit(ind)"></i>
+                                        </div>
+                                    </ng-container>
+
+                                </ng-container>
+                                <i class="bi bi-plus-circle plus-x text-primary" *ngIf="numArrayNuit.length==0"
+                                    (click)="ajoutPersonNuit()"></i>
+                            </div> -->
+                        </div>
+                        <div class="p-2">
+                            <!-- <h1 class="fw-bold my-border-bottom"><i class="bi bi-brightness-high"></i> Personne du Jour
+                            </h1>
+                            <div class="d-flex flex-column ms-2">
+                                <ng-container *ngIf="formPersonnelJour">
+
+                                    <ng-container *ngFor="let ind of numArrayJour">
+
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <app-personnel-autocomplete (dataPerson)="dataJourPersonnel(ind, $event)"
+                                                forLabel="Personne de permanence" forPlaceholder="selectionner un nom"
+                                                [options]="options" name="personnelJour{{ind}}"
+                                                [initialValue]="formPersonnelJour[ind]"></app-personnel-autocomplete>
+                                            <i class="bi bi-plus-circle plus-x text-primary"
+                                                *ngIf="numArrayJour.length-1==ind" (click)="ajoutPersonJour()"></i>
+                                            <i class="bi bi-x-circle plus-x text-danger" *ngIf="numArrayJour.length!=0"
+                                                (click)="suprPersonJour(ind)"></i>
+                                        </div>
+                                    </ng-container>
+
+                                </ng-container>
+                                <i class="bi bi-plus-circle plus-x text-primary" *ngIf="numArrayJour.length==0"
+                                    (click)="ajoutPersonJour()"></i>
+                            </div> -->
+                            <h1 class="fw-bold my-border-bottom"> <i class="bi bi-moon-stars"></i> Personnes de
+                                Nuit</h1>
+                            <div class="d-flex flex-column ms-2">
+                                <ng-container *ngIf="formPersonnelNuit">
+
+                                    <ng-container *ngFor="let ind of numArrayNuit">
+
+                                        <div class="d-flex gap-2 align-items-center">
+                                            <app-personnel-autocomplete (dataPerson)="dataNuitPersonnel(ind, $event)"
+                                                forLabel="Personne de permanence" forPlaceholder="selectionner un nom"
+                                                [options]="options" name="personnelnuit{{ind}}"
+                                                [initialValue]="formPersonnelNuit[ind]"></app-personnel-autocomplete>
+                                            <i class="bi bi-plus-circle plus-x text-primary"
+                                                *ngIf="numArrayNuit.length-1==ind" (click)="ajoutPersonNuit()"></i>
+                                            <i class="bi bi-x-circle plus-x text-danger" *ngIf="numArrayNuit.length!=0"
+                                                (click)="suprPersonNuit(ind)"></i>
+                                        </div>
+                                    </ng-container>
+
+                                </ng-container>
+                                <i class="bi bi-plus-circle plus-x text-primary" *ngIf="numArrayNuit.length==0"
+                                    (click)="ajoutPersonNuit()"></i>
                             </div>
                         </div>
 

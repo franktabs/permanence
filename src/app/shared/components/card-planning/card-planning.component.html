@@ -1,34 +1,38 @@
-<div class="bg-white shadow-lg my-card" >
+<div class="bg-white shadow-lg my-card">
     <div class="p-2">
-        <div class="fs-6 fst-italic border-bottom border-1 border-black text-center pb-2 text-capitalize">
-            <ng-container [ngSwitch]="planning.isValid"  >
+        <div class="fs-6 fst-italic border-bottom border-1 border-black text-center pb-2 text-capitalize d-flex">
+            <ng-container [ngSwitch]="planning.isValid">
 
-                <span *ngSwitchCase="null" >
-                    en attente <i class="bi bi-hourglass" ></i>
-                </span>
+                <div class="flex-fill">
+                    <span *ngSwitchCase="null">
+                        en attente <i class="bi bi-hourglass"></i>
+                    </span>
 
-                <span class="text-success" *ngSwitchCase="true" >
-                    valider <i class="bi bi-check-circle" ></i>
-                </span>
+                    <span class="text-success" *ngSwitchCase="true">
+                        valider <i class="bi bi-check-circle"></i>
+                    </span>
 
-                <span class="text-danger" *ngSwitchCase="false">
-                    refuser <i class="bi bi-x-circle" ></i>
+                    <span class="text-danger" *ngSwitchCase="false">
+                        refuser <i class="bi bi-x-circle"></i>
+                    </span>
+                    <span *ngSwitchDefault>
+                        Problème rencontré
+                    </span>
+                </div>
+                <span class="text-danger fs-3 remove" *ngIf="!planning.id" (click)="remove()" >
+                    <i class="bi bi-trash"></i>
                 </span>
-                <span *ngSwitchDefault >
-                    Problème rencontré
-                </span>
-
             </ng-container>
         </div>
         <div class="d-flex align-items-center p-2">
-            <div class="d-flex gap-2 flex-column part1-planning p-2" >
+            <div class="d-flex gap-2 flex-column part1-planning p-2">
                 <div class="d-flex flex-column fs-2 gap-2 align-items-center">
-                    <span  ><i class="bi bi-calendar2-range"></i></span>
+                    <span><i class="bi bi-calendar2-range"></i></span>
                     <span>Plannings</span>
                 </div>
                 <span class="fst-italic">(Creer {{ planning.submissionDate | timeAgo }})</span>
             </div>
-            <div class="part2-planning p-2" >
+            <div class="part2-planning p-2">
                 <div>
                     <table class="table table-hover">
                         <tbody>
@@ -38,7 +42,8 @@
                             </tr>
                             <tr>
                                 <th class="color-bordeau color-bleu fw-bold ">Dates</th>
-                                <td class="text-capitalize" >du <span class="fw-bold fst-italic"> {{ planning.start }} </span>  -- <span class="fw-bold fst-italic"> {{ planning.end }} </span> </td>
+                                <td class="text-capitalize">du <span class="fw-bold fst-italic"> {{ planning.start }}
+                                    </span> -- <span class="fw-bold fst-italic"> {{ planning.end }} </span> </td>
                             </tr>
                         </tbody>
                     </table>
@@ -48,12 +53,17 @@
         <div class="d-flex justify-content-between border-top border-1 border-black pt-2">
 
             <div class="d-flex gap-2">
-                <button mat-raised-button  class="mat-btn-noir " *ngIf="planning.isValid==null || planning.isValid==false" (click)="decisionPlanning(true)" >Valider <i class="bi bi-calendar2-check"></i> </button>
-            <button mat-raised-button  class="mat-btn-rouge"  *ngIf="planning.isValid==null || planning.isValid==true" (click)="decisionPlanning(false)"  >Rejeter <i class="bi-eye bi-x-lg"></i> </button>
+                <button mat-raised-button class="mat-btn-noir "
+                    *ngIf="(planning.isValid==null || planning.isValid==false) && planning.id" (click)="decisionPlanning(true)">Valider
+                    <i class="bi bi-calendar2-check"></i> </button>
+                <button mat-raised-button class="mat-btn-rouge" *ngIf="(planning.isValid==null || planning.isValid==true) && planning.id"
+                    (click)="decisionPlanning(false)">Rejeter <i class="bi-eye bi-x-lg"></i> </button>
             </div>
             <div class="d-flex gap-2">
-                <button mat-raised-button class="mat-btn-bordeau" *ngIf="!planning.id"  (click)="handleSave()" >Enregistrer <i class="bi-eye bi-save"></i> </button>
-            <button mat-raised-button color="primary" (click)="handleClick()" > Voir <i class="bi-eye bi"></i> </button>
+                <button mat-raised-button class="mat-btn-bordeau" *ngIf="!planning.id"
+                    (click)="handleSave()">Enregistrer <i class="bi-eye bi-save"></i> </button>
+                <button mat-raised-button color="primary" (click)="handleClick()"> Voir <i class="bi-eye bi"></i>
+                </button>
             </div>
         </div>
     </div>

@@ -6,17 +6,21 @@
             <tr (click)="visibleModalPermanence = true" class="head-day">
                 <ng-template [ngIf]="!ordinaire" >
                     <th
-                        [ngClass]="{'bg-mprimary-light':date.getDay()==6 || typeFerier=='ouvrable', 'bg-danger':typeFerier=='non_ouvrable'}"
+                        [ngClass]="{'bg-mprimary-light':typeFerier=='ouvrable', 'bg-danger':typeFerier=='non_ouvrable'}"
                         colspan="2">
                         <h1> {{date| date:"E"}} </h1>
                         <h2> {{date| date:"dd/MM/yyyy"}} </h2>
                     </th>
                 </ng-template>
                 <ng-template [ngIf]="ordinaire">
-                    <th [ngClass]="{'bg-mprimary-light':date.getDay()==6}" >
+                    <th >
                         <h1> {{date| date:"E"}} </h1>
                         <h2> {{date| date:"dd/MM/yyyy"}} </h2>
                     </th>
+                    <!-- <th [ngClass]="{'bg-mprimary-light':date.getDay()==6}" >
+                        <h1> {{date| date:"E"}} </h1>
+                        <h2> {{date| date:"dd/MM/yyyy"}} </h2>
+                    </th> -->
                 </ng-template>
             </tr>
         </thead>
@@ -25,19 +29,19 @@
             <tr>
                 <ng-template [ngIf]="!ordinaire">
                     <td>
-                       <div class="bg-mprimary text-white text-center fw-bold py-2" >
+                       <div class="bg-mprimary text-white text-center fw-bold py-2 day" >
                             <span >JOUR</span>
                        </div>
                     </td>
                     <td>
-                        <div class="bg-dark text-white text-center fw-bold py-2">
+                        <div class="bg-dark text-white text-center fw-bold py-2 day">
                             <span>NUIT</span>
                         </div>
                     </td>
                 </ng-template>
                 <ng-template [ngIf]="ordinaire" >
                     <td>
-                        <div class="bg-dark text-white text-center fw-bold py-2">
+                        <div class="bg-dark text-white text-center fw-bold py-2 day">
                             <span>NUIT</span>
                         </div>
                     </td>

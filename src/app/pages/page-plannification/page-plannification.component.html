@@ -11,7 +11,7 @@
                     class="bi bi-calendar3"></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
         </div>
         <div class="mt-5 d-flex gap-4 align-items-center flex-wrap">
-            <app-card-planning *ngFor="let planning of plannings" [planning]="planning"
+            <app-card-planning *ngFor="let planning of plannings, let i = index" [plannings]="plannings" [indice]="i"
                 (planningEmit)="voirPlanning($event)"></app-card-planning>
         </div>
         <ng-container *ngIf="visiblePlanning">

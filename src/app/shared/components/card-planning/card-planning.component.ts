@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
 import { IPlanning } from '../../interfaces/iplanning';
 import { IPermanence } from '../../interfaces/ipermanence';
 import { ApiService } from '../../services/api.service';
@@ -13,9 +13,13 @@ import { AlertService } from '../../services/alert.service';
   templateUrl: './card-planning.component.html',
   styleUrls: ['./card-planning.component.scss']
 })
-export class CardPlanningComponent implements OnInit {
+export class CardPlanningComponent implements OnInit,OnChanges {
 
-  @Input() planning!:IPlanning;
+  @Input() plannings:IPlanning[] = [];
+  @Input() indice!:number;
+
+  public planning!:IPlanning
+
 
   @Output() planningEmit:EventEmitter<IPlanning> = new EventEmitter()
 
@@ -33,13 +37,16 @@ export class CardPlanningComponent implements OnInit {
     this.loader.loader_modal$.next(true);
 
     let planningCopy = JSON.parse(JSON.stringify(this.planning));
-    let monthsCopy = planningCopy.months;
+    let monthsCopy:IMonth[] = planningCopy.months;
     let permanences = null;
     let personnels_jours = null;
     let personnels_nuits = null;
     delete planningCopy.months;
     let i = 0;
     let n = 0
+    console.log("monthsCopy",monthsCopy)
+    console.log("month original", this.planning.months)
+    // debugger
     try{
 
       let response = await axios.post(this.api.URL_PLANNINGS, planningCopy)
@@ -67,6 +74,7 @@ export class CardPlanningComponent implements OnInit {
                 delete permanence.personnels_nuit;
                 response = await axios.post(this.api.URL_PERMANENCES, permanence)
                 console.log("sauvegarde de permanence", response.data)
+                // debugger
                 if(response.data.id){
                   let idPermanence:number = response.data.id;
                   if(personnels_jours){
@@ -75,6 +83,7 @@ export class CardPlanningComponent implements OnInit {
                       personnel_jour.permanence.id = idPermanence;
                       response = await axios.post(this.api.URL_PERSONNEL_JOURS, personnel_jour)
                       console.log("sauvegarde de personnel_jour", response.data)
+                      // debugger
                     }
                   }
                   if(personnels_nuits){
@@ -145,6 +154,21 @@ export class CardPlanningComponent implements OnInit {
     // )
   }
 
+  ngOnChanges(changes: SimpleChanges){
+    if(changes["plannings"]){
+      let currentValue:IPlanning[] = changes["plannings"].currentValue;
+      if(this.indice){
+        this.planning = currentValue[this.indice]
+      }
+    }
+    if(changes["indice"]){
+      let currentValue:IPlanning = changes["indice"].currentValue;
+      if(this.plannings){
+        this.planning = this.plannings[this.indice]
+      }
+    }
+  }
+
   
   async decisionPlanning(value:boolean|null){
     this.loader.loader_modal$.next(true);
@@ -163,6 +187,10 @@ export class CardPlanningComponent implements OnInit {
     }
     this.loader.loader_modal$.next(false);
     
+  }
+
+  remove(){
+    this.plannings.splice(this.indice, 1)
   }
   
 

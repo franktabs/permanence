@@ -24,4 +24,14 @@ export class AlertService {
       data:message
     })
   }
+
+  alertFormulaire(){
+    this.alertMaterial(
+      { message: 'Veuillez renseignez tous les champs', title: 'error' },
+      2
+    );
+    setTimeout(()=>{
+      this.alertMaterial({message:"Selectionner les personnes de la liste deroulante pour chaque entrées", title:"information"}, 5)
+    }, 2100)
+  }
 }

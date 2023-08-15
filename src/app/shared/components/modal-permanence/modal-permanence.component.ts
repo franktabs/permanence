@@ -198,10 +198,7 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
     }
 
     if (errors) {
-      this.alert.alertMaterial(
-        { message: 'Veuillez renseignez tous les champs', title: 'error' },
-        5
-      );
+      this.alert.alertFormulaire();
     } else {
       let attrPermanence: IPermanence = JSON.parse(
         JSON.stringify(this.permanence)

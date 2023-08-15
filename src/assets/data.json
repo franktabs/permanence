@@ -1,0 +1,12 @@
+[
+  { "id": "1", "libelle": "Hydrogen", "code": "1.0079", "valeur": "" },
+  { "id": "2", "libelle": "Helium", "code": "4.0026", "valeur": "" },
+  { "id": "3", "libelle": "Lithium", "code": "6.941", "valeur": "" },
+  { "id": "4", "libelle": "Beryllium", "code": "9.0122", "valeur": "" },
+  { "id": "5", "libelle": "Boron", "code": "10.811", "valeur": "" },
+  { "id": "6", "libelle": "Carbon", "code": "12.0107", "valeur": "" },
+  { "id": "7", "libelle": "Nitrogen", "code": "14.0067", "valeur": "" },
+  { "id": "8", "libelle": "Oxygen", "code": "15.9994", "valeur": "" },
+  { "id": "9", "libelle": "Fluorine", "code": "18.9984", "valeur": "" },
+  { "id": "10", "libelle": "Neon", "code": "20.1797", "valeur": "" }
+]

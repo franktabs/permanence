@@ -250,7 +250,7 @@ export class PagePlannificationComponent implements OnInit {
       let ferierPermanence = this.dataPlanning?.feriers;
       let permanence: IPermanence = {
         date: stringDate(datePermanence) || '',
-        type: 'simple',
+        type: datePermanence.getDay() == 6 ? 'ouvrable' : 'simple',
         personnels_jour: [],
         personnels_nuit: [],
         month: null,
@@ -431,7 +431,7 @@ export class PagePlannificationComponent implements OnInit {
           }
         }
       } else if (date.getDay() == 6) {
-        if (permanence.type == 'simple') {
+        if (permanence.type == 'ouvrable') {
           let permanenceLundi = this.permanences[index - 5];
           if (
             permanence.personnels_jour != null &&
