@@ -9,7 +9,8 @@ import { IApiHoliday } from "../interfaces/iapiholiday";
 import { IHolidays } from "../interfaces/iholidays";
 import { IApiDepartement } from "../interfaces/iapidepartement";
 
-export type TypePersonnel = ReturnFormatJSON<IApiPersonnel, IPersonnel>
+export type TypePersonnel = IApiPersonnel;
+// export type TypePersonnel = ReturnFormatJSON<IApiPersonnel, IPersonnel>
 export type TypeDirection = ReturnFormatJSON<IApiDirection, IDirection>
 export type TypeAbsence = ReturnFormatJSON<IApiRemplacement, IAbsence>
 export type TypeHoliday = ReturnFormatJSON<IApiHoliday, IHolidays>

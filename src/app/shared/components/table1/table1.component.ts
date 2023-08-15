@@ -31,9 +31,9 @@ export class Table1Component
   implements AfterViewInit, OnDestroy, OnChanges, OnInit
 {
   public displayedColumns: Array<keyof TypePersonnel> = [
-    'nom',
+    "firstname",
     'sexe',
-    'email',
+    "emailaddress",
     'fonction',
     'service',
   ];

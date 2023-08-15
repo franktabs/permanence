@@ -42,7 +42,7 @@ export class Modal1Component implements OnInit, OnChanges {
         return false
       }) as any;
       let obj1 = obj as TypePersonnel
-      let unkHolidays : IApiHoliday[] = obj1.holidays as any
+      let unkHolidays : IApiHoliday[] = obj1.vacancies as any
       if (unkHolidays && unkHolidays.length) {
         this.keyRowHoliday = Object.keys(unkHolidays[0]).filter((item) => {
           // console.log("who's undefined", obj.absence[item], obj.absence)
@@ -54,7 +54,7 @@ export class Modal1Component implements OnInit, OnChanges {
           return false
         }) as any;
       }
-      let unkAbsences:IApiRemplacement[] = obj1.absences as any;
+      let unkAbsences:IApiRemplacement[] = obj1.absentList as any;
       if (unkAbsences && unkAbsences.length) {
         let absence: IApiRemplacement | null = unkAbsences[0]
         for (let oneAbsence of unkAbsences ) {

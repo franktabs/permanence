@@ -16,15 +16,20 @@ export const mapDirection: TypeFormatJSON<
   IDirection
 >['correspondance'] = {};
 
+// export const mapPersonnel: TypeFormatJSON<
+//   IApiPersonnel,
+//   IPersonnel
+// >['correspondance'] = {firstname:"nom", emailaddress:"email", telephoneCisco:"contact1", telephoneMobile:"contact2", absentList:"absences", vacancies:"holidays"}
+
 export const mapPersonnel: TypeFormatJSON<
   IApiPersonnel,
-  IPersonnel
->['correspondance'] = {firstname:"nom", emailaddress:"email", telephoneCisco:"contact1", telephoneMobile:"contact2", absentList:"absences", vacancies:"holidays"}
+  IApiPersonnel
+>['correspondance'] = {firstname:"firstname", emailaddress:"emailaddress", telephoneCisco:"telephoneCisco", telephoneMobile:"telephoneMobile", absentList:"absentList", vacancies:"vacancies"}
 
 export const mapReversePersonnel:TypeFormatJSON<
   TypePersonnel,
   IApiPersonnel
->["correspondance"] = {nom:"firstname", email:"emailaddress", contact1:"telephoneCisco",contact2:"telephoneMobile", absences:"absentList", holidays:"vacancies" }
+>["correspondance"] = {firstname:"firstname", emailaddress:"emailaddress", telephoneCisco:"telephoneCisco",telephoneMobile:"telephoneMobile", absentList:"absentList", vacancies:"vacancies" }
 
 export const mapAbsence: TypeFormatJSON<
   IApiRemplacement,

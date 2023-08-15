@@ -56,7 +56,7 @@ export class PersonnelAutocompleteComponent implements OnInit, OnChanges {
             if (typeof value == 'string') {
               name = value;
             } else if (value) {
-              let unkOption: string = value.nom as string;
+              let unkOption: string = value.firstname as string;
               name = unkOption;
             }
             return name
@@ -98,7 +98,7 @@ export class PersonnelAutocompleteComponent implements OnInit, OnChanges {
 
   displayFn(personnel: TypePersonnel): string {
     if (personnel) {
-      let unkName: string = personnel.nom as string;
+      let unkName: string = personnel.firstname as string;
       return unkName;
     }
     return '';
@@ -107,7 +107,7 @@ export class PersonnelAutocompleteComponent implements OnInit, OnChanges {
   private _filter(name: string): TypePersonnel[] {
     const filterValue = name.toLowerCase();
     return this.options.filter((option) => {
-      let unkOption: string = option.nom as any;
+      let unkOption: string = option.firstname as any;
       return unkOption.toLowerCase().includes(filterValue);
     });
   }

@@ -6,7 +6,7 @@
     <div class="body" >
         <div *ngIf="personnels && personnels.length; else empty" >
             <ng-container *ngFor="let ipersonnel of personnels" >
-                <app-line1 [nom]="''+ipersonnel.nom" date="2023-07-25" >
+                <app-line1 [nom]="''+ipersonnel.firstname" date="2023-07-25" >
                     <i class="bi bi-person-fill" ></i>
                     <p class="m-0 p-0 d-inline">A obtenu Congé</p>
                 </app-line1>

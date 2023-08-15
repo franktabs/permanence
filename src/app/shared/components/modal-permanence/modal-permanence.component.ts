@@ -56,7 +56,8 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
     this.api
       .getAllData<IApiPersonnel[]>({ for: 'personnels' })
       .subscribe((subs) => {
-        let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
+        let transSubs = subs
+        // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
         this.options = transSubs;
       });
   }
@@ -77,10 +78,11 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
         let i = 0;
         for (let person of thisPermanence.personnels_jour) {
           let personIApiPersonnel = person.personnel;
-          let personTypePersonnel = formatJSON<IApiPersonnel, IPersonnel>({
-            obj: personIApiPersonnel,
-            correspondance: mapPersonnel,
-          });
+          let personTypePersonnel = personIApiPersonnel
+          // let personTypePersonnel = formatJSON<IApiPersonnel, IPersonnel>({
+          //   obj: personIApiPersonnel,
+          //   correspondance: mapPersonnel,
+          // });
           this.formPersonnelJour.push(personTypePersonnel);
           this.personnelJourDatas.push(personTypePersonnel as TypePersonnel);
         }
@@ -88,10 +90,11 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
       if (thisPermanence.personnels_nuit)
         for (let person of thisPermanence.personnels_nuit) {
           let personIApiPersonnel = person.personnel;
-          let personTypePersonnel = formatJSON<IApiPersonnel, IPersonnel>({
-            obj: personIApiPersonnel,
-            correspondance: mapPersonnel,
-          });
+          let personTypePersonnel = personIApiPersonnel
+          // let personTypePersonnel = formatJSON<IApiPersonnel, IPersonnel>({
+          //   obj: personIApiPersonnel,
+          //   correspondance: mapPersonnel,
+          // });
           this.formPersonnelNuit.push(personTypePersonnel);
           this.personnelNuitDatas.push(personTypePersonnel);
         }
@@ -175,12 +178,13 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
         personnel_nuit.push({responsable:false, "permanence":attrPermanence, "personnel":personnel})
       }
     }
+
+
     console.log("données permanence", personnel_jour,personnel_nuit, this.formFerier)
     this.permanence.type=this.formFerier;
     this.permanence.personnels_jour=personnel_jour
     this.permanence.personnels_nuit=personnel_nuit
-    console.log("objet en sortie", this.permanence)
-
+    console.log("permanence modal sortie", this.permanence)
     this.openChange.emit(false)
 
   }

@@ -34,8 +34,8 @@ export class Modal3Component implements OnInit, OnChanges {
 
   ngOnInit(): void {
 
-      if (this.userAuth.user && this.userAuth.user.absences && this.userAuth.user.agent) {
-        this.tabAbsences = this.userAuth.user.absences as TypeAbsence[];
+      if (this.userAuth.user && this.userAuth.user.absentList && this.userAuth.user.agent) {
+        this.tabAbsences = this.userAuth.user.absentList as TypeAbsence[];
       }
       if(this.userAuth.user){
         this.user=this.userAuth.user;

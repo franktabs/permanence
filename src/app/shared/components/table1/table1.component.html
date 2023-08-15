@@ -10,10 +10,10 @@
             <div class="table-responsive">
                 <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
 
-                    <ng-container matColumnDef="nom">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by nom"
+                    <ng-container matColumnDef="firstname">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by firstname"
                             class="px-4">Nom</th>
-                        <td mat-cell *matCellDef="let element" class="px-4"> <div class="w-max-content ">{{element.nom}}</div> </td>
+                        <td mat-cell *matCellDef="let element" class="px-4"> <div class="w-max-content ">{{element.firstname}}</div> </td>
                     </ng-container>
 
                     <ng-container matColumnDef="sexe">
@@ -23,10 +23,10 @@
                         <td mat-cell *matCellDef="let element" class="px-4"> {{element.sexe}} </td>
                     </ng-container>
 
-                    <ng-container matColumnDef="email">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by email"
+                    <ng-container matColumnDef="emailaddress">
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by emailaddress"
                             class="px-4">Email</th>
-                        <td mat-cell *matCellDef="let element" class="px-4"> {{element.email}} </td>
+                        <td mat-cell *matCellDef="let element" class="px-4"> {{element.emailaddress}} </td>
                     </ng-container>
 
                     <ng-container matColumnDef="fonction">

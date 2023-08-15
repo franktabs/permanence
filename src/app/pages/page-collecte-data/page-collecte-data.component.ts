@@ -144,7 +144,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   public getPersonnelsHoliday() {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
-        let unkHolidays: IApiHoliday[] = items.holidays as any
+        let unkHolidays: IApiHoliday[] = items.vacancies as any
         if (unkHolidays) {
           for (let holiday of unkHolidays) {
             if (holiday?.start) {
@@ -179,7 +179,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
         let isTake = false;
-        let unkAbsences:IApiRemplacement[] = items.absences as any
+        let unkAbsences:IApiRemplacement[] = items.absentList as any
         if (unkAbsences) {
           for (let oneAbsence of unkAbsences) {
             if (oneAbsence.start) {
@@ -221,7 +221,8 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     this.api
       .getAllData<IApiPersonnel[]>({ for: 'personnels' })
       .subscribe((obs) => {
-        let dataMap = mapJSON<IApiPersonnel, IPersonnel>(obs, mapPersonnel)
+        // let dataMap = mapJSON<IApiPersonnel, IPersonnel>(obs, mapPersonnel)
+        let dataMap =obs;
         let allUserPersonnel = dataMap;
         this.allPersonnels = allUserPersonnel;
         this.data_apiPersonnels = allUserPersonnel;

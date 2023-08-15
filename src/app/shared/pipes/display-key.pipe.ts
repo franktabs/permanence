@@ -11,11 +11,11 @@ export class DisplayKeyPipe implements PipeTransform {
     if(val==="nom" && type ==="remplacement"){
       return "Remplaceur"
     }
-    else if(val ==="contact1"){
+    else if(val ==="telephoneCisco"){
       return "contact 1"
     }else if(val==="libAge"){
       return "secteur"
-    }else if(val==="contact2"){
+    }else if(val==="telephoneMobile"){
       return "contact 2"
     } else if(val==="start"){
       return "debut"
