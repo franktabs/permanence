@@ -3,18 +3,18 @@
     <!-- Other column definitions -->
     <!-- libelle Column -->
     <ng-container matColumnDef="libelle">
-      <th mat-header-cell *matHeaderCellDef>Libele</th>
+      <th mat-header-cell *matHeaderCellDef class="head">Libele</th>
       <td mat-cell *matCellDef="let element">{{element.libelle}}</td>
     </ng-container>
 
     <!-- code Column -->
-    <ng-container matColumnDef="code">
-      <th mat-header-cell *matHeaderCellDef>Code</th>
+    <!-- <ng-container matColumnDef="code">
+      <th mat-header-cell *matHeaderCellDef class="head">Code</th>
       <td mat-cell *matCellDef="let element">{{element.code}}</td>
-    </ng-container>
+    </ng-container> -->
     <!-- value Column -->
     <ng-container matColumnDef="value">
-      <th mat-header-cell *matHeaderCellDef>Value</th>
+      <th mat-header-cell *matHeaderCellDef class="head">Value</th>
       <td mat-cell *matCellDef="let element" (click)="editValue(element)">{{element.value}}</td>
     </ng-container>
 

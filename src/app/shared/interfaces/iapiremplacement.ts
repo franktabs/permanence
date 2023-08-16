@@ -8,8 +8,8 @@ export interface IApiRemplacement{
     validate:boolean|null,
     submissionDate: string,
     userId?:number|null,
-    personnel:IApiPersonnel|null,
+    personnel?:IApiPersonnel|null,
     start:string,
     end?:string,
-    remplaceur:IApiPersonnel|null,
+    remplaceur?:IApiPersonnel|null,
 }

@@ -16,7 +16,7 @@ export interface GenSet {
   styleUrls: ['./para.component.scss'],
 })
 export class ParaComponent implements OnInit {
-  displayedColumns: string[] = ['libelle', 'code', 'value'];
+  displayedColumns: string[] = ['libelle', 'value'];
   dataSource: GenSet[] = [];
   selectedRow: GenSet | null = null;
 

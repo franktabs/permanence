@@ -1,6 +1,11 @@
 .demo-table {
     width: 100%;
   }
+
+  .head{
+    font-size: 25px;
+    font-weight: bolder;
+  }
   
   .mat-row .mat-cell {
     border-bottom: 1px solid transparent;
@@ -16,7 +21,7 @@
   
   .table-container {
     width: 60%;
-    margin: 0 auto;
+    margin: 5rem auto 2rem;
     // background-color: aqua;
   }
 .table-container button{
