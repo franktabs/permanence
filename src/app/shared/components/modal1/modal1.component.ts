@@ -21,7 +21,7 @@ export class Modal1Component implements OnInit, OnChanges {
 
   @Output() isOpenChange: EventEmitter<boolean> = new EventEmitter()
 
-  @Input() rows!: TypePersonnel | any;
+  @Input() rows!: TypePersonnel | any; 
 
   public closeModal3: boolean = true;
 

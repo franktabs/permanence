@@ -22,7 +22,7 @@ export interface IApiPersonnel {
   isEligible: boolean | null;
   absentList?: IApiRemplacement[] | null;
   vacancies?: IApiHoliday[] | null;
-  departement: IApiDepartement ;
+  departement?: IApiDepartement ;
   screenname?:string|null;
   personnels_jour?:IPersonnelJour[];
   personnels_nuit?:IPersonnelNuit[]

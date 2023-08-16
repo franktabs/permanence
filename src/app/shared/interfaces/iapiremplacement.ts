@@ -7,9 +7,9 @@ export interface IApiRemplacement{
     motif:string|null,
     validate:boolean|null,
     submissionDate: string,
-    userId:number|null,
-    personnel?:IApiPersonnel,
+    userId?:number|null,
+    personnel:IApiPersonnel|null,
     start:string,
-    end:string,
-    nom:string|null,
+    end?:string,
+    remplaceur:IApiPersonnel|null,
 }

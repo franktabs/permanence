@@ -1,3 +1,5 @@
+@import "colors";
+
 .part1 {
     border-right: 1px solid black;
 }
@@ -10,3 +12,8 @@
 // .part1, .part2{
 
 // }
+
+.form-control:focus, .select-form:focus{
+    border-color: $bordeau-color;
+    box-shadow: 2px 2px 1em $bordeau-color;
+}

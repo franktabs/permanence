@@ -12,26 +12,26 @@
     </div>
     <div class="ligne" ></div>
     <div class="px-1">
-        <div>
-            <h3>Motif</h3>
+        <div class="d-flex gap-2 align-items-center">
+            <h3>Motif :</h3>
             <p>
                 {{absence.motif}}
             </p>
         </div>
-        <div *ngIf="absence.message">
-            <h3>Commentaire</h3>
+        <div class="d-flex gap-2 align-items-center" *ngIf="absence.message">
+            <h3>Commentaire :</h3>
             <p> {{absence.message}} </p>
         </div>
-        <div>
-            <h3>Jour Du Remplacement </h3>
+        <div class="d-flex gap-2 align-items-center">
+            <h3>Jour Du Remplacement :</h3>
             <p class="text-capitalize">
                 Le <span class="debut"> {{absence.start | displayKey }} </span>
             </p>
         </div>
-        <div *ngIf="absence.nom">
-            <h3>Remplaceur  </h3>
+        <div class="d-flex gap-2 align-items-center" *ngIf="absence.remplaceur">
+            <h3>Remplaceur : </h3>
             <p class="text-capitalize">
-                Mr/Mrs/Mlle <span class="fw-bold"> {{absence.nom | displayKey:"remplacement" }} </span>
+                Mr/Mrs/Mlle <span class="fw-bold"> {{absence.remplaceur.firstname| displayKey:"remplacement" }} </span>
             </p>
         </div>
     </div>

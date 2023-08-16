@@ -140,12 +140,18 @@ export class PagePlannificationComponent implements OnInit {
   buildPointDate(start: Date, m: number) {
     this.start = start;
     let end = new Date(start.getFullYear(), start.getMonth(), 1);
+    let decalage = 0;
     for (let i = 1; i <= m; i++) {
       let newDate = new Date(end.getTime());
       newDate.setMonth(newDate.getMonth() + i);
       let datePoint = checkPointDate(newDate);
       let coutDay = countDate(start, datePoint);
-      this.remplissage.pointDate.push(coutDay);
+      newDate.setDate(coutDay)
+      console.log("jour de fin", start.getDay());
+      if(i>1){
+        decalage = -1;
+      }
+      this.remplissage.pointDate.push(coutDay-decalage);
     }
   }
 

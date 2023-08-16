@@ -23,26 +23,26 @@
                         </div>
                         <div class="ligne" ></div>
                         <div class="px-1">
-                            <div>
-                                <h3>Motif</h3>
+                            <div class="d-flex gap-2 align-items-center">
+                                <h3>Motif :</h3>
                                 <p>
                                     {{oneAbsence.motif}}
                                 </p>
                             </div>
-                            <div *ngIf="oneAbsence.message">
-                                <h3>Commentaire</h3>
+                            <div class="d-flex gap-2 align-items-center" *ngIf="oneAbsence.message">
+                                <h3>Commentaire :</h3>
                                 <p> {{oneAbsence.message}} </p>
                             </div>
-                            <div>
-                                <h3>Jour du Remplacement</h3>
+                            <div class="d-flex gap-2 align-items-center">
+                                <h3>Jour Du Remplacement :</h3>
                                 <p class="text-capitalize">
                                     Le <span class="debut"> {{oneAbsence.start | displayKey }} </span>
                                 </p>
                             </div>
-                            <div *ngIf="oneAbsence.nom">
-                                <h3>Remplaceur</h3>
+                            <div class="d-flex gap-2 align-items-center" *ngIf="oneAbsence.remplaceur">
+                                <h3>Remplaceur : </h3>
                                 <p class="text-capitalize">
-                                    Mr/Mrs/Mlle <span class="fw-bold"> {{oneAbsence.nom | displayKey:"remplacement" }} </span>
+                                    Mr/Mrs/Mlle <span class="fw-bold"> {{oneAbsence.remplaceur.firstname| displayKey:"remplacement" }} </span>
                                 </p>
                             </div>
                         </div>

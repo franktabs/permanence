@@ -150,8 +150,8 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
 
   suprPersonNuit(i: number) {
     console.log('indice suppression', i, this.personnelNuitDatas);
-    this.formPersonnelNuit = this.personnelNuitDatas;
     this.personnelNuitDatas.splice(i, 1);
+    this.formPersonnelNuit = JSON.parse(JSON.stringify(this.personnelNuitDatas)) ;
     this.numArrayNuit = Array.from(
       { length: this.personnelNuitDatas.length },
       (_, ind) => ind
@@ -161,8 +161,8 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
 
   suprPersonJour(i: number) {
     console.log('indice suppression', i, this.personnelJourDatas);
-    this.formPersonnelJour = this.personnelJourDatas;
     this.personnelJourDatas.splice(i, 1);
+    this.formPersonnelJour = JSON.parse(JSON.stringify(this.personnelJourDatas));
     this.numArrayJour = Array.from(
       { length: this.personnelJourDatas.length },
       (_, ind) => ind

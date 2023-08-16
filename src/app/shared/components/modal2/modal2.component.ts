@@ -9,6 +9,9 @@ import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { mapJSON } from '../../utils/function';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { mapPersonnel } from '../../utils/tables-map';
+import { AlertService } from '../../services/alert.service';
+import { LoaderService } from '../../services/loader.service';
+import axios from 'axios';
 
 //formulaire pour la soumission des demandes d'absences
 
@@ -22,25 +25,27 @@ export class Modal2Component implements OnInit {
   @Input() tabAbsences: IApiRemplacement[] | null = null;
   @Output() closeChange: EventEmitter<boolean> = new EventEmitter();
 
-
   public user!: TypePersonnel;
-  public options!: TypePersonnel[]
+  public options!: TypePersonnel[];
 
   public absenceForm!: FormGroup;
 
   constructor(
     private api: ApiService,
     private formBuilder: FormBuilder,
-    private userAuth: AuthService
+    private userAuth: AuthService,
+    private alert: AlertService,
+    private loader: LoaderService
   ) {}
 
   ngOnInit(): void {
-
-    this.api.getAllData<IApiPersonnel[]>({for:"personnels"}).subscribe((subs)=>{
-      let transSubs = subs
-      // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel)
-      this.options= transSubs;
-    })
+    this.api
+      .getAllData<IApiPersonnel[]>({ for: 'personnels' })
+      .subscribe((subs) => {
+        let transSubs = subs;
+        // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel)
+        this.options = transSubs;
+      });
 
     if (this.userAuth.user) {
       this.user = this.userAuth.user;
@@ -48,7 +53,7 @@ export class Modal2Component implements OnInit {
     this.absenceForm = this.formBuilder.group({
       motif: ['', Validators.required],
       start: ['', Validators.required],
-      nom: ['', Validators.required],
+      remplaceur: ['', Validators.required],
       submissionDate: [''],
       message: [''],
     });
@@ -58,9 +63,10 @@ export class Modal2Component implements OnInit {
     this.closeChange.emit(true);
   }
 
-  postAbsence() {
+  async postAbsence() {
+    this.loader.loader_modal$.next(true);
     console.log('données formulaire absence =>', this.absenceForm);
-    let data = this.absenceForm.value;
+    let data: IApiRemplacement = this.absenceForm.value;
     let day = new Date().toLocaleDateString('en-CA', {
       year: 'numeric',
       month: '2-digit',
@@ -68,30 +74,70 @@ export class Modal2Component implements OnInit {
     });
     data.submissionDate = day;
 
-    if(typeof data.nom !="string"){
-      let person : TypePersonnel = data.nom;
-      data.nom = person.firstname;
+    let errors = false;
+    if (!data.remplaceur || typeof data.remplaceur == 'string') {
+      errors = true;
     }
-    this.tabAbsences?.unshift(data);
-    this.up();
-  //   this.api
-  //     .postData<IApiRemplacement>(
-  //       this.api.URL_POST_ABSENCES + this.user.userId,
-  //       data
-  //     )
-  //     .subscribe((subs) => {
-  //       if (subs) {
-  //         console.log("Insertion d'Absences réussi", subs)
-  //         this.tabAbsences?.unshift(data);
-  //         this.up();
-  //       }else{
-  //         console.log("Insertion d'Absences échoué")
-  //       }
-  //     });
-  // }
+
+    if (errors) {
+      this.alert.alertFormulaire();
+    } else {
+      let copyPersonnel: IApiPersonnel = JSON.parse(
+        JSON.stringify(this.userAuth.user)
+      );
+      delete copyPersonnel.personnels_jour;
+      delete copyPersonnel.personnels_nuit;
+      delete copyPersonnel.vacancies;
+      delete copyPersonnel.departement;
+      delete copyPersonnel.absentList;
+      data.personnel = copyPersonnel;
+
+      try {
+        let response = await axios.post(this.api.URL_REMPLACEMENTS, data);
+
+        if (response.data.id) {
+          data.id = response.data.id;
+
+          this.tabAbsences?.unshift(data);
+          this.up();
+          
+          this.alert.alertMaterial({
+            message: 'Enregistrement de remplacement réussi',
+            title: 'success',
+          });
+        }
+      } catch (e) {
+        console.error("voici l'erreur", e);
+        this.alert.alertMaterial({
+          message: "Une erreur s'est produite",
+          title: 'error',
+        });
+      }
+    }
+
+    this.loader.loader_modal$.next(false);
+
+    // this.tabAbsences?.unshift(data);
+    // this.up();
+
+    //   this.api
+    //     .postData<IApiRemplacement>(
+    //       this.api.URL_POST_ABSENCES + this.user.userId,
+    //       data
+    //     )
+    //     .subscribe((subs) => {
+    //       if (subs) {
+    //         console.log("Insertion d'Absences réussi", subs)
+    //         this.tabAbsences?.unshift(data);
+    //         this.up();
+    //       }else{
+    //         console.log("Insertion d'Absences échoué")
+    //       }
+    //     });
+    // }
   }
 
-  receiveSuperviseur(event:TypePersonnel|string|null){
-    this.absenceForm.get("nom")?.setValue(event)
+  receiveSuperviseur(event: TypePersonnel | string | null) {
+    this.absenceForm.get('remplaceur')?.setValue(event);
   }
 }

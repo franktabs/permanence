@@ -21,4 +21,6 @@ export class CardAbsenceComponent implements OnInit {
     this.userAuth = this.auth.user;
   }
 
+  
+
 }
