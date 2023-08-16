@@ -181,12 +181,13 @@ export class PagePlannificationComponent implements OnInit {
       planning: null,
     };
 
-    let month_planning: IPlanning = { ...newPlanning };
+    let month_planning: IPlanning = JSON.parse(JSON.stringify(newPlanning));
     month_planning.months = [];
     month.planning = month_planning;
 
     if (newPlanning.months) newPlanning.months.push(month);
-
+    // console.log('newPlanning ', newPlanning.months);
+    // debugger;
     if (newPlanning.months)
       for (let i = 1; i <= m; i++) {
         let newMonth = newPlanning.months[i - 1];
@@ -197,6 +198,9 @@ export class PagePlannificationComponent implements OnInit {
         if (i + 1 <= m) {
           let newStartDay = new Date(datePoint.getTime());
           newStartDay.setDate(datePoint.getDate() + 1);
+          console.log('datePoint', datePoint);
+          console.log('newStartDay', newStartDay);
+          // debugger;
           let nextMonth: IMonth = {
             name: stringMonth(newStartDay.getMonth()),
             numero: newStartDay.getMonth(),
@@ -205,8 +209,10 @@ export class PagePlannificationComponent implements OnInit {
             planning: null,
             superviseur: null,
           };
-          newPlanning.months.push(newMonth);
-          let month_planning: IPlanning = { ...newPlanning };
+          newPlanning.months.push(nextMonth);
+          let month_planning: IPlanning = JSON.parse(
+            JSON.stringify(newPlanning)
+          );
           month_planning.months = [];
           nextMonth.planning = month_planning;
         }
@@ -218,8 +224,11 @@ export class PagePlannificationComponent implements OnInit {
           });
           newMonth.superviseur = formatSuperviseur;
         }
+
         let coutDay = countDate(start, datePoint);
         this.remplissage.pointDate.push(coutDay);
+        // console.log('newPlanning passage', newPlanning.months);
+        // debugger;
       }
 
     end.setMonth(end.getMonth() + m);
@@ -256,6 +265,7 @@ export class PagePlannificationComponent implements OnInit {
         month: null,
       };
       this.permanences.push(permanence);
+
       if (ferierPermanence && ferierPermanence.length) {
         for (let ferier of ferierPermanence) {
           let thisDate = new Date(ferier.jour);
@@ -292,6 +302,7 @@ export class PagePlannificationComponent implements OnInit {
     this.plannings.unshift(newPlanning);
     this.visiblePlanning = true;
     console.log('le plannings visible', this.planningVisible);
+    console.log('le permanence visible', this.permanences);
     this.tabDays = Array.from(
       { length: nbrDays + 1 + dayMinus },
       (_, ind) => ind
