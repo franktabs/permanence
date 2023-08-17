@@ -16,6 +16,7 @@ import { LoaderService } from '../../services/loader.service';
 import { AlertService } from '../../services/alert.service';
 import axios from 'axios';
 import { ApiService } from '../../services/api.service';
+import { IRole } from '../../interfaces/irole';
 
 //Tous les absences d'un utlisateur
 @Component({
@@ -30,6 +31,8 @@ export class Modal3Component implements OnInit, OnChanges {
   @Input() tabs: IApiRemplacement[] | null = null;
 
   public _tabAbsences: IApiRemplacement[] | null = [];
+
+  public authRoles:IRole["name"][] = []
 
   public user!: TypePersonnel;
 
@@ -55,6 +58,7 @@ export class Modal3Component implements OnInit, OnChanges {
       this.userAuth.user.agent
     ) {
       this.tabAbsences = this.userAuth.user.absentList as TypeAbsence[];
+      this.authRoles = this.userAuth.rolesName;
     }
     if (this.userAuth.user) {
       this.user = this.userAuth.user;

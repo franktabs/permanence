@@ -11,7 +11,7 @@
             <div class="d-flex contenu">
                 <div class="m-3 p-3 part1">
                     <div>
-                        <h1 class="pb-2"> <i class="bi bi-card-text"></i> A propos  <button mat-raised-button class="text-uppercase" color="primary" (click)="openDialog()" > Changer ses roles <i class="bt bi-toggles2" ></i></button></h1>
+                        <h1 class="pb-2"> <i class="bi bi-card-text"></i> A propos  <button mat-raised-button class="text-uppercase" color="primary" (click)="openDialog()" *ngIf="userRoles.includes('ATTRIBUER LES ROLES')" > Changer ses roles <i class="bt bi-toggles2" ></i></button></h1>
                         <table class="table table-hover ">
     
                             <tbody>

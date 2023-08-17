@@ -26,10 +26,10 @@ export class AdminGuard implements CanActivate {
         // let subTransform:TypePersonnel[] = mapJSON<IApiPersonnel, IPersonnel>(sub, mapPersonnel)
         let person:TypePersonnel = subTransform[this.auth.DEFAULT_PERSON];
         this.auth.login(person);
-        if(!this.auth.isAuthenticated && !this.auth.user){
+        if((!this.auth.isAuthenticated && !this.auth.user) || !this.auth.rolesName.includes("SE CONNECTER") ){
           this.router.navigateByUrl("home");
         }else{
-          if(!this.auth.user?.agent){
+          if(this.auth.rolesName.includes('VOIR PAGE ADMINISTRATEUR') && this.auth.rolesName.includes("SE CONNECTER")){
             return true
           }else{
             this.router.navigateByUrl("user")

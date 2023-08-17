@@ -7,6 +7,8 @@ import { IApiHoliday } from '../../interfaces/iapiholiday';
 import { IApiRemplacement } from '../../interfaces/iapiremplacement';
 import { MatDialog } from '@angular/material/dialog';
 import { ModalRoleComponent } from '../modal-role/modal-role.component';
+import { IRole } from '../../interfaces/irole';
+import { AuthService } from '../../services/auth.service';
 
 
 
@@ -31,9 +33,11 @@ export class Modal1Component implements OnInit, OnChanges {
 
   public keyRowHoliday: Array<keyof IHolidays> = [];
 
+  public userRoles:IRole["name"][]=[];
+
   public infoAbsence: { keys: Array<keyof IApiRemplacement> | null, value: IApiRemplacement | null } = { keys: null, value: null };
 
-  constructor(public dialog: MatDialog) { }
+  constructor(public dialog: MatDialog, private auth:AuthService ) { }
 
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -85,7 +89,10 @@ export class Modal1Component implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-
+    let userAuth = this.auth.user;
+    if(userAuth && userAuth.roles){
+      this.userRoles = userAuth.roles.map((role)=>role.name);
+    }
   }
 
   closeModal() {
