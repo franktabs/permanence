@@ -22,11 +22,12 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.destroys$ = new Subject();
     this.auth.isConnected$.pipe(takeUntil(this.destroys$)).subscribe((sub) => {
-      this.isConnected = sub && this.auth.rolesName.includes("SE CONNECTER");
+      this.isConnected = sub && this.auth.rolesName.includes('SE CONNECTER');
     });
   }
 
   ngOnDestroy(): void {
     this.destroys$.next(true);
   }
+
 }

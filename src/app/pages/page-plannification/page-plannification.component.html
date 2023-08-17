@@ -6,16 +6,16 @@
     </span>
     <div class="mt-5">
         <h1 class="head-3 color-bordeau"> Plannification de Permanence</h1>
-        <div>
-            <button mat-raised-button color="primary" (click)="handleModalPlanification()"> <i
-                    class="bi bi-calendar3"></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
+        <div class="anim-slide-s">
+            <button mat-raised-button color="primary" *ngIf="authRoles.includes('MODIFIER PLANNING')" (click)="handleModalPlanification()"> <i
+                    class="bi bi-calendar3 "></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
         </div>
         <div class="mt-5 d-flex gap-4 align-items-center flex-wrap">
             <app-card-planning *ngFor="let planning of plannings, let i = index" [plannings]="plannings" [indice]="i"
                 (planningEmit)="voirPlanning($event)"></app-card-planning>
         </div>
         <ng-container *ngIf="visiblePlanning">
-            <div class="mt-5 month-planning" *ngFor="let point of remplissage.pointDate, let i = index">
+            <div class="mt-5 month-planning shadow-by-material2 anim-slide-s" *ngFor="let point of remplissage.pointDate, let i = index">
                 <h1> Superviseur : {{displaySuperviseur(i) || "Aucun défini" }} </h1>
                 <div class="ligne"></div>
                 <div class='planning mt-2'>

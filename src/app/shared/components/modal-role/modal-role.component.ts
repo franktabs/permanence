@@ -88,6 +88,7 @@ export class ModalRoleComponent implements OnInit {
               let copyRole: IRole = JSON.parse(JSON.stringify(role));
               delete copyRole.personnels;
               this.data.roles?.push(copyRole);
+              
             }else{
               modify=false
             }

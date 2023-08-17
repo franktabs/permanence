@@ -35,7 +35,7 @@
             </p>
         </div>
     </div>
-    <ng-container *ngIf="userAuth && !userAuth.agent">
+    <ng-container *ngIf="userAuth && authRoles.includes('VALIDER REMPLACEMENT')">
         <hr>
         <div class="d-flex justify-content-end gap-2">
             <button mat-raised-button color="accent" *ngIf="absence.validate==true || absence.validate==null"

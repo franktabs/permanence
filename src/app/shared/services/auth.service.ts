@@ -29,6 +29,7 @@ export class AuthService {
     }
     this._isAuthenticated = true;
     this.isConnected$.next(true);
+    console.log("personne connecté", this.user)
   }
 
   logout() {

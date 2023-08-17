@@ -96,7 +96,14 @@ export class Modal1Component implements OnInit, OnChanges {
   }
 
   closeModal() {
-    this.isOpenChange.emit(false);
+    let headerModal = document.querySelectorAll(".see-modal1")
+    for(let i = 0; i<headerModal.length; i++){
+      let elemt = headerModal[i];
+      elemt.classList.add("anim-scaleOut");
+    }
+    setTimeout(()=>{
+      this.isOpenChange.emit(false)
+    }, 400)
   }
 
   openModalAbsence(){

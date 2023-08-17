@@ -15,4 +15,18 @@ export class NavigationHeaderComponent implements OnInit {
     this.isConnected = this.auth.isAuthenticated
   }
 
+  enleve_menu(){
+    let nav = document.getElementById("div-nav")
+    nav?.classList.toggle("not-visible");
+
+    let page = document.querySelector(".page");
+    if(nav?.classList.contains("not-visible")){
+      page?.classList.add("add")
+    }else{
+      page?.classList.remove("add");
+    }
+  }
+
 }
+
+

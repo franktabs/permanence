@@ -1,4 +1,4 @@
-<div class="bg-white shadow-lg my-card">
+<div class="bg-white shadow-by-material2 my-card see-my-card anim-slide-b">
     <div class="p-2">
         <div class="fs-6 fst-italic border-bottom border-1 border-black text-center pb-2 text-capitalize d-flex">
             <ng-container [ngSwitch]="planning.isValid">
@@ -52,15 +52,18 @@
         </div>
         <div class="d-flex justify-content-between border-top border-1 border-black pt-2">
 
-            <div class="d-flex gap-2">
-                <button mat-raised-button class="mat-btn-noir "
-                    *ngIf="(planning.isValid==null || planning.isValid==false) && planning.id" (click)="decisionPlanning(true)">Valider
-                    <i class="bi bi-calendar2-check"></i> </button>
-                <button mat-raised-button class="mat-btn-rouge" *ngIf="(planning.isValid==null || planning.isValid==true) && planning.id"
-                    (click)="decisionPlanning(false)">Rejeter <i class="bi-eye bi-x-lg"></i> </button>
+            <div class="d-flex gap-2"  >
+                <ng-container *ngIf="authRoles.includes('VALIDER PLANNING')" >
+
+                    <button mat-raised-button class="mat-btn-noir "
+                        *ngIf="(planning.isValid==null || planning.isValid==false) && planning.id" (click)="decisionPlanning(true)">Valider
+                        <i class="bi bi-calendar2-check"></i> </button>
+                    <button mat-raised-button class="mat-btn-rouge" *ngIf="(planning.isValid==null || planning.isValid==true) && planning.id"
+                        (click)="decisionPlanning(false)">Rejeter <i class="bi-eye bi-x-lg"></i> </button>
+                </ng-container>
             </div>
             <div class="d-flex gap-2">
-                <button mat-raised-button class="mat-btn-bordeau" *ngIf="!planning.id"
+                <button *ngIf="authRoles.includes('MODIFIER PLANNING') && !planning.id" mat-raised-button class="mat-btn-bordeau" 
                     (click)="handleSave()">Enregistrer <i class="bi-eye bi-save"></i> </button>
                 <button mat-raised-button color="primary" (click)="handleClick()"> Voir <i class="bi-eye bi"></i>
                 </button>

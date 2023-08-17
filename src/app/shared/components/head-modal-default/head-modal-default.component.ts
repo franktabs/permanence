@@ -20,7 +20,14 @@ export class HeadModalDefaultComponent implements OnInit {
   }
 
   closeModal(){
-    this.openChange.emit(false)
+    let headerModal = document.querySelectorAll(".see-header-modal")
+    for(let i = 0; i<headerModal.length; i++){
+      let elemt = headerModal[i];
+      elemt.classList.add("anim-rotOut");
+    }
+    setTimeout(()=>{
+      this.openChange.emit(false)
+    }, 800)
   }
 
 }

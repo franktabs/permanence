@@ -3,7 +3,7 @@
 <div class="my-day my-card no-shadow no-border">
     <table class="table-bordered p-4 table border-black">
         <thead>
-            <tr (click)="visibleModalPermanence = true" class="head-day">
+            <tr (click)="visibleModalPermanence = authRoles.includes('MODIFIER PLANNING')" class="head-day">
                 <ng-template [ngIf]="!ordinaire" >
                     <th
                         [ngClass]="{'bg-mprimary-light':typeFerier=='ouvrable', 'bg-danger':typeFerier=='non_ouvrable'}"

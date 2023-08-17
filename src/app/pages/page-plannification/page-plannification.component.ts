@@ -7,7 +7,9 @@ import { IPersonnel } from 'src/app/shared/interfaces/ipersonnel';
 import { IPersonnelNuit } from 'src/app/shared/interfaces/ipersonnelNuit';
 import { IPersonnelJour } from 'src/app/shared/interfaces/ipersonneljour';
 import { IPlanning } from 'src/app/shared/interfaces/iplanning';
+import { RoleType } from 'src/app/shared/interfaces/irole';
 import { ApiService } from 'src/app/shared/services/api.service';
+import { AuthService } from 'src/app/shared/services/auth.service';
 import {
   checkPointDate,
   countDate,
@@ -68,9 +70,13 @@ export class PagePlannificationComponent implements OnInit {
 
   public permanences: IPermanence[] = [];
 
-  constructor(private api: ApiService) {}
+  public authRoles:RoleType[] = []
+
+  constructor(private api: ApiService, private auth:AuthService) {}
 
   ngOnInit(): void {
+
+    this.authRoles = this.auth.rolesName;
     this.api
       .getAllData<IPlanning[] | undefined>({ for: 'plannings' })
       .subscribe((subs) => {

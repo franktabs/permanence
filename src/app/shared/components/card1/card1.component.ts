@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { LoaderService } from '../../services/loader.service';
 
 
 export type OuputTypeCard1 = {
@@ -26,7 +27,7 @@ export class Card1Component implements OnInit {
 
   @Input()
   public date2!:Date;
-  constructor() { }
+  constructor(private loader:LoaderService) { }
 
   @Output() public theIcon:EventEmitter<OuputTypeCard1> = new EventEmitter<OuputTypeCard1>() ;
 

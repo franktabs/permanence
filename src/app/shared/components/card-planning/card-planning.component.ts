@@ -15,6 +15,8 @@ import { IMonth } from '../../interfaces/imonth';
 import axios from 'axios';
 import { LoaderService } from '../../services/loader.service';
 import { AlertService } from '../../services/alert.service';
+import { AuthService } from '../../services/auth.service';
+import { RoleType } from '../../interfaces/irole';
 
 @Component({
   selector: 'app-card-planning',
@@ -27,15 +29,23 @@ export class CardPlanningComponent implements OnInit, OnChanges {
 
   public planning!: IPlanning;
 
+  public authRoles:RoleType[]=[];
+
   @Output() planningEmit: EventEmitter<IPlanning> = new EventEmitter();
 
   constructor(
     private api: ApiService,
     private loader: LoaderService,
-    private alert: AlertService
+    private alert: AlertService,
+    private auth:AuthService,
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    this.authRoles = this.auth.rolesName;
+  }
+
+  ngAfterViewInit(){
+  }
 
   handleClick() {
     this.planningEmit.emit(this.planning);

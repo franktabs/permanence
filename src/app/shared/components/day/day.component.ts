@@ -12,6 +12,8 @@ import { TypePersonnel } from '../../utils/types-map';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { mapPersonnel } from '../../utils/tables-map';
+import { AuthService } from '../../services/auth.service';
+import { RoleType } from '../../interfaces/irole';
 
 @Component({
   selector: 'app-day',
@@ -46,9 +48,13 @@ export class DayComponent implements OnInit, OnChanges {
     return this._typeFerier;
   }
 
-  constructor() {}
+  public authRoles:RoleType[]=[]
 
-  ngOnInit(): void {}
+  constructor(private auth:AuthService) {}
+
+  ngOnInit(): void {
+    this.authRoles = this.auth.rolesName;
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['permanence']) {

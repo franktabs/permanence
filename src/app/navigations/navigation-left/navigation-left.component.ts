@@ -15,7 +15,8 @@ export class NavigationLeftComponent implements OnInit {
   constructor(private auth:AuthService) { }
 
   ngOnInit(): void {
-    this.userAuth = this.auth.user
+    this.userAuth = this.auth.user;
+    
   }
 
 }
