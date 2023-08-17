@@ -5,6 +5,8 @@ import { IAbsence } from '../../interfaces/iabsence';
 import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
 import { IApiHoliday } from '../../interfaces/iapiholiday';
 import { IApiRemplacement } from '../../interfaces/iapiremplacement';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalRoleComponent } from '../modal-role/modal-role.component';
 
 
 
@@ -31,7 +33,9 @@ export class Modal1Component implements OnInit, OnChanges {
 
   public infoAbsence: { keys: Array<keyof IApiRemplacement> | null, value: IApiRemplacement | null } = { keys: null, value: null };
 
-  constructor() { }
+  constructor(public dialog: MatDialog) { }
+
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['rows']) {
       let obj = changes['rows'].currentValue;
@@ -90,6 +94,12 @@ export class Modal1Component implements OnInit, OnChanges {
 
   openModalAbsence(){
     this.closeModal3 = false;
+  }
+
+  openDialog(){
+    let dialogRel = this.dialog.open(ModalRoleComponent, {
+      data: this.rows
+    })
   }
 
 }

@@ -53,6 +53,7 @@ import { LoaderService } from './shared/services/loader.service';
 import { LoaderComponent } from './shared/components/loader/loader.component';
 import { AlertMaterialComponent } from './shared/components/alert-material/alert-material.component';
 import { AlertService } from './shared/services/alert.service';
+import { ModalRoleComponent } from './shared/components/modal-role/modal-role.component';
 
 
 registerLocaleData(localeFr)
@@ -95,7 +96,8 @@ registerLocaleData(localeFr)
     ModificationComponent,
     ModalPermanenceComponent,
     LoaderComponent,
-    AlertMaterialComponent
+    AlertMaterialComponent,
+    ModalRoleComponent
   ],
   imports: [
     BrowserModule,

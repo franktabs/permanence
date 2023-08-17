@@ -13,11 +13,11 @@ export interface IPersonnel {
     admin?: boolean;
     superviseur?: boolean;
     holiday_id?: number | null;
-    holidays?: IHolidays[];
-    absences?: IAbsence[];
     email:string|null;
     contact1:string|null;
     contact2:string|null;
+    absences?: IAbsence[];
+    holidays?: IHolidays[];
     
 }
 

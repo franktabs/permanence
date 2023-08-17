@@ -12,6 +12,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatIconModule} from "@angular/material/icon"
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
 import {MatSnackBarModule} from "@angular/material/snack-bar"
+import {MatSlideToggleModule} from "@angular/material/slide-toggle"
 
 const moduleMaterial = [
   MatPaginatorModule,
@@ -26,7 +27,8 @@ const moduleMaterial = [
   BrowserAnimationsModule,
   MatIconModule,
   MatAutocompleteModule,
-  MatSnackBarModule
+  MatSnackBarModule,
+  MatSlideToggleModule
 ]
 
 @NgModule({

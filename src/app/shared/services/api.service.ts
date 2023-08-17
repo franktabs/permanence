@@ -40,6 +40,7 @@ export class ApiService {
   public readonly URL_PERSONNEL_NUITS = this.IP + '/personnel_nuit';
   public readonly URL_HOLIDAYS = this.IP + '/absence';
   public readonly URL_REMPLACEMENTS = this.IP + '/remplacement';
+  public readonly URL_ROLES = this.IP + '/role';
 
   // public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
   // public readonly URL_PERSONNELS = 'api/apiPersonnels.json';

@@ -1,0 +1,15 @@
+<h1 mat-dialog-title class="fw-bold my-border-bottom" >ROLES</h1>
+<div mat-dialog-content>
+    <div class="d-flex flex-column gap-2 p-3 align-items-start justify-content-center" *ngIf="roles.length, else activeLoader" >
+        <mat-slide-toggle [(ngModel)]="result[i]" *ngFor="let role of roles, let i=index" > {{role.name}} </mat-slide-toggle>
+    </div>
+    <ng-template #activeLoader>
+        <div class="p-2">
+            <span class="loader"></span>
+        </div>
+    </ng-template>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()" >Annuler</button>
+  <button mat-button class="mat-btn-bordeau" cdkFocusInitial (click)="confirmer()" [disabled]="desactiver()" >Confirmer <i class="bi bi-download" ></i> </button>
+</div>

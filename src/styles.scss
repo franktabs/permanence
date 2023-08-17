@@ -81,7 +81,7 @@ body {
     color: $bordeau-color !important;
 }
 
-.color-bleu{
+.color-bleu {
     color: #3F51B5 !important;
 }
 
@@ -101,66 +101,103 @@ body {
     font-size: 1.5em !important;
 }
 
-.my-card{
+.my-card {
     transition: .2s;
-    box-shadow: 0 1rem 3rem rgba(0,0,0,.175);
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
     border: 1px solid transparent;
-    &:hover{
+
+    &:hover {
         transform: translateY(-.5em);
         border: 1px blue dashed;
     }
 
-    &:active{
-        box-shadow: inset 1px 1px 10px #868686c2 ;
+    &:active {
+        box-shadow: inset 1px 1px 10px #868686c2;
     }
 }
 
-.mat-btn-bordeau{
+.mat-btn-bordeau {
     background-color: $bordeau-color;
     color: white;
 }
 
-.mat-btn-noir{
+.mat-btn-noir {
     background-color: black;
     color: white;
 }
 
-.mat-btn-rouge{
+.mat-btn-rouge {
     background-color: $for-red-color;
     color: white;
 }
 
-.no-shadow{
+.no-shadow {
     box-shadow: none !important;
 }
 
-.no-border{
+.no-border {
     border: none !important;
-    &:hover{
+
+    &:hover {
         border: none !important;
     }
 }
 
-.my-border-top{
+.my-border-top {
     border-top: 1px black solid;
 }
-.my-border-bottom{
+
+.my-border-bottom {
     border-bottom: 1px black solid;
 }
-.my-border-left{
+
+.my-border-left {
     border-left: 1px black solid;
 }
-.my-border-right{
+
+.my-border-right {
     border-right: 1px black solid;
 }
 
-.plus-x:hover{
+.plus-x:hover {
     cursor: pointer;
     color: $for-blue-color;
     font-weight: bold;
 }
 
-.plus-x:active{
+.plus-x:active {
     color: $bordeau-color;
     font-weight: normal;
 }
+
+.shadow-by-stripe {
+    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
+}
+
+.shadow-by-material{
+    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px !important;
+}
+.shadow-by-material2{
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px !important;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 5px solid #FFF;
+    border-bottom-color: #FF3D00;
+    border-radius: 50%;
+    display: inline-block;
+    box-sizing: border-box;
+    animation: rotation 1s linear infinite;
+    box-shadow: inset rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+    }
+
+    @keyframes rotation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+    } 
