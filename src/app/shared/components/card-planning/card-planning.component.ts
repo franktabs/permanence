@@ -16,7 +16,7 @@ import axios from 'axios';
 import { LoaderService } from '../../services/loader.service';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
-import { RoleType } from '../../interfaces/irole';
+import { IRole, RoleType } from '../../interfaces/irole';
 
 @Component({
   selector: 'app-card-planning',
@@ -137,6 +137,15 @@ export class CardPlanningComponent implements OnInit, OnChanges {
           }
         if (idPlanning) {
           this.planning.id = idPlanning;
+          let response = await axios.get(this.api.URL_ROLES+"/"+2);
+          if(response.data.id){
+            let roleValidation:IRole = response.data;
+            let personnels = roleValidation.personnels;
+            if(personnels)
+            for(let personnel of personnels ){
+              
+            }
+          }
         }
         this.alert.alertMaterial({
           title: 'success',

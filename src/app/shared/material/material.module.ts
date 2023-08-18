@@ -11,7 +11,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {MatIconModule} from "@angular/material/icon"
 import {MatAutocompleteModule} from '@angular/material/autocomplete';
-import {MatSnackBarModule} from "@angular/material/snack-bar"
+import {MatSnackBarModule} from "@angular/material/snack-bar";
+import {MatMenuModule} from "@angular/material/menu";
 import {MatSlideToggleModule} from "@angular/material/slide-toggle"
 
 const moduleMaterial = [
@@ -28,7 +29,8 @@ const moduleMaterial = [
   MatIconModule,
   MatAutocompleteModule,
   MatSnackBarModule,
-  MatSlideToggleModule
+  MatSlideToggleModule,
+  MatMenuModule
 ]
 
 @NgModule({

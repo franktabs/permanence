@@ -4,6 +4,8 @@ import { IApiHoliday } from './iapiholiday';
 import { IPersonnelJour } from './ipersonneljour';
 import { IPersonnelNuit } from './ipersonnelNuit';
 import { IRole } from './irole';
+import { INotification } from './inotification';
+import { IAnnonce } from './iannonce';
 
 export interface IApiPersonnel {
   id: number | null;
@@ -28,4 +30,6 @@ export interface IApiPersonnel {
   personnels_jour?:IPersonnelJour[];
   personnels_nuit?:IPersonnelNuit[];
   roles?:IRole[]|null
+  notifications?:INotification[];
+  annonces?:IAnnonce[];
 }

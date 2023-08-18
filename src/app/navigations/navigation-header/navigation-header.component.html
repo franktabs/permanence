@@ -6,7 +6,7 @@
             <div class=" d-flex align-items-center gap-2">
                 <button mat-mini-fab (click)="enleve_menu()" color="" class="no-shadow"
                     aria-label="Example icon button with a menu icon">
-                    <i class="bi bi-list fs-3" ></i>
+                    <i class="bi bi-list fs-3"></i>
                 </button>
                 <!-- <span class="fs-3 span"  ><i class="bi bi-list"></i></span> -->
                 <!-- <span class="icon-search span"><i class="bi bi-search"></i></span> -->
@@ -19,8 +19,17 @@
             <span class="d-block position-relative span"><i class="bi bi-chat-left-dots-fill"></i>
                 <p class="alert-number m-0">+99</p>
             </span>
-            <span class="photo"><img src="../../assets/img/photo_pp.png" alt="profil"></span>
+            <div >
+                <button class="fs-4 " color="" mat-mini-fab [matMenuTriggerFor]="beforeMenu">
+                    <i class="bi bi-person-fill"></i> 
+                </button>
+                <mat-menu #beforeMenu="matMenu" xPosition="before">
+                    <button mat-menu-item (click)="handleClick()"> {{(userAuth && userAuth.firstname) || "VOTRE NOM"}}
+
+                    </button>
+                </mat-menu>
+            </div>
         </div>
     </div>
-
+    <app-modal1 [(isOpen)]="openModal" *ngIf="openModal" [rows]="userAuth"></app-modal1>
 </header>

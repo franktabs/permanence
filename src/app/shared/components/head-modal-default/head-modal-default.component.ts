@@ -27,7 +27,7 @@ export class HeadModalDefaultComponent implements OnInit {
     }
     setTimeout(()=>{
       this.openChange.emit(false)
-    }, 800)
+    }, 500)
   }
 
 }

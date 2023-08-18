@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
 import { AuthService } from 'src/app/shared/services/auth.service';
 
 @Component({
@@ -9,10 +10,16 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 export class NavigationHeaderComponent implements OnInit {
 
   public isConnected!:boolean;
+  public userAuth:IApiPersonnel|null=null;
+
+
+  public openModal: boolean = false;
+
   constructor(private auth:AuthService) { }
 
   ngOnInit(): void {
     this.isConnected = this.auth.isAuthenticated
+    this.userAuth = this.auth.user;
   }
 
   enleve_menu(){
@@ -27,6 +34,9 @@ export class NavigationHeaderComponent implements OnInit {
     }
   }
 
+  handleClick(){
+    this.openModal = true;
+  }
 }
 
 
