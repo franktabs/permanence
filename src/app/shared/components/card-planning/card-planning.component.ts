@@ -17,6 +17,8 @@ import { LoaderService } from '../../services/loader.service';
 import { AlertService } from '../../services/alert.service';
 import { AuthService } from '../../services/auth.service';
 import { IRole, RoleType } from '../../interfaces/irole';
+import { IAnnonce } from '../../interfaces/iannonce';
+import { INotification } from '../../interfaces/inotification';
 
 @Component({
   selector: 'app-card-planning',
@@ -29,7 +31,7 @@ export class CardPlanningComponent implements OnInit, OnChanges {
 
   public planning!: IPlanning;
 
-  public authRoles:RoleType[]=[];
+  public authRoles: RoleType[] = [];
 
   @Output() planningEmit: EventEmitter<IPlanning> = new EventEmitter();
 
@@ -37,15 +39,14 @@ export class CardPlanningComponent implements OnInit, OnChanges {
     private api: ApiService,
     private loader: LoaderService,
     private alert: AlertService,
-    private auth:AuthService,
+    private auth: AuthService
   ) {}
 
   ngOnInit(): void {
     this.authRoles = this.auth.rolesName;
   }
 
-  ngAfterViewInit(){
-  }
+  ngAfterViewInit() {}
 
   handleClick() {
     this.planningEmit.emit(this.planning);
@@ -89,7 +90,7 @@ export class CardPlanningComponent implements OnInit, OnChanges {
                   if (permanence.month) permanence.month.id = idMonth;
                   personnels_jours = permanence.personnels_jour;
                   personnels_nuits = permanence.personnels_nuit;
-                  let copyPermanence = JSON.parse(JSON.stringify(permanence))
+                  let copyPermanence = JSON.parse(JSON.stringify(permanence));
                   delete copyPermanence.personnels_jour;
                   delete copyPermanence.personnels_nuit;
                   response = await axios.post(
@@ -137,14 +138,35 @@ export class CardPlanningComponent implements OnInit, OnChanges {
           }
         if (idPlanning) {
           this.planning.id = idPlanning;
-          let response = await axios.get(this.api.URL_ROLES+"/"+2);
-          if(response.data.id){
-            let roleValidation:IRole = response.data;
-            let personnels = roleValidation.personnels;
-            if(personnels)
-            for(let personnel of personnels ){
-              
+          let annonce: IAnnonce = {
+            type: 'VALIDATION PLANNING',
+            message: 'planning enregistrer',
+            submissionDate: new Date().toISOString(),
+            emetteur: { id: this.auth.user?.id as number },
+          };
+
+          let response = await axios.post(this.api.URL_ANNONCES, annonce);
+          if (response.data.id) {
+            annonce = response.data;
+            response = await axios.get(this.api.URL_ROLES + '/' + 2);
+            if (response.data.id) {
+              let roleValidation: IRole = response.data;
+              let personnels = roleValidation.personnels;
+              if (personnels)
+                for (let personnel of personnels) {
+                  let notification: INotification = {
+                    annonce: { id: annonce.id as number },
+                    recepteur: {id:personnel.id as number},
+                    isViewed:null,
+                    isDeleted:false
+                  };
+                  response = await axios.post(this.api.URL_NOTIFICATIONS, notification);
+                  if(response.data.id){
+                    console.log("ajout de la notifications à ", personnel)
+                  }
+                }
             }
+            
           }
         }
         this.alert.alertMaterial({

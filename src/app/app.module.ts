@@ -54,6 +54,7 @@ import { LoaderComponent } from './shared/components/loader/loader.component';
 import { AlertMaterialComponent } from './shared/components/alert-material/alert-material.component';
 import { AlertService } from './shared/services/alert.service';
 import { ModalRoleComponent } from './shared/components/modal-role/modal-role.component';
+import { LimitStringPipe } from './shared/pipes/limit-string.pipe';
 
 
 registerLocaleData(localeFr)
@@ -97,7 +98,8 @@ registerLocaleData(localeFr)
     ModalPermanenceComponent,
     LoaderComponent,
     AlertMaterialComponent,
-    ModalRoleComponent
+    ModalRoleComponent,
+    LimitStringPipe
   ],
   imports: [
     BrowserModule,

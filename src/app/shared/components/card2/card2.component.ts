@@ -4,6 +4,11 @@ import { IPersonnel } from '../../interfaces/ipersonnel';
 import { Observable, Subject, takeUntil } from 'rxjs';
 import { TypePersonnel } from '../../utils/types-map';
 import { MatTableDataSource } from '@angular/material/table';
+import { AuthService } from '../../services/auth.service';
+import { IApiPersonnel } from '../../interfaces/iapipersonnel';
+import { INotification } from '../../interfaces/inotification';
+import { IAnnonce } from '../../interfaces/iannonce';
+import { OptionalKey } from '../../utils/type';
 
 
 //Carte sur pour afficher les évènements, historique
@@ -18,7 +23,9 @@ export class Card2Component implements OnInit, OnDestroy {
   // @Input() dataSource!:MatTableDataSource<TypePersonnel>
   @Input() personnels!:TypePersonnel[] | null;
 
-  constructor(private api:ApiService) { }
+  public notifications!:INotification[]|undefined;
+
+  constructor(private api:ApiService, private auth:AuthService) { }
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
@@ -28,6 +35,7 @@ export class Card2Component implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.destroy$=new Subject();
+    this.notifications = this.auth.user?.notifications
   }
 
   // ngOnChanges(changes: SimpleChanges): void {
@@ -38,5 +46,18 @@ export class Card2Component implements OnInit, OnDestroy {
   //     }
   // }
 
+  getNameEmetteur(annonce:OptionalKey<IAnnonce>){
+    console.log("nom personne=>", annonce);
+    return annonce.emetteur?.firstname
+  }
+
+  // getDate(annonce:IAnnonce){
+  //   if(!annonce.submissionDate) return ""
+  //   else{
+  //     let dateString   = annonce.submissionDate;
+  //     let date = new Date(Date.parse(dateString));
+      
+  //   }
+  // }
 
 }

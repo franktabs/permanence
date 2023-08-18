@@ -24,8 +24,8 @@
                         <p class="fst-italic">Aucune Directions trouvées</p>
                     </ng-template>
                 </div>
-                <div class="text-center annuler shadow-by-material" title="Reinitialiser le filtre" *ngIf="isTableFilter"
-                    (click)="resetTable()">
+                <div class="text-center annuler shadow-by-material" title="Reinitialiser le filtre"
+                    *ngIf="isTableFilter" (click)="resetTable()">
                     <p class="m-0 fst-italic ">Annuler <span class="btn btn-close"></span> </p>
                 </div>
             </div>
@@ -42,21 +42,20 @@
         </div>
         <div class="mt-3">
             <div class="d-flex p-3">
-                <div class="sh-search anim-slide-s rounded-2 shadow-by-material2" >
+                <div class="sh-search anim-slide-s rounded-2 shadow-by-material2">
                     <mat-form-field class="example-form-field" appearance="fill">
                         <mat-label>Rechercher un personnel</mat-label>
-                        <span matPrefix class="fs-3" > <i class="bi bi-search" ></i> &nbsp;</span>
+                        <span matPrefix class="fs-3"> <i class="bi bi-search"></i> &nbsp;</span>
                         <input matInput type="text" [(ngModel)]="search">
                     </mat-form-field>
                 </div>
             </div>
             <div class="d-flex">
                 <app-table1 [icon]="toTable1.icon" [title]="toTable1.title" class="app-table1 mx-3"
-                    [personnels]="data_apiPersonnels" [search]="search" ></app-table1>
+                    [personnels]="data_apiPersonnels" [search]="search"></app-table1>
 
                 <div class="d-flex flex-column">
-                    <app-card2 title="Evenements" class="evenement largeur"
-                        [personnels]="dataSource.filteredData"></app-card2>
+                    <app-card2 title="Evenements" class="evenement largeur"></app-card2>
                     <mat-paginator class="largeur" *ngIf="dataSource && dataSource.data"
                         [length]="dataSource.data.length" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"
                         showFirstLastButtons>
