@@ -18,7 +18,7 @@
             <div class="mt-5 pe-2 month-planning shadow-by-material2 anim-slide-s " *ngFor="let point of remplissage.pointDate, let i = index">
                 <h1> Superviseur : {{displaySuperviseur(i) || "Aucun défini" }} </h1>
                 <div class="ligne"></div>
-                <div class='planning mt-2 overflow-x '>
+                <div class='planning mt-2 overflow-x-auto pt-2 '>
                     <ng-container *ngFor="let day of genTabNum(point, i-1)">
                         <app-day [permanence]="permanences[day + (remplissage.pointDate[i-1]||0) ]">
                         </app-day>
