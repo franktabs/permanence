@@ -400,14 +400,14 @@ export class PagePlannificationComponent implements OnInit {
       if (initParcours == nbrParcours) {
         return person;
       } else {
-        return this.findPerson(person, group, i, date || '', nbrParcours);
+        return this.findPersonNight(person, group, i, date || '', nbrParcours);
       }
     }
 
     return person;
   }
 
-  findPerson(
+  findPersonNight(
     person: IApiPersonnel,
     group: IApiPersonnel[],
     index: number,
@@ -482,7 +482,7 @@ export class PagePlannificationComponent implements OnInit {
         if (permanence.type == 'simple') {
           let person1 = group1[(index - decalage) % nbrGroup1];
           let lastPosition = (index - decalage) % nbrGroup1;
-          person1 = this.findPerson(
+          person1 = this.findPersonNight(
             person1,
             group1,
             lastPosition,
@@ -491,7 +491,7 @@ export class PagePlannificationComponent implements OnInit {
 
           let person2 = group3[repartiGroup3++ % nbrGroup3];
           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-          person2 = this.findPerson(
+          person2 = this.findPersonNight(
             person2,
             group3,
             lastPosition,
@@ -547,9 +547,10 @@ export class PagePlannificationComponent implements OnInit {
               permanence.personnels_jour[0] = personNuit;
               
             }else{
+              console.log("problème rencontré le Lundi, anticipation ...")
               person0 = group1[(index -decalage)%nbrGroup1]
               // let lastPosition = (index - decalage) % nbrGroup1;
-              // person0 = this.findPerson(person0, group1, lastPosition,stringDate(date))
+              // person0 = this.findPersonNight(person0, group1, lastPosition,stringDate(date))
             }
             if(person0!=null){
               let person0Jour :IPersonnelJour = {
@@ -589,7 +590,7 @@ export class PagePlannificationComponent implements OnInit {
             );
 
             let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-            person3 = this.findPerson(
+            person3 = this.findPersonNight(
               person3,
               group2,
               lastPosition,
@@ -597,7 +598,7 @@ export class PagePlannificationComponent implements OnInit {
             );
 
             lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-            person5 = this.findPerson(
+            person5 = this.findPersonNight(
               person5,
               group3,
               lastPosition,
@@ -644,7 +645,7 @@ export class PagePlannificationComponent implements OnInit {
           permanence.personnels_jour?.push(person1Jour);
 
           let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-          person2 = this.findPerson(
+          person2 = this.findPersonNight(
             person2,
             group2,
             lastPosition,
@@ -659,7 +660,7 @@ export class PagePlannificationComponent implements OnInit {
           permanence.personnels_nuit?.push(person2Nuit);
 
           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-          person4 = this.findPerson(
+          person4 = this.findPersonNight(
             person4,
             group3,
             lastPosition,
