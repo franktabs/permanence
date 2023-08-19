@@ -41,9 +41,8 @@
     cursor: pointer !important;
     border-bottom: 1px solid black !important;
     &:hover {
-        font-weight: bold;
-        color: $bordeau-color;
-        border-color: $bordeau-color  !important;
+        color: $for-blue-color;
+        border-color: $for-blue-color  !important;
     }
 }
 

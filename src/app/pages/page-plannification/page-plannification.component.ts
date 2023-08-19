@@ -70,12 +70,11 @@ export class PagePlannificationComponent implements OnInit {
 
   public permanences: IPermanence[] = [];
 
-  public authRoles:RoleType[] = []
+  public authRoles: RoleType[] = [];
 
-  constructor(private api: ApiService, private auth:AuthService) {}
+  constructor(private api: ApiService, private auth: AuthService) {}
 
   ngOnInit(): void {
-
     this.authRoles = this.auth.rolesName;
     this.api
       .getAllData<IPlanning[] | undefined>({ for: 'plannings' })
@@ -152,12 +151,12 @@ export class PagePlannificationComponent implements OnInit {
       newDate.setMonth(newDate.getMonth() + i);
       let datePoint = checkPointDate(newDate);
       let coutDay = countDate(start, datePoint);
-      newDate.setDate(coutDay)
-      console.log("jour de fin", start.getDay());
-      if(i>1){
+      newDate.setDate(coutDay);
+      console.log('jour de fin', start.getDay());
+      if (i > 1) {
         decalage = -1;
       }
-      this.remplissage.pointDate.push(coutDay-decalage);
+      this.remplissage.pointDate.push(coutDay - decalage);
     }
   }
 
@@ -380,21 +379,75 @@ export class PagePlannificationComponent implements OnInit {
     person: IApiPersonnel,
     group: IApiPersonnel[],
     index: number,
-    date?: Date
-  ) {
+    date?: string,
+    nbrParcours: number = 0
+  ): IApiPersonnel {
+    if (nbrParcours >= group.length) return person;
     if (person.sexe == 'F') {
+      let initParcours = nbrParcours;
       let lastPosition = index;
       let i = lastPosition;
-      while (person.sexe == 'F') {
+      while (person.sexe == 'F' && nbrParcours < group.length) {
         i = (i + 1) % group.length;
         person = group[i];
+        nbrParcours++;
       }
+      if (i != lastPosition) {
+        let temps = group[lastPosition];
+        group[lastPosition] = person;
+        group[i] = temps;
+      }
+      if (initParcours == nbrParcours) {
+        return person;
+      } else {
+        return this.findPerson(person, group, i, date || '', nbrParcours);
+      }
+    }
+
+    return person;
+  }
+
+  findPerson(
+    person: IApiPersonnel,
+    group: IApiPersonnel[],
+    index: number,
+    date: string,
+    nbrParcours: number = 0
+  ): IApiPersonnel {
+    if (nbrParcours >= group.length) {
+      return person;
+    }
+    let initParcours = nbrParcours;
+    let continuer = true;
+    let lastPosition = index;
+    let i = index;
+    while (continuer && nbrParcours < group.length) {
+      let holidays = person.vacancies;
+      if (holidays && holidays.length) {
+        let isHoliday = false;
+        for (let holiday of holidays) {
+          if (holiday.start <= date && date <= holiday.end) {
+            i = (i + 1) % group.length;
+            person = group[i];
+            nbrParcours++;
+            isHoliday = true;
+            break;
+          }
+        }
+        if (isHoliday == false) {
+          continuer = false;
+        }
+      } else {
+        continuer = false;
+      }
+    }
+    if (i != lastPosition) {
       let temps = group[lastPosition];
       group[lastPosition] = person;
       group[i] = temps;
     }
 
-    return person;
+    return this.findMan(person, group, i, date, nbrParcours);
   }
 
   fillPlanning() {
@@ -406,6 +459,12 @@ export class PagePlannificationComponent implements OnInit {
     let nbrGroup1 = group1.length;
     let nbrGroup2 = group2.length;
     let nbrGroup3 = group3.length;
+
+    let jourFerier: { jour1: IPermanence | null; jour2: IPermanence | null } = {
+      jour1: null,
+      jour2: null,
+    };
+    let sameditAvant: IPermanence | null = null;
 
     console.log('groupe formé', group1, group2, group3);
 
@@ -423,11 +482,21 @@ export class PagePlannificationComponent implements OnInit {
         if (permanence.type == 'simple') {
           let person1 = group1[(index - decalage) % nbrGroup1];
           let lastPosition = (index - decalage) % nbrGroup1;
-          person1 = this.findMan(person1, group1, lastPosition);
+          person1 = this.findPerson(
+            person1,
+            group1,
+            lastPosition,
+            stringDate(date)
+          );
 
           let person2 = group3[repartiGroup3++ % nbrGroup3];
           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-          person2 = this.findMan(person2, group3, lastPosition, date);
+          person2 = this.findPerson(
+            person2,
+            group3,
+            lastPosition,
+            stringDate(date)
+          );
           // if (person1.sexe == 'F') {
           //   let i = lastPosition;
           //   while (person1.sexe == 'F') {
@@ -453,6 +522,18 @@ export class PagePlannificationComponent implements OnInit {
             permanence.personnels_nuit?.push(person1Nuit, person2Nuit);
           }
         }
+         else if (permanence.type == 'ouvrable') {
+          if (jourFerier.jour1 == null) {
+            jourFerier.jour1 = permanence
+          } else if (jourFerier.jour1 != null && jourFerier.jour2 == null) {
+            if (sameditAvant != null) {
+              permanence.personnels_jour = sameditAvant.personnels_jour;
+              permanence.personnels_nuit = sameditAvant.personnels_nuit;
+              
+            }
+          }
+          console.log("jour ouvrable semaine", date)
+        }
       } else if (date.getDay() == 6) {
         if (permanence.type == 'ouvrable') {
           let permanenceLundi = this.permanences[index - 5];
@@ -460,7 +541,25 @@ export class PagePlannificationComponent implements OnInit {
             permanence.personnels_jour != null &&
             permanenceLundi.personnels_nuit != null
           ) {
-            permanence.personnels_jour[0] = permanenceLundi.personnels_nuit[0];
+            let personNuit = permanenceLundi.personnels_nuit[0];
+            let person0:IApiPersonnel |null = null;
+            if(personNuit){
+              permanence.personnels_jour[0] = personNuit;
+              
+            }else{
+              person0 = group1[(index -decalage)%nbrGroup1]
+              // let lastPosition = (index - decalage) % nbrGroup1;
+              // person0 = this.findPerson(person0, group1, lastPosition,stringDate(date))
+            }
+            if(person0!=null){
+              let person0Jour :IPersonnelJour = {
+                personnel:person0,
+                permanence:personnel_permanence,
+                responsable:true,
+              }
+
+              permanence.personnels_jour.push(person0Jour)
+            }
 
             let person1 = group2[repartiGroup2++ % nbrGroup2];
             let person2 = group2[repartiGroup2++ % nbrGroup2];
@@ -471,7 +570,7 @@ export class PagePlannificationComponent implements OnInit {
             let person1Jour: IPersonnelJour = {
               permanence: personnel_permanence,
               personnel: person1,
-              responsable: true,
+              responsable: false,
             };
             let person2Jour: IPersonnelJour = {
               personnel: person2,
@@ -490,10 +589,20 @@ export class PagePlannificationComponent implements OnInit {
             );
 
             let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-            person3 = this.findMan(person3, group2, lastPosition);
+            person3 = this.findPerson(
+              person3,
+              group2,
+              lastPosition,
+              stringDate(date)
+            );
 
             lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-            person5 = this.findMan(person5, group3, lastPosition);
+            person5 = this.findPerson(
+              person5,
+              group3,
+              lastPosition,
+              stringDate(date)
+            );
 
             let person5Nuit: IPersonnelNuit = {
               personnel: person5,
@@ -507,6 +616,14 @@ export class PagePlannificationComponent implements OnInit {
             };
 
             permanence.personnels_nuit?.push(person5Nuit, person3Nuit);
+
+            if(jourFerier.jour1!=null){
+              jourFerier.jour1.personnels_jour = permanence.personnels_jour;
+              jourFerier.jour1.personnels_nuit = permanence.personnels_nuit;
+              jourFerier.jour1 = null;
+            }
+
+            sameditAvant = permanence;
           }
         }
       } else if (date.getDay() == 0) {
@@ -527,7 +644,12 @@ export class PagePlannificationComponent implements OnInit {
           permanence.personnels_jour?.push(person1Jour);
 
           let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-          person2 = this.findMan(person2, group2, lastPosition);
+          person2 = this.findPerson(
+            person2,
+            group2,
+            lastPosition,
+            stringDate(date)
+          );
 
           let person2Nuit: IPersonnelNuit = {
             personnel: person2,
@@ -537,7 +659,12 @@ export class PagePlannificationComponent implements OnInit {
           permanence.personnels_nuit?.push(person2Nuit);
 
           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-          person4 = this.findMan(person4, group3, lastPosition);
+          person4 = this.findPerson(
+            person4,
+            group3,
+            lastPosition,
+            stringDate(date)
+          );
 
           let person3Jour: IPersonnelJour = {
             personnel: person3,

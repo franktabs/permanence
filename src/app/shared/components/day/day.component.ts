@@ -32,8 +32,6 @@ export class DayComponent implements OnInit, OnChanges {
   // @Input() feriers: Ferier[] = [];
   @Input() permanence!: IPermanence;
 
-  
-
   public openModal: boolean = false;
 
   public row!: TypePersonnel;
@@ -48,9 +46,9 @@ export class DayComponent implements OnInit, OnChanges {
     return this._typeFerier;
   }
 
-  public authRoles:RoleType[]=[]
+  public authRoles: RoleType[] = [];
 
-  constructor(private auth:AuthService) {}
+  constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
     this.authRoles = this.auth.rolesName;
@@ -162,9 +160,28 @@ export class DayComponent implements OnInit, OnChanges {
     this.openModal = true;
   }
 
-  refresh(val:boolean){
-    if(val){
-      this.typeFerier=this.permanence.type;
+  refresh(val: boolean) {
+    if (val) {
+      this.typeFerier = this.permanence.type;
     }
+  }
+
+  mustChanged(person: IApiPersonnel) {
+    let absents = person.absentList;
+    if (absents) {
+      for (let absent of absents) {
+        if (absent.end) {
+          if (
+            absent.start <= this.permanence.date &&
+            this.permanence.date <= absent.end
+          ) {
+            return true;
+          } 
+        } else {
+          if (absent.start == this.permanence.date) return true;
+        }
+      }
+    }
+    return false;
   }
 }

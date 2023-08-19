@@ -23,13 +23,13 @@ export interface IApiPersonnel {
   isAbsent: boolean | null;
   isVacancy: boolean | null;
   isEligible: boolean | null;
-  screenname?:string|null;
-  departement?: IApiDepartement ;
+  screenname?: string | null;
+  departement?: IApiDepartement;
   vacancies?: IApiHoliday[] | null;
   absentList?: IApiRemplacement[] | null;
-  personnels_jour?:IPersonnelJour[];
-  personnels_nuit?:IPersonnelNuit[];
-  roles?:IRole[]|null
-  notifications?:INotification[];
-  annonces?:IAnnonce[];
+  personnels_jour?: IPersonnelJour[];
+  personnels_nuit?: IPersonnelNuit[];
+  roles?: IRole[] | null;
+  notifications?: INotification[];
+  annonces?: IAnnonce[];
 }

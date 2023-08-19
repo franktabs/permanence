@@ -13,19 +13,49 @@
             </div>
         </div>
         <div class="d-flex gap-4 align-items-center">
-            <span class="d-block position-relative span"><i class="bi bi-bell-fill"></i>
-                <p class="alert-number m-0">+99</p>
-            </span>
+
+            <ng-container *ngIf="notifications && notifications.length; else empty" >
+                <span [matMenuTriggerFor]="notif" color="" mat-mini-fab
+                    class="d-block position-relative span no-shadow"><i class="bi bi-bell-fill"></i>
+                    <p class="alert-number m-0">+99</p>
+                </span>
+
+                <mat-menu #notif="matMenu" xPosition="before">
+                    <span mat-menu-item>
+                        <ng-container *ngFor="let notification of notifications">
+
+                            <app-line1 [nom]="''+getNameEmetteur(notification.annonce)"
+                                [date]="notification.annonce.submissionDate || ''">
+                                <i class="bi bi-person-fill"></i>
+                                <p class="m-0 p-0 d-inline"> {{ notification.annonce.message }} </p>
+                            </app-line1>
+
+                        </ng-container>
+                    </span>
+                </mat-menu>
+            </ng-container>
+            <ng-template #empty>
+                <span [matMenuTriggerFor]="noNotif" color="" mat-mini-fab
+                    class="d-block position-relative span no-shadow"><i class="bi bi-bell-fill"></i>
+                    <p class="alert-number m-0">+99</p>
+                </span>
+                <mat-menu #noNotif="matMenu" xPosition="before">
+                    <button mat-menu-item>
+                        Aucune données
+                    </button>
+                </mat-menu>
+            </ng-template>
+
+
             <span class="d-block position-relative span"><i class="bi bi-chat-left-dots-fill"></i>
                 <p class="alert-number m-0">+99</p>
             </span>
-            <div >
+            <div>
                 <button class="fs-4 " color="" mat-mini-fab [matMenuTriggerFor]="beforeMenu">
-                    <i class="bi bi-person-fill"></i> 
+                    <i class="bi bi-person-fill"></i>
                 </button>
                 <mat-menu #beforeMenu="matMenu" xPosition="before">
                     <button mat-menu-item (click)="handleClick()"> {{(userAuth && userAuth.firstname) || "VOTRE NOM"}}
-
                     </button>
                 </mat-menu>
             </div>
