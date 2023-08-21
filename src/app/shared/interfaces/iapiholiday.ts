@@ -6,6 +6,8 @@ export interface IApiHoliday{
     personnel?:IApiPersonnel,
     start:string,
     end:string,
-    userId:number|null,
-    type:"PERMISSION"|"MISSION"|"CONGE"
+    message?:string,
+    // userId:number|null,
+    type:"PERMISSION"|"MISSION"|"CONGE",
+
 }

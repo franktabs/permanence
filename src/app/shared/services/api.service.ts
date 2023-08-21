@@ -9,6 +9,16 @@ import { IDirection } from '../interfaces/idirection';
 import { IApiDirection } from '../interfaces/iapidirection';
 import { TypeAbsence } from '../utils/types-map';
 import { IApiRemplacement } from '../interfaces/iapiremplacement';
+import { IApiPersonnel } from '../interfaces/iapipersonnel';
+import { IPlanning } from '../interfaces/iplanning';
+import { IApiHoliday } from '../interfaces/iapiholiday';
+
+
+
+type DataApi = {
+  personnels:IApiPersonnel[],
+  absences:IApiHoliday[]
+}
 
 export interface TypeApi {
   for:
@@ -27,6 +37,10 @@ export interface TypeApi {
   providedIn: 'root',
 })
 export class ApiService {
+
+  public data:DataApi = {personnels:[], absences:[]}
+  public personnels$:Subject<IApiPersonnel[]> = new Subject();
+  public planning$:Subject<IPlanning> = new Subject();
   // public readonly IP = 'http://192.168.2.64:8080/gestion';
   public readonly IP = 'http://localhost:8000/api';
 
@@ -62,14 +76,19 @@ export class ApiService {
 
   public getAllData<T>(props: TypeApi): Observable<T> {
     let lien: string | null = null;
+    let obserb$:Subject<any> = new Subject()
+    let key:(keyof DataApi )|null = null;
     if (props.for === 'absences') {
       lien = this.URL_ABSENCES;
+      
     } else if (props.for === 'directions') {
       lien = this.URL_DIRECTIONS;
     } else if (props.for === 'holidays') {
       lien = this.URL_HOLIDAYS;
     } else if (props.for === 'personnels') {
       lien = this.URL_PERSONNELS;
+      obserb$ = this.personnels$;
+      key = "personnels";
     } else if (props.for === 'plannings') {
       lien = this.URL_PLANNINGS;
     } else if (props.for === 'months') {
@@ -81,6 +100,7 @@ export class ApiService {
     } else if (props.for === 'personnel_nuit') {
       lien = this.URL_PERSONNEL_NUITS;
     }
+
     if (lien) {
       return this.http.get<T>(lien).pipe(
         tap((values) => {

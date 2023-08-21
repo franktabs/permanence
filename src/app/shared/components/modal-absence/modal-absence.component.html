@@ -14,6 +14,21 @@
                             <tbody>
                                 <tr class="align-middle">
                                     <th>
+                                        <p><label for="nom">Personnel *</label></p>
+                                    </th>
+                                    <td>
+                                        
+                                            <app-personnel-autocomplete id="nom" (dataPerson)="receivePersonnel($event)" 
+                                            forLabel="Nom Personnel" forPlaceholder="Personnel"
+                                            [options]="options"
+                                            name="firstname"
+                                            >
+                                        </app-personnel-autocomplete>
+                                    
+                                    </td>
+                                </tr>
+                                <tr class="align-middle">
+                                    <th>
                                         <p> 
                                             <label for="typeAbsence">Type *</label>
                                         </p>
@@ -72,7 +87,7 @@
 
                         <div class="text-end">
                             <button mat-raised-button color="btn-bordeau" type="submit"
-                                [disabled]="!absenceForm.valid">Soumettre <i class="bi bi-save"></i> </button>
+                                [disabled]="!isValidForm()" (click)="postAbsence()" >Soumettre <i class="bi bi-save"></i> </button>
                         </div>
                     </form>
 

@@ -2,7 +2,7 @@ import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } fro
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
-import { Subject, takeUntil, tap } from 'rxjs';
+import { Subject, map, takeUntil, tap } from 'rxjs';
 import { OuputTypeCard1 } from 'src/app/shared/components/card1/card1.component';
 import { IApiRemplacement } from 'src/app/shared/interfaces/iapiremplacement';
 import { IApiDirection } from 'src/app/shared/interfaces/iapidirection';
@@ -212,22 +212,42 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     this.toTable1.icon = "<i class='bi bi-person-lines-fill' ></i>";
     this.toTable1.title = 'Personnel';
     
+    let existPersonnel = false;
+
+    if(this.api.data["personnels"] && this.api.data.personnels.length){
+      console.log("condition d'existence vérifié")
+      existPersonnel=true;
+      let allUserPersonnel = this.api.data.personnels;
+      this.allPersonnels = allUserPersonnel;
+      this.data_apiPersonnels = allUserPersonnel;
+      this.allUsers = allUserPersonnel;
+    }
+
+    this.api.personnels$.subscribe((subs)=>{
+      this.api.data["personnels"] = subs
+      let allUserPersonnel = subs;
+      this.allPersonnels = allUserPersonnel;
+      this.data_apiPersonnels = allUserPersonnel;
+      this.allUsers = allUserPersonnel;
+    })
+
     this.api
       .getAllData<IApiDirection[]>({ for: 'directions' })
       .subscribe((obs) => {
         
         this.data_apiDirections = mapJSON<IApiDirection, IDirection>(obs, mapDirection);
       });
-    this.api
-      .getAllData<IApiPersonnel[]>({ for: 'personnels' })
-      .subscribe((obs) => {
-        // let dataMap = mapJSON<IApiPersonnel, IPersonnel>(obs, mapPersonnel)
-        let dataMap =obs;
-        let allUserPersonnel = dataMap;
-        this.allPersonnels = allUserPersonnel;
-        this.data_apiPersonnels = allUserPersonnel;
-        this.allUsers = allUserPersonnel;
-      });
+    
+    if(!existPersonnel){
+      console.log("condition d'existence non vérifié")
+      this.api
+        .getAllData<IApiPersonnel[]>({ for: 'personnels' })
+        .subscribe((subs) => {
+          // let dataMap = mapJSON<IApiPersonnel, IPersonnel>(obs, mapPersonnel)
+          this.api.data.personnels = subs;
+          this.api.personnels$.next(subs);
+        });
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
