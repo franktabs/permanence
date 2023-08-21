@@ -13,7 +13,7 @@
                         class="bi bi-calendar3 "></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
             </div>
             <div class="anim-slide-e" >
-                <button mat-raised-button  class="bg-black text-white"  (click)="openModalAbsence=true" > 
+                <button mat-raised-button  class="bg-black text-white"  *ngIf="authRoles.includes('AJOUTER UNE ABSENCE')" (click)="openModalAbsence=true" > 
                     <i class="bi bi-calendar-range "></i> Ajouter une nouvelle Absence <i class="bi bi-plus-circle"></i> </button>
             </div>
         </div>

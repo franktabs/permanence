@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -19,13 +20,14 @@ import { IPersonnelNuit } from '../../interfaces/ipersonnelNuit';
 import { AlertService } from '../../services/alert.service';
 import { LoaderService } from '../../services/loader.service';
 import axios from 'axios';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-modal-permanence',
   templateUrl: './modal-permanence.component.html',
   styleUrls: ['./modal-permanence.component.scss'],
 })
-export class ModalPermanenceComponent implements OnInit, OnChanges {
+export class ModalPermanenceComponent implements OnInit, OnChanges, OnDestroy {
   @Output() openChange: EventEmitter<boolean> = new EventEmitter();
 
   public typeFerier: IPermanence['type'] = 'simple';
@@ -46,6 +48,8 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
   public numArrayJour: number[] = [];
   public numArrayNuit: number[] = [];
 
+  public destroy$ = new Subject();
+
   @Output() refresh: EventEmitter<boolean> = new EventEmitter(false);
 
   @Input()
@@ -61,14 +65,33 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
     private loader: LoaderService
   ) {}
 
+
+  initDataPersonnels(){
+    let dataPersonnel = this.api.data.personnels;
+
+    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
+      this.api.data.personnels = subs;
+      this.initOperationPersonnels(subs);
+    });
+
+    if (dataPersonnel && dataPersonnel.length) {
+      this.initOperationPersonnels(dataPersonnel);
+    } else {
+      this.api
+        .getAllData<IApiPersonnel[]>({ for: 'personnels' })
+        .subscribe((subs) => {
+          this.api.data.personnels = subs || [];
+          this.api.personnels$.next(subs || []);
+        });
+    }
+  }
+
+  initOperationPersonnels(subs:IApiPersonnel[]){
+    this.options = subs;
+  }
+
   ngOnInit(): void {
-    this.api
-      .getAllData<IApiPersonnel[]>({ for: 'personnels' })
-      .subscribe((subs) => {
-        let transSubs = subs;
-        // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
-        this.options = transSubs || [];
-      });
+    this.initDataPersonnels();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -311,4 +334,11 @@ export class ModalPermanenceComponent implements OnInit, OnChanges {
 
     this.loader.loader_modal$.next(false);
   }
+
+
+  ngOnDestroy(): void {
+      this.destroy$.next(true)
+  }
+
+
 }
