@@ -18,8 +18,12 @@ export class UserGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       let obser =  this.api.getAllData<TypePersonnel[]>({ for: "personnels" }).pipe(map((sub)=>{
-        let person = sub[this.auth.DEFAULT_PERSON];
-        this.auth.login(person);
+        
+        if(sub){
+
+          let person = sub[this.auth.DEFAULT_PERSON];
+          this.auth.login(person);
+        }
         if(!this.auth.isAuthenticated && !this.auth.user){
           this.router.navigateByUrl("home");
         }else{

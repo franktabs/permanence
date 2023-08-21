@@ -1,7 +1,7 @@
 <div class="page">
     <app-modal-planification [(open)]="openModalPlanification" *ngIf="openModalPlanification"
         (dataEmit)="receiveData($event)"></app-modal-planification>
-    <app-modal-absence [(open)]="openModalAbsence" *ngIf="openModalAbsence" ></app-modal-absence>
+    <app-modal-absence [(open)]="openModalAbsence" *ngIf="openModalAbsence" [(resetPlanning)]="resetPlanning" [(resetPersonnel)]="resetPersonnel" ></app-modal-absence>
     <span class="title">
         <i class="bi bi-calendar3"> Planification /</i>
     </span>

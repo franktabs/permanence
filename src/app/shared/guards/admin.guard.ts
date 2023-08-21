@@ -22,7 +22,7 @@ export class AdminGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
       let obser =  this.api.getAllData<IApiPersonnel[]>({ for: "personnels" }).pipe(map((sub)=>{
-        let subTransform:TypePersonnel[] = sub
+        let subTransform:TypePersonnel[] = sub || []
         // let subTransform:TypePersonnel[] = mapJSON<IApiPersonnel, IPersonnel>(sub, mapPersonnel)
         let person:TypePersonnel = subTransform[this.auth.DEFAULT_PERSON];
         this.auth.login(person);

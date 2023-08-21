@@ -44,7 +44,8 @@ export class Modal2Component implements OnInit {
       .subscribe((subs) => {
         let transSubs = subs;
         // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel)
-        this.options = transSubs;
+
+        this.options = transSubs || [];
       });
 
     if (this.userAuth.user) {

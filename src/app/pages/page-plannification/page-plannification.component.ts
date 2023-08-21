@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Subject, takeUntil } from 'rxjs';
 import { DataPlanning } from 'src/app/shared/components/modal-planification/modal-planification.component';
 import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
 import { IMonth } from 'src/app/shared/interfaces/imonth';
@@ -40,7 +41,7 @@ type Remplissage = {
     '../shared/styles/styles.scss',
   ],
 })
-export class PagePlannificationComponent implements OnInit {
+export class PagePlannificationComponent implements OnInit, OnDestroy {
   public openModalPlanification: boolean = false;
   public openModalAbsence: boolean = false;
 
@@ -50,9 +51,14 @@ export class PagePlannificationComponent implements OnInit {
 
   public visiblePlanning: boolean = false;
 
+  public _resetPlanning:boolean = false;
+  public _resetPersonnel:boolean = false;
+
   public visibleModalPermanence: boolean = false;
 
   public months: IMonth[] = [];
+
+  public destroy$: Subject<boolean> = new Subject();
   // public action:"CONSULTATE"|"CREATE" = "CONSULTATE"
 
   public remplissage: Remplissage = {
@@ -77,33 +83,105 @@ export class PagePlannificationComponent implements OnInit {
 
   ngOnInit(): void {
     this.authRoles = this.auth.rolesName;
-    this.api
-      .getAllData<IPlanning[] | undefined>({ for: 'plannings' })
-      .subscribe((subs) => {
-        if (subs) this.plannings = subs;
-      });
 
-    this.api
-      .getAllData<IApiPersonnel[]>({ for: 'personnels' })
-      .subscribe((subs) => {
-        subs.forEach((person, ind) => {
-          if (person.fonction.toLowerCase().includes('responsable du tfj')) {
-            this.group1.push(person);
-          } else if (
-            person.departement?.name?.toLowerCase().includes('production') ||
-            person.departement?.name?.toLowerCase().includes('collaborative')
-          ) {
-            this.group2.push(person);
-          } else if (
-            person.departement?.name?.toLowerCase().includes('logiciels') ||
-            person.departement?.name?.toLowerCase().includes('réseau') ||
-            person.departement?.name?.toLowerCase().includes('sécurité')
-          ) {
-            this.group3.push(person);
-          }
-        });
-      });
+    this.initDataPersonnels()
+    this.initDataPlannings()
+
+    // let dataPersonnel = this.api.data.personnels;
+    // this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {});
+
+    // this.api
+    //   .getAllData<IPlanning[] | undefined>({ for: 'plannings' })
+    //   .subscribe((subs) => {
+    //     if (subs) this.plannings = subs;
+    //   });
+
+    // this.api
+    //   .getAllData<IApiPersonnel[]>({ for: 'personnels' })
+    //   .subscribe((subs) => {
+    //     (subs || []).forEach((person, ind) => {
+    //       if (person.fonction.toLowerCase().includes('responsable du tfj')) {
+    //         this.group1.push(person);
+    //       } else if (
+    //         person.departement?.name?.toLowerCase().includes('production') ||
+    //         person.departement?.name?.toLowerCase().includes('collaborative')
+    //       ) {
+    //         this.group2.push(person);
+    //       } else if (
+    //         person.departement?.name?.toLowerCase().includes('logiciels') ||
+    //         person.departement?.name?.toLowerCase().includes('réseau') ||
+    //         person.departement?.name?.toLowerCase().includes('sécurité')
+    //       ) {
+    //         this.group3.push(person);
+    //       }
+    //     });
+    //   });
   }
+
+  initDataPersonnels() {
+    let dataPersonnel = this.api.data.personnels;
+
+    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
+      this.api.data.personnels = subs;
+      this.initOperationPersonnels(subs);
+    });
+
+    if (dataPersonnel && dataPersonnel.length) {
+      this.initOperationPersonnels(dataPersonnel);
+    } else {
+      this.api
+        .getAllData<IApiPersonnel[]>({ for: 'personnels' })
+        .subscribe((subs) => {
+          this.api.data.personnels = subs || [];
+          this.api.personnels$.next(subs || [])
+        });
+    }
+  }
+
+  initDataPlannings() {
+    let dataPlanning = this.api.data.plannings;
+
+    this.api.plannings$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
+      this.api.data.plannings = subs;
+      this.plannings = subs;
+    });
+
+    if (dataPlanning && dataPlanning.length) {
+      this.plannings = dataPlanning;
+    } else {
+      this.api
+        .getAllData<IPlanning[] | undefined>({ for: 'plannings' })
+        .subscribe((subs) => {
+          this.api.data.plannings = subs || [];
+          this.api.plannings$.next(subs || []);
+        });
+    }
+  }
+
+  initOperationPlannings(subs: IPlanning[]) {
+    this.plannings = subs;
+  }
+
+  initOperationPersonnels(subs: IApiPersonnel[]) {
+    subs.forEach((person, ind) => {
+      if (person.fonction.toLowerCase().includes('responsable du tfj')) {
+        this.group1.push(person);
+      } else if (
+        person.departement?.name?.toLowerCase().includes('production') ||
+        person.departement?.name?.toLowerCase().includes('collaborative')
+      ) {
+        this.group2.push(person);
+      } else if (
+        person.departement?.name?.toLowerCase().includes('logiciels') ||
+        person.departement?.name?.toLowerCase().includes('réseau') ||
+        person.departement?.name?.toLowerCase().includes('sécurité')
+      ) {
+        this.group3.push(person);
+      }
+    });
+  }
+
+
 
   handleModalPlanification() {
     this.openModalPlanification = true;
@@ -120,6 +198,31 @@ export class PagePlannificationComponent implements OnInit {
   get dataPlanning() {
     return this._dataPlanning;
   }
+
+  set resetPlanning(value:boolean){
+    this._resetPlanning = value
+    if(value){
+      this.api.data.plannings = [];
+      this.initDataPlannings();
+    }
+  }
+  get resetPlanning(){
+    return this._resetPlanning;
+  }
+
+  set resetPersonnel(value:boolean){
+    this._resetPersonnel = value
+    if(value){
+      this.api.data.personnels = [];
+      this.initDataPersonnels();
+    }
+  }
+  
+  get resetPersonnel(){
+    return this._resetPlanning;
+  }
+
+
 
   voirPlanning(planning: IPlanning) {
     this.visiblePlanning = false;
@@ -414,7 +517,7 @@ export class PagePlannificationComponent implements OnInit {
     index: number,
     date: string,
     nbrParcours: number = 0,
-    temps:'jour'|'nuit'='nuit'
+    temps: 'jour' | 'nuit' = 'nuit'
   ): IApiPersonnel {
     if (nbrParcours >= group.length) {
       return person;
@@ -448,7 +551,7 @@ export class PagePlannificationComponent implements OnInit {
       group[lastPosition] = person;
       group[i] = temps;
     }
-    if(temps == 'jour') return person;
+    if (temps == 'jour') return person;
     return this.findMan(person, group, i, date, nbrParcours);
   }
   findPersonDay(
@@ -491,10 +594,8 @@ export class PagePlannificationComponent implements OnInit {
       group[i] = temps;
     }
 
-    return person
+    return person;
   }
-
- 
 
   fillPlanning() {
     let decalage = 0;
@@ -567,18 +668,16 @@ export class PagePlannificationComponent implements OnInit {
             };
             permanence.personnels_nuit?.push(person1Nuit, person2Nuit);
           }
-        }
-         else if (permanence.type == 'ouvrable') {
+        } else if (permanence.type == 'ouvrable') {
           if (jourFerier.jour1 == null) {
-            jourFerier.jour1 = permanence
+            jourFerier.jour1 = permanence;
           } else if (jourFerier.jour1 != null && jourFerier.jour2 == null) {
             if (sameditAvant != null) {
               permanence.personnels_jour = sameditAvant.personnels_jour;
               permanence.personnels_nuit = sameditAvant.personnels_nuit;
-              
             }
           }
-          console.log("jour ouvrable semaine", date)
+          console.log('jour ouvrable semaine', date);
         }
       } else if (date.getDay() == 6) {
         if (permanence.type == 'ouvrable') {
@@ -588,24 +687,23 @@ export class PagePlannificationComponent implements OnInit {
             permanenceLundi.personnels_nuit != null
           ) {
             let personNuit = permanenceLundi.personnels_nuit[0];
-            let person0:IApiPersonnel |null = null;
-            if(personNuit){
+            let person0: IApiPersonnel | null = null;
+            if (personNuit) {
               permanence.personnels_jour[0] = personNuit;
-              
-            }else{
-              console.log("problème rencontré le Lundi, anticipation ...")
-              person0 = group1[(index -decalage)%nbrGroup1]
+            } else {
+              console.log('problème rencontré le Lundi, anticipation ...');
+              person0 = group1[(index - decalage) % nbrGroup1];
               // let lastPosition = (index - decalage) % nbrGroup1;
               // person0 = this.findPerson(person0, group1, lastPosition,stringDate(date))
             }
-            if(person0!=null){
-              let person0Jour :IPersonnelJour = {
-                personnel:person0,
-                permanence:personnel_permanence,
-                responsable:true,
-              }
+            if (person0 != null) {
+              let person0Jour: IPersonnelJour = {
+                personnel: person0,
+                permanence: personnel_permanence,
+                responsable: true,
+              };
 
-              permanence.personnels_jour.push(person0Jour)
+              permanence.personnels_jour.push(person0Jour);
             }
 
             let person1 = group2[repartiGroup2++ % nbrGroup2];
@@ -664,7 +762,7 @@ export class PagePlannificationComponent implements OnInit {
 
             permanence.personnels_nuit?.push(person5Nuit, person3Nuit);
 
-            if(jourFerier.jour1!=null){
+            if (jourFerier.jour1 != null) {
               jourFerier.jour1.personnels_jour = permanence.personnels_jour;
               jourFerier.jour1.personnels_nuit = permanence.personnels_nuit;
               jourFerier.jour1 = null;
@@ -729,5 +827,9 @@ export class PagePlannificationComponent implements OnInit {
         }
       }
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
   }
 }

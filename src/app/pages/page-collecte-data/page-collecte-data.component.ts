@@ -235,7 +235,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       .getAllData<IApiDirection[]>({ for: 'directions' })
       .subscribe((obs) => {
         
-        this.data_apiDirections = mapJSON<IApiDirection, IDirection>(obs, mapDirection);
+        this.data_apiDirections = mapJSON<IApiDirection, IDirection>(obs || [], mapDirection);
       });
     
     if(!existPersonnel){
@@ -244,8 +244,8 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
         .getAllData<IApiPersonnel[]>({ for: 'personnels' })
         .subscribe((subs) => {
           // let dataMap = mapJSON<IApiPersonnel, IPersonnel>(obs, mapPersonnel)
-          this.api.data.personnels = subs;
-          this.api.personnels$.next(subs);
+          this.api.data.personnels = subs || [];
+          this.api.personnels$.next(subs || [] );
         });
     }
   }

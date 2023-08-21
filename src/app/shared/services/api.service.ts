@@ -12,12 +12,16 @@ import { IApiRemplacement } from '../interfaces/iapiremplacement';
 import { IApiPersonnel } from '../interfaces/iapipersonnel';
 import { IPlanning } from '../interfaces/iplanning';
 import { IApiHoliday } from '../interfaces/iapiholiday';
+import { IPermanence } from '../interfaces/ipermanence';
 
 
 
 type DataApi = {
   personnels:IApiPersonnel[],
-  absences:IApiHoliday[]
+  absences:IApiHoliday[],
+  plannings:IPlanning[],
+  directions:IApiDirection[],
+  permanences:IPermanence[]
 }
 
 export interface TypeApi {
@@ -38,9 +42,12 @@ export interface TypeApi {
 })
 export class ApiService {
 
-  public data:DataApi = {personnels:[], absences:[]}
+  public data:DataApi = {personnels:[], absences:[], plannings:[], directions:[], permanences:[]}
   public personnels$:Subject<IApiPersonnel[]> = new Subject();
-  public planning$:Subject<IPlanning> = new Subject();
+  public absences$:Subject<IApiHoliday[]> = new Subject();
+  public directions$:Subject<IApiDirection[]> = new Subject();
+  public permanence$:Subject<IPermanence[]> = new Subject();
+  public plannings$:Subject<IPlanning[]> = new Subject();
   // public readonly IP = 'http://192.168.2.64:8080/gestion';
   public readonly IP = 'http://localhost:8000/api';
 
@@ -74,7 +81,7 @@ export class ApiService {
     return this.http.post(url, data).pipe(catchError(this.displayError) as any);
   }
 
-  public getAllData<T>(props: TypeApi): Observable<T> {
+  public getAllData<T>(props: TypeApi): Observable<T | undefined> {
     let lien: string | null = null;
     let obserb$:Subject<any> = new Subject()
     let key:(keyof DataApi )|null = null;
@@ -102,7 +109,7 @@ export class ApiService {
     }
 
     if (lien) {
-      return this.http.get<T>(lien).pipe(
+      return this.http.get<T | undefined>(lien).pipe(
         tap((values) => {
           console.log('données recupéré ', lien, values);
           // let tabs = values as any

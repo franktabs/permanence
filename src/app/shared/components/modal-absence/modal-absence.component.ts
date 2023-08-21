@@ -21,6 +21,12 @@ export class ModalAbsenceComponent implements OnInit {
   @Input() open: boolean = false;
   @Output() openChange: EventEmitter<boolean> = new EventEmitter();
 
+  @Input() resetPlanning:boolean = false;
+  @Output() resetPlanningChange:EventEmitter<boolean> = new EventEmitter()
+
+  @Input() resetPersonnel:boolean = false;
+  @Output() resetPersonnelChange:EventEmitter<boolean> = new EventEmitter()
+
   public absenceForm!: FormGroup;
   public options!: IApiPersonnel[];
 
@@ -32,6 +38,7 @@ export class ModalAbsenceComponent implements OnInit {
     private alert: AlertService,
     private loader: LoaderService
   ) {}
+
 
   ngOnInit(): void {
     this.absenceForm = this.formBuilder.group({
@@ -59,8 +66,8 @@ export class ModalAbsenceComponent implements OnInit {
       this.api
         .getAllData<IApiPersonnel[]>({ for: 'personnels' })
         .subscribe((subs) => {
-          this.api.data.personnels = subs;
-          this.api.personnels$.next(subs)
+          this.api.data.personnels = subs || [];
+          this.api.personnels$.next(subs || [])
         });
     }
   }
@@ -97,6 +104,7 @@ export class ModalAbsenceComponent implements OnInit {
       let resp = await axios.post(this.api.URL_ABSENCES, data);
       if(resp.data.id){
         this.up()
+        this.resetPersonnelChange.emit(true);
         this.alert.alertMaterial({"message":"Sauvegarde de l'absence réussi", "title":"success"});
         this.api.data.personnels = [];
       }

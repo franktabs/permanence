@@ -60,7 +60,7 @@ export class ModalPlanificationComponent implements OnInit {
       .subscribe((subs) => {
         let transSubs = subs;
         // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
-        this.options = transSubs;
+        this.options = transSubs || [];
       });
   }
 
