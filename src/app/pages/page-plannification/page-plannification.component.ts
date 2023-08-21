@@ -42,6 +42,7 @@ type Remplissage = {
 })
 export class PagePlannificationComponent implements OnInit {
   public openModalPlanification: boolean = false;
+  public openModalAbsence: boolean = false;
 
   public start: Date = new Date('2023-08-13');
   public tabDays: number[] = [];

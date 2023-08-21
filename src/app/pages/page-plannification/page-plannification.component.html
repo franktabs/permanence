@@ -1,14 +1,21 @@
 <div class="page">
     <app-modal-planification [(open)]="openModalPlanification" *ngIf="openModalPlanification"
         (dataEmit)="receiveData($event)"></app-modal-planification>
+    <app-modal-absence [(open)]="openModalAbsence" *ngIf="openModalAbsence" ></app-modal-absence>
     <span class="title">
         <i class="bi bi-calendar3"> Planification /</i>
     </span>
     <div class="mt-5">
         <h1 class="head-3 color-bordeau"> Plannification de Permanence</h1>
-        <div class="anim-slide-s">
-            <button mat-raised-button color="primary" *ngIf="authRoles.includes('MODIFIER PLANNING')" (click)="handleModalPlanification()"> <i
-                    class="bi bi-calendar3 "></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
+        <div class="d-flex gap-2" >
+            <div class="anim-slide-s">
+                <button mat-raised-button color="primary" *ngIf="authRoles.includes('MODIFIER PLANNING')" (click)="handleModalPlanification()"> <i
+                        class="bi bi-calendar3 "></i> Générer un nouveau planning <i class="bi bi-plus-circle"></i> </button>
+            </div>
+            <div class="anim-slide-e" >
+                <button mat-raised-button  class="bg-black text-white"  (click)="openModalAbsence=true" > 
+                    <i class="bi bi-calendar-range "></i> Ajouter une nouvelle Absence <i class="bi bi-plus-circle"></i> </button>
+            </div>
         </div>
         <div class="mt-5 d-flex gap-4 align-items-center flex-wrap">
             <app-card-planning *ngFor="let planning of plannings, let i = index" [plannings]="plannings" [indice]="i"

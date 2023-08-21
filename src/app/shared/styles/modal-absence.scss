@@ -1,0 +1,69 @@
+
+@import "colors";
+
+.my-body{
+    background-color: white;
+    position: relative;
+    min-width: 600px;
+    padding: 1em;
+}
+
+.my-close{
+    position: absolute;
+    top:.1em;
+    right: .1em;
+    padding: 1em;
+    &:hover{
+        background-color: rgb(199, 199, 199);
+        cursor: pointer;
+    }
+}
+
+.ligne{
+    background-color: black;
+    height: 2px;
+}
+
+.my-title{
+    font-size: 2em;
+
+}
+
+tbody{
+    tr th{
+        color: $bordeau-color;
+    }
+}
+
+.part1{
+    border-right: 1px solid black;
+}
+
+.part1, .part2{
+    flex: 1;
+
+    h1{
+        font-style: italic;
+    }
+}
+
+
+tr{
+    font-size: 1.2em;
+}
+
+tr p{
+    padding: 0px .3em;
+}
+
+
+.form-control:focus, .form-select:focus{
+    border-color: $bordeau-color;
+    box-shadow: 2px 2px 1em $bordeau-color;
+}
+
+.mat-btn-bordeau{
+    background-color: $bordeau-color;
+    color: white;
+}
+

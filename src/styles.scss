@@ -10,412 +10,493 @@ $for-red-color: red;
 $for-white-color: white;
 
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    background-color: $background-body;
-    position: relative;
-    min-height: 100vh;
+  background-color: $background-body;
+  position: relative;
+  min-height: 100vh;
 }
 
 html,
 body {
-    height: 100%;
+  height: 100%;
 }
 
 body {
-    margin: 0;
-    font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
 .my-modal {
-    position: fixed;
-    background-color: #58585896;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 12;
+  position: fixed;
+  background-color: #58585896;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 12;
 }
 
 .w-max-content {
-    width: max-content !important;
+  width: max-content !important;
 }
 
 .hover-div {
-    border: 1px dashed transparent;
+  border: 1px dashed transparent;
 
-    &:hover {
-        border: 1px dashed blue;
-    }
+  &:hover {
+    border: 1px dashed blue;
+  }
 }
 
 .text-bordeau {
 
-    color: $bordeau-color !important;
+  color: $bordeau-color !important;
 }
 
 .bg-bordeau {
-    background-color: $bordeau-color !important;
+  background-color: $bordeau-color !important;
 }
 
 .bg-mprimary-light {
-    background-color: lighten($color: #3F51B5, $amount: 10) !important;
+  background-color: lighten($color: #3F51B5, $amount: 10) !important;
 }
 
 .bg-mprimary {
-    background-color: #3F51B5 !important;
+  background-color: #3F51B5 !important;
 }
 
 .bg-blue {
-    background-color: $for-blue-color;
+  background-color: $for-blue-color;
 }
 
 .color-bordeau {
-    color: $bordeau-color !important;
+  color: $bordeau-color !important;
 }
 
 .color-bleu {
-    color: #3F51B5 !important;
+  color: #3F51B5 !important;
 }
 
 .head-2 {
-    font-size: 2em !important;
+  font-size: 2em !important;
 }
 
 .head-3 {
-    font-size: 3em !important;
+  font-size: 3em !important;
 }
 
 .head-4 {
-    font-size: 4em !important;
+  font-size: 4em !important;
 }
 
 .head-1-5 {
-    font-size: 1.5em !important;
+  font-size: 1.5em !important;
 }
 
 .my-card {
-    transition: .2s;
-    box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
-    border: 1px solid transparent;
+  transition: .2s;
+  box-shadow: 0 1rem 3rem rgba(0, 0, 0, .175);
+  border: 1px solid transparent;
 
-    &:hover {
-        transform: translateY(-.5em);
-        border: 1px blue dashed;
-    }
+  &:hover {
+    transform: translateY(-.5em);
+    border: 1px blue dashed;
+  }
 
-    &:active {
-        box-shadow: inset 1px 1px 10px #868686c2;
-    }
+  &:active {
+    box-shadow: inset 1px 1px 10px #868686c2;
+  }
 }
 
 .mat-btn-bordeau {
-    background-color: $bordeau-color;
-    color: white;
+  background-color: $bordeau-color;
+  color: white;
 }
 
 .mat-btn-noir {
-    background-color: black;
-    color: white;
+  background-color: black;
+  color: white;
 }
 
 .mat-btn-rouge {
-    background-color: $for-red-color;
-    color: white;
+  background-color: $for-red-color;
+  color: white;
 }
 
 .no-shadow {
-    box-shadow: none !important;
+  box-shadow: none !important;
 }
 
 .no-border {
-    border: none !important;
+  border: none !important;
 
-    &:hover {
-        border: none !important;
-    }
+  &:hover {
+    border: none !important;
+  }
 }
 
 .my-border-top {
-    border-top: 1px black solid;
+  border-top: 1px black solid;
 }
 
 .my-border-bottom {
-    border-bottom: 1px black solid;
+  border-bottom: 1px black solid;
 }
 
 .my-border-left {
-    border-left: 1px black solid;
+  border-left: 1px black solid;
 }
 
 .my-border-right {
-    border-right: 1px black solid;
+  border-right: 1px black solid;
 }
 
 .plus-x:hover {
-    cursor: pointer;
-    color: $for-blue-color;
-    font-weight: bold;
+  cursor: pointer;
+  color: $for-blue-color;
+  font-weight: bold;
 }
 
 .plus-x:active {
-    color: $bordeau-color;
-    font-weight: normal;
+  color: $bordeau-color;
+  font-weight: normal;
 }
 
 .shadow-by-stripe {
-    box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
+  box-shadow: rgba(50, 50, 93, 0.25) 0px 2px 5px -1px, rgba(0, 0, 0, 0.3) 0px 1px 3px -1px !important;
 }
 
 .shadow-by-material {
-    box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px !important;
+  box-shadow: rgba(0, 0, 0, 0.12) 0px 1px 3px, rgba(0, 0, 0, 0.24) 0px 1px 2px !important;
 }
 
 .shadow-by-material2 {
-    box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px !important;
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px !important;
 }
 
 .loader {
-    width: 48px;
-    height: 48px;
-    border: 5px solid #FFF;
-    border-bottom-color: #FF3D00;
-    border-radius: 50%;
-    display: inline-block;
-    box-sizing: border-box;
-    animation: rotation 1s linear infinite;
-    box-shadow: inset rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
+  width: 48px;
+  height: 48px;
+  border: 5px solid #FFF;
+  border-bottom-color: #FF3D00;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+  box-shadow: inset rgba(0, 0, 0, 0.16) 0px 3px 6px, rgba(0, 0, 0, 0.23) 0px 3px 6px;
 }
 
 @keyframes rotation {
-    0% {
-        transform: rotate(0deg);
-    }
+  0% {
+    transform: rotate(0deg);
+  }
 
-    100% {
-        transform: rotate(360deg);
-    }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
-  
-  /* Appliquer l'animation à l'élément */
-  .anim-fadeIn {
-    animation: fadeIn 1s ease-in ;
+  from {
+    opacity: 0;
   }
 
-  @keyframes slideIn {
-    from {
-      transform: translateY(-100%);
-    }
-    to {
-      transform: translateY(0);
-    }
+  to {
+    opacity: 1;
   }
-  
-  /* Appliquer l'animation à l'élément */
-  .anim-slideIn {
-    animation: slideIn 1s ease-in-out ;
+}
+
+/* Appliquer l'animation à l'élément */
+.anim-fadeIn {
+  animation: fadeIn 1s ease-in;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateY(-100%);
   }
 
-  @keyframes scaleIn {
-    from {
-      transform: scale(0);
-    }
-    to {
-      transform: scale(1);
-    }
+  to {
+    transform: translateY(0);
   }
-  
-  /* Appliquer l'animation à l'élément */
-  .anim-scaleIn {
-    animation: scaleIn .5s ease-out ;
-  }
-  @keyframes scaleOut {
-    from {
-      transform: scale(1);
-    }
-    to {
-      transform: scale(0);
-    }
-  }
-  
-  /* Appliquer l'animation à l'élément */
-  .anim-scaleOut {
-    animation: scaleOut .5s ease-out ;
+}
+
+/* Appliquer l'animation à l'élément */
+.anim-slideIn {
+  animation: slideIn 1s ease-in-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
   }
 
-  @keyframes bounceIn {
-    0% {
-      transform: scale(0.1);
-      animation-timing-function: ease-in;
-    }
-    60% {
-      transform: scale(1.2);
-      animation-timing-function: ease-out;
-    }
-    100% {
-      transform: scale(1);
-    }
+  to {
+    transform: scale(1);
+  }
+}
+
+/* Appliquer l'animation à l'élément */
+.anim-scaleIn {
+  animation: scaleIn .5s ease-out;
+}
+
+@keyframes scaleOut {
+  from {
+    transform: scale(1);
   }
 
-  /* Appliquer l'animation à l'élément */
-  .anim-bounceIn {
-    animation: bounceIn 1s;
+  to {
+    transform: scale(0);
   }
-  @keyframes bounceIn2 {
-    0% {
-      transform: scale(0.1);
-      animation-timing-function: ease-in;
-    }
-    60% {
-      transform: scale(1.1);
-      animation-timing-function: ease-out;
-    }
-    100% {
-      transform: scale(1);
-    }
+}
+
+/* Appliquer l'animation à l'élément */
+.anim-scaleOut {
+  animation: scaleOut .5s ease-out;
+}
+
+@keyframes bounceIn {
+  0% {
+    transform: scale(0.1);
+    animation-timing-function: ease-in;
   }
 
-  /* Appliquer l'animation à l'élément */
-  .anim-bounceIn2 {
-    animation: bounceIn2 1s;
+  60% {
+    transform: scale(1.2);
+    animation-timing-function: ease-out;
   }
 
-  @keyframes slideLeftIn {
-    0%{
-        transform: translateX(-2000px);
-        opacity: 0;
-    }
-    90%{
-        opacity: .7;
-    }
-    100%{
-        transform: translateX(0);
-        opacity: 1;
-    }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Appliquer l'animation à l'élément */
+.anim-bounceIn {
+  animation: bounceIn 1s;
+}
+
+@keyframes bounceIn2 {
+  0% {
+    transform: scale(0.1);
+    animation-timing-function: ease-in;
   }
 
-  .anim-slide-s{
-    animation: slideLeftIn 1s;
+  60% {
+    transform: scale(1.1);
+    animation-timing-function: ease-out;
   }
 
-  @keyframes slideRightIn {
-    0%{
-        transform: translateX(2000px);
-        opacity: 0;
-    }
-    90%{
-        opacity: .7;
-    }
-    100%{
-        transform: translateX(0);
-        opacity: 1;
-    }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Appliquer l'animation à l'élément */
+.anim-bounceIn2 {
+  animation: bounceIn2 1s;
+}
+
+@keyframes slideLeftIn {
+  0% {
+    transform: translateX(-2000px);
+    opacity: 0;
   }
 
-  .anim-slide-e{
-    animation: slideRightIn 1s;
+  90% {
+    opacity: .7;
   }
 
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
 
-  @keyframes bounceIn3{
-    0%{
-      transform: scale(0.1);
-      opacity: 0;
-    }
-    30%{
-      transform: scale(1.6);
-      opacity: .8;
-    }
-    60%{
-      transform: scale(.7);
-      opacity: 1;
-    }
-  
-    70%{
-      transform: scale(1.3);
-    }
-    80%{
-      transform: scale(.9);
-    }
-    90%{
-      transform: scale(1.2);
-    }
-    95%{
-      transform: scale(.95);
-    }
-    98%{
-      transform: scale(1.05);
-    }
-    100%{
-      transform: scale(1);
-  
-    }
+.anim-slide-s {
+  animation: slideLeftIn 1s;
+}
+
+@keyframes slideLeftOut {
+  0% {
+    transform: translateX(0px);
+    opacity: 1;
   }
 
-  .anim-bounceIn3 {
-    animation: bounceIn3 1s;
+  5% {
+    opacity: .8;
   }
 
-  @keyframes rotateTenTimes {
-    0% {
-      transform: rotate(0deg);
-      scale: 0;
-    }
-    100% {
-      transform: rotate(3600deg);
-        scale: 1;
-    }
-  }
-  
-  .anim-rotIn {
-    animation: rotateTenTimes 1s ;
-  }
-  @keyframes rotateTenTimes2 {
-    0% {
-      transform: rotate(0deg);
-      scale: 1;
-    }
-    100% {
-      transform: rotate(3600deg);
-        scale: 0;
-    }
-  }
-  
-  .anim-rotOut {
-    animation: rotateTenTimes2 1s;
+  10% {
+    opacity: .6;
   }
 
-  @keyframes slideBottomIn {
-    0%{
-        transform: translateY(2000px);
-        opacity: 0;
-    }
-    90%{
-        opacity: .7;
-    }
-    100%{
-        transform: translateY(0);
-        opacity: 1;
-    }
+  15% {
+    opacity: .4;
   }
 
-  .anim-slide-b{
-    animation: slideBottomIn 1s;
+  100% {
+    transform: translateX(-2000px);
+    opacity: 0;
   }
-  
+}
+
+.anim-slideOut-s {
+  animation: slideLeftOut 1s;
+}
+
+@keyframes slideRightIn {
+  0% {
+    transform: translateX(2000px);
+    opacity: 0;
+  }
+
+  90% {
+    opacity: .7;
+  }
+
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.anim-slide-e {
+  animation: slideRightIn 1s;
+}
+
+@keyframes slideRightOut {
+  0% {
+    transform: translateX(0px);
+    opacity: 1;
+  }
+
+  5% {
+    opacity: .8;
+  }
+
+  10% {
+    opacity: .6;
+  }
+
+  15% {
+    opacity: .4;
+  }
+
+  100% {
+    transform: translateX(2000px);
+    opacity: 0;
+  }
+}
+
+.anim-slideOut-e {
+  animation: slideRightOut 1s;
+}
+
+
+@keyframes bounceIn3 {
+  0% {
+    transform: scale(0.1);
+    opacity: 0;
+  }
+
+  30% {
+    transform: scale(1.6);
+    opacity: .8;
+  }
+
+  60% {
+    transform: scale(.7);
+    opacity: 1;
+  }
+
+  70% {
+    transform: scale(1.3);
+  }
+
+  80% {
+    transform: scale(.9);
+  }
+
+  90% {
+    transform: scale(1.2);
+  }
+
+  95% {
+    transform: scale(.95);
+  }
+
+  98% {
+    transform: scale(1.05);
+  }
+
+  100% {
+    transform: scale(1);
+
+  }
+}
+
+.anim-bounceIn3 {
+  animation: bounceIn3 1s;
+}
+
+@keyframes rotateTenTimes {
+  0% {
+    transform: rotate(0deg);
+    scale: 0;
+  }
+
+  100% {
+    transform: rotate(3600deg);
+    scale: 1;
+  }
+}
+
+.anim-rotIn {
+  animation: rotateTenTimes 1s;
+}
+
+@keyframes rotateTenTimes2 {
+  0% {
+    transform: rotate(0deg);
+    scale: 1;
+  }
+
+  100% {
+    transform: rotate(3600deg);
+    scale: 0;
+  }
+}
+
+.anim-rotOut {
+  animation: rotateTenTimes2 1s;
+}
+
+@keyframes slideBottomIn {
+  0% {
+    transform: translateY(2000px);
+    opacity: 0;
+  }
+
+  90% {
+    opacity: .7;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.anim-slide-b {
+  animation: slideBottomIn 1s;
+}

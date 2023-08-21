@@ -17,7 +17,7 @@
             <ng-container *ngIf="notifications && notifications.length; else empty">
                 <span [matMenuTriggerFor]="notif" color="" mat-mini-fab
                     class="d-block position-relative span no-shadow"><i class="bi bi-bell-fill"></i>
-                    <p class="alert-number m-0">+{{notifications.length}} </p>
+                    <p class="alert-number m-0">+{{notifications.length.toString().padStart(2,'0')}} </p>
                 </span>
 
                 <mat-menu #notif="matMenu" xPosition="before">

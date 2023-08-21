@@ -28,7 +28,7 @@ export class Modal2Component implements OnInit {
   public user!: TypePersonnel;
   public options!: TypePersonnel[];
 
-  public absenceForm!: FormGroup;
+  public remplacementForm!: FormGroup;
 
   constructor(
     private api: ApiService,
@@ -50,9 +50,10 @@ export class Modal2Component implements OnInit {
     if (this.userAuth.user) {
       this.user = this.userAuth.user;
     }
-    this.absenceForm = this.formBuilder.group({
+    this.remplacementForm = this.formBuilder.group({
       motif: ['', Validators.required],
       start: ['', Validators.required],
+      end: ['', Validators.required],
       remplaceur: ['', Validators.required],
       submissionDate: [''],
       message: [''],
@@ -63,10 +64,10 @@ export class Modal2Component implements OnInit {
     this.closeChange.emit(true);
   }
 
-  async postAbsence() {
+  async postRemplacement() {
     this.loader.loader_modal$.next(true);
-    console.log('données formulaire absence =>', this.absenceForm);
-    let data: IApiRemplacement = this.absenceForm.value;
+    console.log('données formulaire absence =>', this.remplacementForm);
+    let data: IApiRemplacement = this.remplacementForm.value;
     let day = new Date().toLocaleDateString('en-CA', {
       year: 'numeric',
       month: '2-digit',
@@ -138,6 +139,6 @@ export class Modal2Component implements OnInit {
   }
 
   receiveSuperviseur(event: TypePersonnel | string | null) {
-    this.absenceForm.get('remplaceur')?.setValue(event);
+    this.remplacementForm.get('remplaceur')?.setValue(event);
   }
 }
