@@ -51,8 +51,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
   public visiblePlanning: boolean = false;
 
-  public _resetPlanning:boolean = false;
-  public _resetPersonnel:boolean = false;
+  public _resetPlanning: boolean = false;
+  public _resetPersonnel: boolean = false;
 
   public visibleModalPermanence: boolean = false;
 
@@ -84,8 +84,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.authRoles = this.auth.rolesName;
 
-    this.initDataPersonnels()
-    this.initDataPlannings()
+    this.initDataPersonnels();
+    this.initDataPlannings();
 
     // let dataPersonnel = this.api.data.personnels;
     // this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {});
@@ -133,7 +133,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         .getAllData<IApiPersonnel[]>({ for: 'personnels' })
         .subscribe((subs) => {
           this.api.data.personnels = subs || [];
-          this.api.personnels$.next(subs || [])
+          this.api.personnels$.next(subs || []);
         });
     }
   }
@@ -181,8 +181,6 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     });
   }
 
-
-
   handleModalPlanification() {
     this.openModalPlanification = true;
     console.log('permanences', this.permanences);
@@ -199,30 +197,28 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     return this._dataPlanning;
   }
 
-  set resetPlanning(value:boolean){
-    this._resetPlanning = value
-    if(value){
+  set resetPlanning(value: boolean) {
+    this._resetPlanning = value;
+    if (value) {
       this.api.data.plannings = [];
       this.initDataPlannings();
     }
   }
-  get resetPlanning(){
+  get resetPlanning() {
     return this._resetPlanning;
   }
 
-  set resetPersonnel(value:boolean){
-    this._resetPersonnel = value
-    if(value){
+  set resetPersonnel(value: boolean) {
+    this._resetPersonnel = value;
+    if (value) {
       this.api.data.personnels = [];
       this.initDataPersonnels();
     }
   }
-  
-  get resetPersonnel(){
+
+  get resetPersonnel() {
     return this._resetPlanning;
   }
-
-
 
   voirPlanning(planning: IPlanning) {
     this.visiblePlanning = false;
@@ -697,6 +693,15 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
               // person0 = this.findPerson(person0, group1, lastPosition,stringDate(date))
             }
             if (person0 != null) {
+              let lastPosition = (index - decalage) % nbrGroup1;
+              person0 = this.findPerson(
+                person0,
+                group1,
+                lastPosition,
+                stringDate(date),
+                0,
+                'jour'
+              );
               let person0Jour: IPersonnelJour = {
                 personnel: person0,
                 permanence: personnel_permanence,
@@ -707,60 +712,111 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             }
 
             let person1 = group2[repartiGroup2++ % nbrGroup2];
-            let person2 = group2[repartiGroup2++ % nbrGroup2];
-            let person3 = group2[repartiGroup2++ % nbrGroup2];
-            let person4 = group3[repartiGroup3++ % nbrGroup3];
-            let person5 = group3[repartiGroup3++ % nbrGroup3];
-
-            let person1Jour: IPersonnelJour = {
-              permanence: personnel_permanence,
-              personnel: person1,
-              responsable: false,
-            };
-            let person2Jour: IPersonnelJour = {
-              personnel: person2,
-              responsable: false,
-              permanence: personnel_permanence,
-            };
-            let person4Jour: IPersonnelJour = {
-              personnel: person4,
-              responsable: false,
-              permanence: personnel_permanence,
-            };
-            permanence.personnels_jour?.push(
-              person1Jour,
-              person2Jour,
-              person4Jour
-            );
-
             let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-            person3 = this.findPerson(
-              person3,
+            person1 = this.findPerson(
+              person1,
               group2,
               lastPosition,
-              stringDate(date)
+              stringDate(date),
+              0,
+              'jour'
             );
 
-            lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-            person5 = this.findPerson(
-              person5,
-              group3,
+            let person2: IApiPersonnel | null =
+              group2[repartiGroup2++ % nbrGroup2];
+            lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+            person2 = this.uniquePersonDay(
+              person2,
+              [person1],
+              group2,
               lastPosition,
-              stringDate(date)
+              date,
+              'jour'
             );
 
-            let person5Nuit: IPersonnelNuit = {
-              personnel: person5,
-              responsable: true,
-              permanence: personnel_permanence,
-            };
-            let person3Nuit: IPersonnelNuit = {
-              personnel: person3,
-              responsable: false,
-              permanence: personnel_permanence,
-            };
+            let person3: IApiPersonnel | null =
+              group3[repartiGroup3++ % nbrGroup3];
+            lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+            person3 = this.findPerson(person3, group3,lastPosition, stringDate(date), 0, "jour" );
 
-            permanence.personnels_nuit?.push(person5Nuit, person3Nuit);
+            [person1, person2, person3].forEach((pers) => {
+              if (pers != null) {
+                let persJour: IPersonnelJour = {
+                  personnel: pers,
+                  responsable: false,
+                  permanence: personnel_permanence,
+                };
+                permanence.personnels_jour?.push(persJour);
+              }
+            });
+
+            let person4 = group2[repartiGroup2++ % nbrGroup2];
+            lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+            person4 = this.findPerson(
+              person4,
+              group2,
+              lastPosition,
+              stringDate(date),
+              0,
+              'nuit'
+            );
+
+            let person5: IApiPersonnel | null =
+              group3[repartiGroup3++ % nbrGroup3];
+            lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+            person5 = this.findPerson(person5, group3, lastPosition, stringDate(date), 0, "nuit");
+
+            [person4, person5].forEach((pers, i) => {
+              if (pers) {
+                let persNuit: IPersonnelNuit = {
+                  personnel: pers,
+                  responsable: i == 0,
+                  permanence: personnel_permanence,
+                };
+
+                permanence.personnels_nuit?.push(persNuit);
+              }
+            });
+
+            // let person4Jour: IPersonnelJour = {
+            //   personnel: person4,
+            //   responsable: false,
+            //   permanence: personnel_permanence,
+            // };
+            // permanence.personnels_jour?.push(
+            //   person1Jour,
+            //   person2Jour,
+            //   person4Jour
+            // );
+
+            // lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+            // person3 = this.findPerson(
+            //   person3,
+            //   group2,
+            //   lastPosition,
+            //   stringDate(date)
+            // );
+
+            // lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+            // person5 = this.findPerson(
+            //   person5,
+            //   group3,
+            //   lastPosition,
+            //   stringDate(date)
+            // );
+
+            // let person5Nuit: IPersonnelNuit = {
+            //   personnel: person5,
+            //   responsable: true,
+            //   permanence: personnel_permanence,
+            // };
+            // let person3Nuit: IPersonnelNuit = {
+            //   personnel: person3,
+            //   responsable: false,
+            //   permanence: personnel_permanence,
+            // };
+
+            // permanence.personnels_nuit?.push(person5Nuit, person3Nuit);
 
             if (jourFerier.jour1 != null) {
               jourFerier.jour1.personnels_jour = permanence.personnels_jour;
@@ -775,58 +831,139 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         decalage++;
 
         if (permanence.type == 'simple') {
+
           let person1 = group2[repartiGroup2++ % nbrGroup2];
-          let person2 = group2[repartiGroup2++ % nbrGroup2];
-
-          let person3 = group3[repartiGroup3++ % nbrGroup3];
-          let person4 = group3[repartiGroup3++ % nbrGroup3];
-
-          let person1Jour: IPersonnelJour = {
-            personnel: person1,
-            responsable: true,
-            permanence: personnel_permanence,
-          };
-          permanence.personnels_jour?.push(person1Jour);
-
           let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-          person2 = this.findPerson(
-            person2,
-            group2,
-            lastPosition,
-            stringDate(date)
-          );
+          person1 = this.findPerson(person1, group2,lastPosition, stringDate(date), 0, "jour" );
 
-          let person2Nuit: IPersonnelNuit = {
-            personnel: person2,
-            responsable: true,
-            permanence: personnel_permanence,
-          };
-          permanence.personnels_nuit?.push(person2Nuit);
-
+          let person2:IApiPersonnel | null = group3[repartiGroup3++ % nbrGroup3];
           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-          person4 = this.findPerson(
-            person4,
-            group3,
-            lastPosition,
-            stringDate(date)
-          );
+          person2 = this.findPerson(person2, group3, lastPosition, stringDate(date), 0, "jour");
 
-          let person3Jour: IPersonnelJour = {
-            personnel: person3,
-            responsable: false,
-            permanence: personnel_permanence,
-          };
 
-          let person4Nuit: IPersonnelNuit = {
-            personnel: person4,
-            responsable: false,
-            permanence: personnel_permanence,
-          };
-          permanence.personnels_jour?.push(person3Jour);
-          permanence.personnels_nuit?.push(person4Nuit);
+          [person1, person2].forEach((pers, i)=>{
+            if (pers != null) {
+              let persJour: IPersonnelJour = {
+                personnel: pers,
+                responsable: i==0,
+                permanence: personnel_permanence,
+              };
+              permanence.personnels_jour?.push(persJour);
+            }
+          })
+
+        
+
+          let person3 = group2[repartiGroup2++ % nbrGroup2];
+          lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+          person3 = this.findPerson(person3, group2, lastPosition, stringDate(date), 0, "nuit") ;
+
+
+          let person4 = group3[repartiGroup3++ % nbrGroup3];
+          lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+          person4 = this.findPerson(person4, group3, lastPosition, stringDate(date), 0, "nuit");
+
+          [person3, person4].forEach((pers, i)=>{
+            if(pers){
+              let persNuit: IPersonnelNuit = {
+                personnel: pers,
+                responsable: i == 0,
+                permanence: personnel_permanence,
+              };
+
+              permanence.personnels_nuit?.push(persNuit);
+            }
+          })
+
+          // let person1Jour: IPersonnelJour = {
+          //   personnel: person1,
+          //   responsable: true,
+          //   permanence: personnel_permanence,
+          // };
+          // permanence.personnels_jour?.push(person1Jour);
+
+          // lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+          // person2 = this.findPerson(
+          //   person2,
+          //   group2,
+          //   lastPosition,
+          //   stringDate(date)
+          // );
+
+          // let person2Nuit: IPersonnelNuit = {
+          //   personnel: person2,
+          //   responsable: true,
+          //   permanence: personnel_permanence,
+          // };
+          // permanence.personnels_nuit?.push(person2Nuit);
+
+          // lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+          // person4 = this.findPerson(
+          //   person4,
+          //   group3,
+          //   lastPosition,
+          //   stringDate(date)
+          // );
+
+          // let person3Jour: IPersonnelJour = {
+          //   personnel: person3,
+          //   responsable: false,
+          //   permanence: personnel_permanence,
+          // };
+
+          // let person4Nuit: IPersonnelNuit = {
+          //   personnel: person4,
+          //   responsable: false,
+          //   permanence: personnel_permanence,
+          // };
+          // permanence.personnels_jour?.push(person3Jour);
+          // permanence.personnels_nuit?.push(person4Nuit);
         }
       }
     });
+  }
+
+  uniquePersonDay(
+    person: IApiPersonnel,
+    people: Array<IApiPersonnel | null>,
+    group: IApiPersonnel[],
+    lastPosition: number,
+    date: Date,
+    type: 'jour' | 'nuit'
+  ) {
+    let isIdentique = false;
+    let nbrIdentique = 0;
+    let triPeople: IApiPersonnel[] = <IApiPersonnel[]>(
+      people.filter((p) => p != null)
+    );
+    do {
+      person = this.findPerson(
+        person,
+        group,
+        lastPosition,
+        stringDate(date),
+        nbrIdentique,
+        type
+      );
+      let trouve = false;
+      for (let onePerson of triPeople) {
+        if (person.id == onePerson.id) {
+          isIdentique = true;
+          trouve = true;
+          break;
+        }
+      }
+      if (!trouve) {
+        isIdentique = false;
+      }
+      nbrIdentique++;
+    } while (isIdentique && nbrIdentique <= group.length);
+
+    if (isIdentique) {
+      return null;
+    } else {
+      return person;
+    }
   }
 
   ngOnDestroy(): void {
