@@ -1,21 +1,25 @@
-<div class="card2 shadow-by-material anim-slide-b" >
+<div class="card2 shadow-by-material anim-slide-b">
     <div>
-        <h1 class="w-max-content" > <i class="bi bi-newspaper" ></i> {{title}}</h1>
-        <div class="ligne" ></div>
+        <h1 class="w-max-content"> <i class="bi bi-newspaper"></i> {{title}}</h1>
+        <div class="ligne"></div>
     </div>
-    <div class="body" >
-        <div *ngIf="notifications && notifications.length; else empty" >
-            <ng-container *ngFor="let notification of notifications" >
+    <div class="body">
+        <div *ngIf="displayedNotifications && displayedNotifications.length; else empty">
+            <ng-container *ngFor="let notification of displayedNotifications">
 
-                    <app-line1 [nom]="''+getNameEmetteur(notification.annonce)" [date]="notification.annonce.submissionDate || ''">
-                        <i class="bi bi-person-fill" ></i>
-                        <p class="m-0 p-0 d-inline"> {{ notification.annonce.message }} </p>
-                    </app-line1>
-                
+                <app-line1 [nom]="''+getNameEmetteur(notification.annonce)"
+                    [date]="notification.annonce.submissionDate || ''">
+                    <i class="bi bi-person-fill"></i>
+                    <p class="m-0 p-0 d-inline"> {{ notification.annonce.message }} </p>
+                </app-line1>
+
             </ng-container>
         </div>
         <ng-template #empty>
-            <p class="d-flex fst-italic text-center" >Aucune données disponibles</p>
+            <p class="d-flex fst-italic text-center">Aucune données disponibles</p>
         </ng-template>
     </div>
 </div>
+<mat-paginator class="largeur" *ngIf="notifications && notifications.length" [length]="notifications.length"
+    [pageSize]="5" [pageSizeOptions]="[5, 10, 25]" showFirstLastButtons>
+</mat-paginator>

@@ -56,10 +56,6 @@
 
                 <div class="d-flex flex-column">
                     <app-card2 title="Evenements" class="evenement largeur"></app-card2>
-                    <mat-paginator class="largeur" *ngIf="dataSource && dataSource.data"
-                        [length]="dataSource.data.length" [pageSize]="5" [pageSizeOptions]="[5, 10, 25, 100]"
-                        showFirstLastButtons>
-                    </mat-paginator>
                 </div>
             </div>
         </div>

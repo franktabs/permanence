@@ -75,12 +75,19 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   public dataSource: MatTableDataSource<TypePersonnel> = new MatTableDataSource<TypePersonnel>([]);
   public search:string = "";
 
+  private _paginator!:MatPaginator;
+
 
   @ViewChild(MatPaginator, { static: false })
   set paginator(value: MatPaginator) {
     if (this.dataSource) {
       this.dataSource.paginator = value;
     }
+  }
+
+
+  get paginator(){
+    return this._paginator;
   }
 
   constructor(private api: ApiService, private auth: AuthService) {}
