@@ -1,4 +1,4 @@
-<div class="page">
+<div class="page" >
     <app-modal-planification [(open)]="openModalPlanification" *ngIf="openModalPlanification"
         (dataEmit)="receiveData($event)"></app-modal-planification>
     <app-modal-absence [(open)]="openModalAbsence" *ngIf="openModalAbsence" [(resetPlanning)]="resetPlanning" [(resetPersonnel)]="resetPersonnel" ></app-modal-absence>
@@ -21,8 +21,9 @@
             <app-card-planning *ngFor="let planning of plannings, let i = index" [plannings]="plannings" [indice]="i"
                 (planningEmit)="voirPlanning($event)"></app-card-planning>
         </div>
+        <span id="planning" ></span>
         <ng-container *ngIf="visiblePlanning">
-            <div class="mt-5 pe-2 month-planning shadow-by-material2 anim-slide-s " *ngFor="let point of remplissage.pointDate, let i = index">
+            <div class="mt-5 pe-2 month-planning shadow-by-material2 anim-slide-s "  *ngFor="let point of remplissage.pointDate, let i = index">
                 <h1> Superviseur : {{displaySuperviseur(i) || "Aucun défini" }} </h1>
                 <div class="ligne"></div>
                 <div class='planning mt-2 overflow-x-auto pt-2 '>

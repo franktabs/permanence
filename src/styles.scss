@@ -44,8 +44,16 @@ body {
   z-index: 12;
 }
 
+.line-height-0{
+  line-height: normal !important;
+}
+
 .w-max-content {
   width: max-content !important;
+}
+
+.h-max-content{
+  height: max-content !important;
 }
 
 .hover-div {

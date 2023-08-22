@@ -257,6 +257,7 @@ export class ModalPermanenceComponent implements OnInit, OnChanges, OnDestroy {
             permanence: attrPermanence,
             personnel: personnel,
           });
+          first++
         }
       }
       first = 1;
@@ -267,6 +268,7 @@ export class ModalPermanenceComponent implements OnInit, OnChanges, OnDestroy {
             permanence: attrPermanence,
             personnel: personnel,
           });
+          first++;
         }
       }
 
@@ -285,17 +287,17 @@ export class ModalPermanenceComponent implements OnInit, OnChanges, OnDestroy {
               this.permanence.id
           );
           console.log('operation de suppression effectuer', response.data);
-          for (let personnel of personnel_jour) {
+          for (let personnelJ of personnel_jour) {
             response = await axios.post(
               this.api.URL_PERSONNEL_JOURS,
-              personnel
+              personnelJ
             );
             console.log('insertion de ', response.data);
           }
-          for (let personnel of personnel_nuit) {
+          for (let personnelN of personnel_nuit) {
             response = await axios.post(
               this.api.URL_PERSONNEL_NUITS,
-              personnel
+              personnelN
             );
             console.log('insertion de ', response.data);
           }

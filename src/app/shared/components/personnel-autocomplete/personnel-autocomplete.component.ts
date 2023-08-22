@@ -48,7 +48,9 @@ export class PersonnelAutocompleteComponent implements OnInit, OnChanges {
     if (changes['options']) {
       if (changes['options'].currentValue) {
         this.options = changes['options'].currentValue;
-
+        this.options.sort((opt1, opt2)=>{
+          return opt1.firstname.localeCompare(opt2.firstname);
+        })
         this.filteredOptions$ = this.controlSuperviseur.valueChanges.pipe(
           startWith(''),
           map((value) => {

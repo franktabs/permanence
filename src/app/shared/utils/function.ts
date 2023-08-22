@@ -175,3 +175,9 @@ export function stringMonth(i: number): string {
     return 'aucun mois';
   }
 }
+
+
+export function  scrollToDiv(elm:string) {
+  const element = document.querySelector(elm);
+  element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}

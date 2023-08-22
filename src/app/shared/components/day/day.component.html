@@ -53,13 +53,13 @@
                     <!-- Jour nom personnel  -->
                     <td>
                         <div class="div-person" *ngFor="let person of permanence.personnels_jour" (click)="handleClick(person.personnel)" >
-                            <span class="day-person"  [ngClass]="{'bg-danger':mustChanged(person.personnel)}" > {{person.personnel.firstname | limitString:15 }} </span>
+                            <span class="day-person"  [ngClass]="{'bg-danger':colorDay(person.personnel)=='rouge', 'bg-success':colorDay(person.personnel)=='vert'}" > {{person.personnel.firstname | limitString:15 }} <i class="bi bi-shield-fill" *ngIf="person.responsable" ></i> </span>
                         </div>
                     </td> 
                     <!-- Nuit nom personnel -->
                     <td>
                         <div class="div-person" *ngFor="let person of permanence.personnels_nuit" (click)="handleClick(person.personnel)">
-                            <span class="day-person" [ngClass]="{'bg-danger':mustChanged(person.personnel)}" > {{person.personnel.firstname | limitString:15 }} </span>
+                            <span class="day-person" [ngClass]="{'bg-danger':colorDay(person.personnel)=='rouge', 'bg-success':colorDay(person.personnel)=='vert'}" > {{person.personnel.firstname | limitString:15 }} <i class="bi bi-shield-fill" *ngIf="person.responsable" ></i></span>
                         </div>
                     </td>
                 </ng-template>
@@ -67,7 +67,7 @@
                     <!-- Juste la Nuit nom personnel -->
                     <td>
                         <div class="div-person"  *ngFor="let person of permanence.personnels_nuit" (click)="handleClick(person.personnel)" >
-                            <span class="day-person" [ngClass]="{'bg-danger':mustChanged(person.personnel)}" > {{person.personnel.firstname | limitString:23 }} </span>
+                            <span class="day-person" [ngClass]="{'bg-danger':colorDay(person.personnel)=='rouge', 'bg-success':colorDay(person.personnel)=='vert'}" > {{person.personnel.firstname | limitString:23 }} <i class="bi bi-shield-fill" *ngIf="person.responsable" ></i></span>
                         </div>
                     </td>
                 </ng-template>

@@ -52,17 +52,20 @@ export class Modal3Component implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
-    if (
-      this.userAuth.user &&
-      this.userAuth.user.absentList &&
-      this.userAuth.user.agent
-    ) {
-      this.tabAbsences = this.userAuth.user.absentList as TypeAbsence[];
-      this.authRoles = this.userAuth.rolesName;
-    }
+    // if (
+    //   this.userAuth.user &&
+    //   this.userAuth.user.absentList &&
+    //   this.userAuth.rolesName.includes('VALIDER REMPLACEMENT')
+    // ) {
+    //   this.tabAbsences = this.userAuth.user.absentList as TypeAbsence[];
+    //   console.log("role", this.authRoles);
+    // }
     if (this.userAuth.user) {
       this.user = this.userAuth.user;
     }
+
+    this.authRoles = this.userAuth.rolesName;
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {

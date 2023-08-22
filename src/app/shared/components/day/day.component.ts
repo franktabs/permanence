@@ -176,19 +176,24 @@ export class DayComponent implements OnInit, OnChanges {
     }
   }
 
-  mustChanged(person: IApiPersonnel) {
+  colorDay(person: IApiPersonnel) {
     let absents = person.absentList;
     if (absents) {
       for (let absent of absents) {
         if (absent.end) {
           if (
             absent.start <= this.permanence.date &&
-            this.permanence.date <= absent.end
+            this.permanence.date <= absent.end && absent.validate
           ) {
-            return true;
+            return "rouge";
           } 
+          else if(absent.start <= this.permanence.date &&
+            this.permanence.date <= absent.end && absent.validate==null ) {
+              return "vert"
+          }
         } else {
-          if (absent.start == this.permanence.date) return true;
+          if (absent.start == this.permanence.date && absent.validate) return "rouge";
+          else if (absent.start == this.permanence.date && absent.validate==null) return "vert"
         }
       }
     }

@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { DataPlanning } from 'src/app/shared/components/modal-planification/modal-planification.component';
 import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
@@ -17,6 +17,7 @@ import {
   formatJSON,
   isEqualDate,
   mapJSON,
+  scrollToDiv,
   shuffleArray,
   stringDate,
   stringMonth,
@@ -79,13 +80,14 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
   public authRoles: RoleType[] = [];
 
-  constructor(private api: ApiService, private auth: AuthService) {}
+  constructor(private api: ApiService, private auth: AuthService, private elementRef: ElementRef) {}
 
   ngOnInit(): void {
     this.authRoles = this.auth.rolesName;
 
     this.initDataPersonnels();
     this.initDataPlannings();
+
 
     // let dataPersonnel = this.api.data.personnels;
     // this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {});
@@ -144,10 +146,16 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     this.api.plannings$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
       this.api.data.plannings = subs;
       this.plannings = subs;
+      this.plannings.sort((planning1, planning2)=>{
+        return planning2.submissionDate.localeCompare(planning1.submissionDate)
+      })
     });
 
     if (dataPlanning && dataPlanning.length) {
       this.plannings = dataPlanning;
+      this.plannings.sort((planning1, planning2)=>{
+        return planning2.submissionDate.localeCompare(planning1.submissionDate)
+      })
     } else {
       this.api
         .getAllData<IPlanning[] | undefined>({ for: 'plannings' })
@@ -240,6 +248,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
     this.buildPointDate(new Date(planning.start), planning.periode);
     this.visiblePlanning = true;
+    setTimeout(() => {
+      scrollToDiv("#planning")
+    }, 500);
   }
 
   buildPointDate(start: Date, m: number) {
@@ -279,7 +290,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       start: stringDate(start),
       periode: m,
       isValid: null,
-      submissionDate: stringDate(new Date()),
+      submissionDate: new Date().toISOString(),
       months: [],
     };
 
@@ -965,6 +976,12 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       return person;
     }
   }
+
+  ngAfterViewInit(){
+    scrollToDiv("#mat-typography");
+  }
+
+
 
   ngOnDestroy(): void {
     this.destroy$.next(true);

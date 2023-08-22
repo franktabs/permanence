@@ -18,6 +18,7 @@ import {
   formatJSON,
   formater,
   mapJSON,
+  scrollToDiv,
 } from 'src/app/shared/utils/function';
 import { mapDirection, mapPersonnel } from 'src/app/shared/utils/tables-map';
 import { TypeDirection, TypePersonnel } from 'src/app/shared/utils/types-map';
@@ -210,7 +211,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
 
   ngOnInit(): void {
 
-    
+    scrollToDiv("body")
 
     this.monTest();
     this.userAuth = this.auth.user;

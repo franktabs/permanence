@@ -24,7 +24,15 @@ export class NavigationHeaderComponent implements OnInit {
   ngOnInit(): void {
     this.isConnected = this.auth.isAuthenticated
     this.userAuth = this.auth.user;
-    this.notifications = this.auth.user?.notifications
+    let tabNotifications = this.auth.user?.notifications;
+    tabNotifications?.sort((notif1, notif2) => {
+      if (notif2.annonce.submissionDate) {
+        return notif2.annonce.submissionDate.localeCompare(
+          notif1.annonce.submissionDate || ''
+        );
+      } else return 0;
+    });
+    this.notifications = tabNotifications?.slice(0, 5);
 
   }
 
