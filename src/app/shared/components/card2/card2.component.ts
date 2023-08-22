@@ -47,7 +47,7 @@ export class Card2Component implements OnInit, OnDestroy {
   // }
 
   getNameEmetteur(annonce:OptionalKey<IAnnonce>){
-    console.log("nom personne=>", annonce);
+    // console.log("nom personne=>", annonce);
     return annonce.emetteur?.firstname
   }
 

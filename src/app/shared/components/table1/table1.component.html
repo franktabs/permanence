@@ -6,9 +6,9 @@
             <h1>{{title}}</h1>
         </div>
         <div class="ligne"></div>
-        <div>
+        <div >
             <div class="table-responsive">
-                <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
+                <table mat-table [dataSource]="dataSource"  matSort (matSortChange)="announceSortChange($event)">
 
                     <ng-container matColumnDef="firstname">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by firstname"

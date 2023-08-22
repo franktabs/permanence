@@ -31,9 +31,9 @@ export class Table1Component
   implements AfterViewInit, OnDestroy, OnChanges, OnInit
 {
   public displayedColumns: Array<keyof TypePersonnel> = [
-    "firstname",
+    'firstname',
     'sexe',
-    "emailaddress",
+    'emailaddress',
     'fonction',
     'service',
   ];
@@ -42,6 +42,9 @@ export class Table1Component
   public errorMessage: string = '';
   public openModal: boolean = false;
   public row: TypePersonnel | null = null;
+
+  private _paginator!:MatPaginator;
+
   @Input() icon!: string;
   @Input() title!: string;
   @Input() personnels: TypePersonnel[] | null = null;
@@ -49,12 +52,21 @@ export class Table1Component
 
   private destroy$!: Subject<boolean>;
 
+  public refreshData: boolean = false;
+
   @ViewChild(MatPaginator, { static: false })
   set paginator(value: MatPaginator) {
+    this._paginator = value;
     if (this.dataSource) {
       this.dataSource.paginator = value;
     }
   }
+
+  get paginator(){
+    return this._paginator;
+  }
+
+
   @ViewChild(MatSort) sort!: MatSort;
   // set sort(value: MatSort) {
   //   // if(!value){
@@ -79,15 +91,17 @@ export class Table1Component
     this.dataSource.sort = this.sort;
   }
   ngOnChanges(changes: SimpleChanges): void {
-
     if (changes['personnels']) {
-      
+      let newData:TypePersonnel[] =  changes['personnels'].currentValue
       this.dataSource = new MatTableDataSource<TypePersonnel>(
-        changes['personnels'].currentValue
-      );
-
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+        newData
+        );
+        console.log('changement données du personnels');
+        // this.paginator.length = (newData || []).length;
+        // this.paginator.firstPage();
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      
     }
     if (changes['search']) {
       this.dataSource.filter = this.search.trim();
