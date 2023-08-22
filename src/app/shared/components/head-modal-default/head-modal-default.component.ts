@@ -1,33 +1,41 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 
 @Component({
   selector: 'app-head-modal-default',
   templateUrl: './head-modal-default.component.html',
-  styleUrls: ['./head-modal-default.component.scss']
+  styleUrls: ['./head-modal-default.component.scss'],
 })
 export class HeadModalDefaultComponent implements OnInit {
-
-  
-  @Input() open : boolean = false;
-  @Input() icon !:string;
+  @Input() open: boolean = false;
+  @Input() icon!: string;
   @Output() openChange: EventEmitter<boolean> = new EventEmitter();
 
-  @Input() nameModal!:string;
+  @Input() nameModal!: string;
 
-  constructor() { }
+  constructor(private elementRef: ElementRef) {}
 
-  ngOnInit(): void {
+  ngOnInit(): void {}
+
+  closeModal() {
+    let headerModal =
+      this.elementRef.nativeElement.querySelector('.see-header-modal');
+    headerModal.classList.add('anim-rotOut');
+    // let headerModal = document.querySelectorAll(".see-header-modal")
+    // for(let i = 0; i<headerModal.length; i++){
+    //   let elemt = headerModal[i];
+    //   elemt.classList.remove("anim-rotOut");
+    //   elemt.classList.add("anim-rotOut");
+    // }
+
+    setTimeout(() => {
+      this.openChange.emit(false);
+    }, 500);
   }
-
-  closeModal(){
-    let headerModal = document.querySelectorAll(".see-header-modal")
-    for(let i = 0; i<headerModal.length; i++){
-      let elemt = headerModal[i];
-      elemt.classList.add("anim-rotOut");
-    }
-    setTimeout(()=>{
-      this.openChange.emit(false)
-    }, 500)
-  }
-
 }

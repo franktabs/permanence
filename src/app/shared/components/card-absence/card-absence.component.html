@@ -2,7 +2,7 @@
 
 <div class="p-3 w-100 vacance shadow m-3 hover-div">
     <div class="d-flex justify-content-between gap-5">
-        <h1 class="w-max-content">Fait le {{absence.submissionDate | displayKey}} </h1>
+        <h1 class="w-max-content">Fait le {{absence.submissionDate | date:"dd/MM/yyyy"  }} </h1>
         <div class="w-max-content">
             <span *ngIf="absence.validate==true">Accepté <i class="bi bi-check-circle"></i>
             </span>
@@ -24,9 +24,15 @@
         </div>
         <div class="d-flex gap-2 align-items-center">
             <h3>Jour Du Remplacement :</h3>
-            <p class="text-capitalize">
-                Le <span class="debut"> {{absence.start | displayKey }} </span>
+            <p class="text-capitalize" *ngIf="absence.start==absence.end, else startEnd" >
+                Le <span class="debut"> {{absence.start | date:"dd/MM/yyyy" }} </span>
             </p>
+            <ng-template #startEnd >
+                <p class="text-capitalize"  >
+                    Du <span class="debut"> {{absence.start | date:"dd/MM/yyyy" }} </span>
+                    Au <span class="fin"> {{absence.end | date:"dd/MM/yyyy" }} </span>
+                </p>
+            </ng-template>
         </div>
         <div class="d-flex gap-2 align-items-center" *ngIf="absence.remplaceur">
             <h3>Remplaceur : </h3>

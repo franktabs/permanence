@@ -62,7 +62,8 @@ export class Modal1Component implements OnInit, OnChanges {
     public dialog: MatDialog,
     private auth: AuthService,
     private api: ApiService,
-    private alert: AlertService
+    private alert: AlertService,
+    private elementRef: ElementRef
   ) {}
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -172,11 +173,13 @@ export class Modal1Component implements OnInit, OnChanges {
   }
 
   closeModal() {
-    let headerModal = document.querySelectorAll('.see-modal1');
-    for (let i = 0; i < headerModal.length; i++) {
-      let elemt = headerModal[i];
-      elemt.classList.add('anim-scaleOut');
-    }
+    let headerModal = this.elementRef.nativeElement.querySelector('.see-modal1');
+    // for (let i = 0; i < headerModal.length; i++) {
+    //   let elemt = headerModal[i];
+    //   elemt.classList.remove('anim-scaleOut');
+    //   elemt.classList.add('anim-scaleOut');
+    // }
+    headerModal.classList.add('anim-scaleOut');
     setTimeout(() => {
       this.isOpenChange.emit(false);
     }, 400);

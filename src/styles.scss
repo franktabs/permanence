@@ -73,6 +73,14 @@ body {
   background-color: $bordeau-color !important;
 }
 
+.bg-green{
+  background-color: greenyellow !important;
+}
+
+.bg-red{
+  background-color: #ff9474 !important;
+}
+
 .bg-mprimary-light {
   background-color: lighten($color: #3F51B5, $amount: 10) !important;
 }

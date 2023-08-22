@@ -62,7 +62,14 @@ export class Modal2Component implements OnInit {
   }
 
   up() {
-    this.closeChange.emit(true);
+    let headerModal = document.querySelectorAll('.see-modal2');
+    for (let i = 0; i < headerModal.length; i++) {
+      let elemt = headerModal[i];
+      elemt.classList.add('anim-slideOut-s');
+    }
+    setTimeout(() => {
+      this.closeChange.emit(true);
+    }, 400);
   }
 
   async postRemplacement() {

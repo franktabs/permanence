@@ -32,6 +32,9 @@ export class DayComponent implements OnInit, OnChanges {
   // @Input() feriers: Ferier[] = [];
   @Input() permanence!: IPermanence;
 
+  @Input()
+  public personnel!:IApiPersonnel;
+
   public openModal: boolean = false;
 
   public row!: TypePersonnel;
@@ -48,10 +51,14 @@ export class DayComponent implements OnInit, OnChanges {
 
   public authRoles: RoleType[] = [];
 
+  public userAuth!:IApiPersonnel;
+
+
   constructor(private auth: AuthService) {}
 
   ngOnInit(): void {
     this.authRoles = this.auth.rolesName;
+    this.userAuth = this.auth.user as IApiPersonnel;
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -162,12 +169,14 @@ export class DayComponent implements OnInit, OnChanges {
   }
 
   handleClick(person: IApiPersonnel) {
-    this.row = person;
-    // this.row = formatJSON<IApiPersonnel, IPersonnel>({
-    //   obj: person,
-    //   correspondance: mapPersonnel,
-    // });
-    this.openModal = true;
+    if(this.authRoles.includes("VOIR PAGE ADMINISTRATEUR")){
+      this.row = person;
+      // this.row = formatJSON<IApiPersonnel, IPersonnel>({
+      //   obj: person,
+      //   correspondance: mapPersonnel,
+      // });
+      this.openModal = true;
+    }
   }
 
   refresh(val: boolean) {
