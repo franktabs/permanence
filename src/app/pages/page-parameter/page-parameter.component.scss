@@ -1,0 +1,23 @@
+@import "colors";
+
+
+fieldset{
+    border: 1px black solid;
+    padding: 1em;
+    position: relative;
+}
+
+legend{
+    position: absolute;
+    top: calc(-1em + 5px);
+    left: 1em;
+    background-color:$background-body ;
+    padding: 5px;
+    width: max-content;
+}
+
+.ligne{
+    background-color: black;
+    height: 1px;
+    margin: 2px;
+}

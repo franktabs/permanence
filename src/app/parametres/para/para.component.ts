@@ -2,13 +2,12 @@
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { ModificationComponent } from '../modification/modification.component';
+import axios from 'axios';
+import { ApiService } from 'src/app/shared/services/api.service';
+import { IParameter } from 'src/app/shared/interfaces/iparameter';
+import { AlertService } from 'src/app/shared/services/alert.service';
 
-export interface GenSet {
-  id: string;
-  code: string;
-  libelle: string;
-  value: string;
-}
+
 
 @Component({
   selector: 'app-para',
@@ -16,13 +15,14 @@ export interface GenSet {
   styleUrls: ['./para.component.scss'],
 })
 export class ParaComponent implements OnInit {
-  displayedColumns: string[] = ['libelle', 'value'];
-  dataSource: GenSet[] = [];
-  selectedRow: GenSet | null = null;
+  displayedColumns: string[] = ['libelle', 'valeur'];
+  dataSource: IParameter[] = [];
+  selectedRow: IParameter | null = null;
 
   constructor(
     private dialog: MatDialog,
-    private http: HttpClient
+    private api:ApiService,
+    private alert:AlertService
   ) {}
 
   ngOnInit() {
@@ -30,12 +30,18 @@ export class ParaComponent implements OnInit {
   }
 
   fetchData() {
-    this.http.get<GenSet[]>('/assets/data.json').subscribe((data: GenSet[]) => {
-      this.dataSource = data;
-    });
+    axios.get(this.api.URL_PARAMETERS).then(
+      (res)=>{
+        this.dataSource = res.data
+      }
+    ).catch((e)=>{
+      console.error("voici l'erreur", e);
+      this.alert.alertError();
+    })
+
   }
 
-  editValue(row: GenSet) {
+  editValue(row: IParameter) {
     this.selectedRow = row;
 
     this.dialog.open(ModificationComponent, {
@@ -43,14 +49,14 @@ export class ParaComponent implements OnInit {
     });
   }
 
-  onValueChanged(updatedValue: string) {
-    if (this.selectedRow) {
-      const clonedRow = { ...this.selectedRow };
-      clonedRow.value = updatedValue;
+  // onValueChanged(updatedValue: string) {
+  //   if (this.selectedRow) {
+  //     const clonedRow = { ...this.selectedRow };
+  //     clonedRow.valeur = updatedValue;
 
-      const rowIndex = this.dataSource.indexOf(this.selectedRow);
-      this.dataSource[rowIndex] = clonedRow;
-      this.selectedRow = null;
-    }
-  }
+  //     const rowIndex = this.dataSource.indexOf(this.selectedRow);
+  //     this.dataSource[rowIndex] = clonedRow;
+  //     this.selectedRow = null;
+  //   }
+  // }
 }

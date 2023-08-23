@@ -1,10 +1,10 @@
 <div class="table-container">
-  <table mat-table [dataSource]="dataSource" class="mat-elevation-z8 demo-table">
+  <table mat-table [dataSource]="dataSource" class=" demo-table">
     <!-- Other column definitions -->
     <!-- libelle Column -->
     <ng-container matColumnDef="libelle">
-      <th mat-header-cell *matHeaderCellDef class="head">Libele</th>
-      <td mat-cell *matCellDef="let element">{{element.libelle}}</td>
+      <th mat-header-cell *matHeaderCellDef class="head">Attribut</th>
+      <td mat-cell *matCellDef="let element" class=" fs-5 text-capitalize ps-3" ><div class="w-max-content" >{{element.libelle}}</div></td>
     </ng-container>
 
     <!-- code Column -->
@@ -13,9 +13,9 @@
       <td mat-cell *matCellDef="let element">{{element.code}}</td>
     </ng-container> -->
     <!-- value Column -->
-    <ng-container matColumnDef="value">
-      <th mat-header-cell *matHeaderCellDef class="head">Value</th>
-      <td mat-cell *matCellDef="let element" (click)="editValue(element)">{{element.value}}</td>
+    <ng-container matColumnDef="valeur">
+      <th mat-header-cell *matHeaderCellDef class="head">Valeur</th>
+      <td mat-cell *matCellDef="let element" >{{element.valeur}}</td>
     </ng-container>
 
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>

@@ -1,9 +1,14 @@
-<h1 mat-dialog-title class="fw-bold" >Nouvelle valeur de <span style="color: brown;"> {{row.libelle}}</span> </h1>
-<div mat-dialog-content >
-  <input type="text" [(ngModel)]="value" name="yu" class="value form-control" placeholder="Entrer une nouvelle valeur">
+<h1 mat-dialog-title class="fw-bold">Nouvelle valeur de <span class="text-capitalize" style="color: brown;">
+    {{row.libelle}}</span> </h1>
+<div mat-dialog-content>
+  <input type="text" [(ngModel)]="value" name="yu" class="value form-control my-4 py-3"
+    placeholder="Entrer une nouvelle valeur">
 </div>
-<div mat-dialog-actions class="text-end">
-  <button mat-flat-button color="primary" (click)="updateValue()">Modifier</button>
+<div mat-dialog-actions>
+  <div class="d-flex justify-content-end gap-2" >
+    <button mat-flat-button color="" (click)="close()">Annuler </button>
+    <button mat-flat-button color="primary" (click)="updateValue()">Modifier <i class="bi bi-save"></i> </button>
+  </div>
 </div>
 <!-- 
 <form class="example-form">

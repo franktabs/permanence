@@ -34,4 +34,12 @@ export class AlertService {
       this.alertMaterial({message:"Selectionner les personnes de la liste deroulante pour chaque entrées", title:"information"}, 5)
     }, 2100)
   }
+
+  alertError(s:number=4){
+    this.alertMaterial({"title":"error", message:"Une erreur s'est produite"}, s)
+  }
+
+  alertSave(s:number=4){
+    this.alertMaterial({"title":"success", message:"Sauvegarde Réussi"}, s)
+  }
 }
