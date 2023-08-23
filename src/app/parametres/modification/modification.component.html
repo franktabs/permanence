@@ -6,8 +6,8 @@
 </div>
 <div mat-dialog-actions>
   <div class="d-flex justify-content-end gap-2" >
-    <button mat-flat-button color="" (click)="close()">Annuler </button>
-    <button mat-flat-button color="primary" (click)="updateValue()">Modifier <i class="bi bi-save"></i> </button>
+    <button mat-raised-button color="" (click)="close()">Annuler </button>
+    <button mat-raised-button color="primary" (click)="updateValue()" [disabled]="disable()" >Modifier <i class="bi bi-save"></i> </button>
   </div>
 </div>
 <!-- 

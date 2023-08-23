@@ -1,4 +1,4 @@
-;import { Component, OnInit } from '@angular/core';
+;import { Component, Input, OnInit } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { HttpClient } from '@angular/common/http';
 import { ModificationComponent } from '../modification/modification.component';
@@ -16,6 +16,7 @@ import { AlertService } from 'src/app/shared/services/alert.service';
 })
 export class ParaComponent implements OnInit {
   displayedColumns: string[] = ['libelle', 'valeur'];
+  @Input()
   dataSource: IParameter[] = [];
   selectedRow: IParameter | null = null;
 
@@ -26,20 +27,9 @@ export class ParaComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.fetchData();
   }
 
-  fetchData() {
-    axios.get(this.api.URL_PARAMETERS).then(
-      (res)=>{
-        this.dataSource = res.data
-      }
-    ).catch((e)=>{
-      console.error("voici l'erreur", e);
-      this.alert.alertError();
-    })
 
-  }
 
   editValue(row: IParameter) {
     this.selectedRow = row;

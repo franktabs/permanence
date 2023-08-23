@@ -58,4 +58,15 @@ export class ModificationComponent implements OnInit {
   close() {
     this.dialogRef.close();
   }
+
+  disable(){
+    let disabled = true
+    if(this.row.code=="api1_DSI"||this.row.code=="api2_DSI"){
+      // const regex: RegExp = /^(https?:\/\/)(([\w.-]+)|(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}))(:\d+)?(\/[\w.-]*)*(\?[\w.-=&]*)?$/
+      // disabled = !regex.test(this.value);
+      disabled = false;
+    }
+    return disabled 
+
+  }
 }

@@ -5,17 +5,18 @@
     <div class="mt-5">
         <h1 class="head-3 color-bordeau"> Paramètre Général </h1>
         <div class="d-flex gap-4 flex-column w-max-content p-3">
-            <fieldset  >
+            <fieldset>
                 <legend>Direction</legend>
                 <div class="d-flex gap-2">
                     <div class="anim-slide-s">
-                        <button mat-raised-button color="primary">
-                            <i class="bi bi-building-gear "></i>
+                        <button mat-raised-button color="primary" [disabled]="!(api2_DSI && api2_DSI.valeur)" (click)="reloadDataOrganisation()">
+                            <i class="bi bi-building-gear "  ></i>
                             Mettre a jour l'Organisation
                         </button>
                     </div>
                     <div class="anim-slide-e">
-                        <button mat-raised-button class="bg-black text-white">
+                        <button mat-raised-button color="btn-noir"
+                            [disabled]="!(api2_DSI && api2_DSI.valeur)">
                             <i class="bi bi-building-fill-gear "></i>
                             Reecreer tous les Organisations
                         </button>
@@ -26,13 +27,13 @@
                 <legend>Personnel</legend>
                 <div class="d-flex gap-2">
                     <div class="anim-slide-s">
-                        <button mat-raised-button color="primary">
+                        <button mat-raised-button color="primary" [disabled]="!(api1_DSI && api1_DSI.valeur)">
                             <i class="bi bi-person-gear"></i>
                             Mettre a jour les données du personnel
                         </button>
                     </div>
                     <div class="anim-slide-e">
-                        <button mat-raised-button class="bg-black text-white">
+                        <button mat-raised-button color="btn-noir" [disabled]="!(api1_DSI && api1_DSI.valeur)">
                             <i class="bi bi-person-fill-gear"></i>
                             Récreer tous le personnel
                         </button>
@@ -41,10 +42,10 @@
             </fieldset>
         </div>
 
-        <div class="bg-white shadow-by-material2 p-4 w-50" >
-            <h1 class="text-uppercase fw-bolder" >Changement des paramètres</h1>
+        <div class="bg-white shadow-by-material2 p-4 w-50">
+            <h1 class="text-uppercase fw-bolder">Changement des paramètres</h1>
             <div class="ligne"></div>
-            <app-para></app-para>
+            <app-para [dataSource]="parameters"></app-para>
         </div>
     </div>
 </div>
