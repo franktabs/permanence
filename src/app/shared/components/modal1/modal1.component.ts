@@ -53,6 +53,9 @@ export class Modal1Component implements OnInit, OnChanges {
 
   public userRoles: IRole['name'][] = [];
 
+  public openModalHoliday:boolean = false;
+
+
   public infoAbsence: {
     keys: Array<keyof IApiRemplacement> | null;
     value: IApiRemplacement | null;
@@ -185,7 +188,7 @@ export class Modal1Component implements OnInit, OnChanges {
     }, 400);
   }
 
-  openModalAbsence() {
+  openModalRemplacement() {
     this.closeModal3 = false;
   }
 

@@ -32,7 +32,9 @@ export class Modal3Component implements OnInit, OnChanges {
 
   public _tabAbsences: IApiRemplacement[] | null = [];
 
-  public authRoles:IRole["name"][] = []
+  public tabRemplacement: IApiRemplacement[] | null = [];
+
+  public authRoles: IRole['name'][] = [];
 
   public user!: TypePersonnel;
 
@@ -52,6 +54,7 @@ export class Modal3Component implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+
     // if (
     //   this.userAuth.user &&
     //   this.userAuth.user.absentList &&
@@ -60,12 +63,12 @@ export class Modal3Component implements OnInit, OnChanges {
     //   this.tabAbsences = this.userAuth.user.absentList as TypeAbsence[];
     //   console.log("role", this.authRoles);
     // }
+
     if (this.userAuth.user) {
       this.user = this.userAuth.user;
     }
 
     this.authRoles = this.userAuth.rolesName;
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -89,7 +92,7 @@ export class Modal3Component implements OnInit, OnChanges {
     // delete copyRemplacement.remplaceur;
     try {
       let response = await axios.put(
-        this.api.URL_REMPLACEMENTS+"/"+copyRemplacement.id,
+        this.api.URL_REMPLACEMENTS + '/' + copyRemplacement.id,
         copyRemplacement
       );
       if (response.data.id) {

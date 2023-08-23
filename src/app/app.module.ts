@@ -56,6 +56,7 @@ import { AlertService } from './shared/services/alert.service';
 import { ModalRoleComponent } from './shared/components/modal-role/modal-role.component';
 import { LimitStringPipe } from './shared/pipes/limit-string.pipe';
 import { ModalAbsenceComponent } from './shared/components/modal-absence/modal-absence.component';
+import { ModalHolidayComponent } from './shared/components/modal-holiday/modal-holiday.component';
 
 
 registerLocaleData(localeFr)
@@ -101,7 +102,8 @@ registerLocaleData(localeFr)
     AlertMaterialComponent,
     ModalRoleComponent,
     LimitStringPipe,
-    ModalAbsenceComponent
+    ModalAbsenceComponent,
+    ModalHolidayComponent
   ],
   imports: [
     BrowserModule,

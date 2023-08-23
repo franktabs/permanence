@@ -66,6 +66,53 @@ export class CardPlanningComponent implements OnInit, OnChanges {
     let n = 0;
     console.log('monthsCopy', monthsCopy);
     console.log('month original', this.planning.months);
+    let isValidPlanning = true;
+
+    for (let monthCheck of this.planning.months || []) {
+      for (let permanenceCheck of monthCheck.permanences || []) {
+        let ensembleJour = new Set<number>();
+        for (let personnelJourCheck of permanenceCheck.personnels_jour || []) {
+          ensembleJour.add(personnelJourCheck.personnel.id || -1);
+        }
+        if (
+          ensembleJour.size != (permanenceCheck.personnels_jour || []).length
+        ) {
+          isValidPlanning = false;
+          this.loader.loader_modal$.next(false);
+
+          return this.alert.alertMaterial(
+            {
+              title: 'error',
+              message:
+                'Une même personne ne peut être présente a la permanence ' +
+                permanenceCheck.date,
+            },
+            7
+          );
+        }
+        let ensembleNuit = new Set<number>();
+        for (let personnelNuitCheck of permanenceCheck.personnels_nuit || []) {
+          ensembleNuit.add(personnelNuitCheck.personnel.id || -1);
+        }
+        if (
+          ensembleNuit.size != (permanenceCheck.personnels_nuit || []).length
+        ) {
+          isValidPlanning = false;
+          this.loader.loader_modal$.next(false);
+
+          return this.alert.alertMaterial(
+            {
+              title: 'error',
+              message:
+                'Une même personne ne peut être présente a la permanence ' +
+                permanenceCheck.date,
+            },
+            7
+          );
+        }
+      }
+    }
+
     // debugger
     try {
       let response = await axios.post(this.api.URL_PLANNINGS, planningCopy);
@@ -156,17 +203,19 @@ export class CardPlanningComponent implements OnInit, OnChanges {
                 for (let personnel of personnels) {
                   let notification: INotification = {
                     annonce: { id: annonce.id as number },
-                    recepteur: {id:personnel.id as number},
-                    isViewed:null,
-                    isDeleted:false
+                    recepteur: { id: personnel.id as number },
+                    isViewed: null,
+                    isDeleted: false,
                   };
-                  response = await axios.post(this.api.URL_NOTIFICATIONS, notification);
-                  if(response.data.id){
-                    console.log("ajout de la notifications à ", personnel)
+                  response = await axios.post(
+                    this.api.URL_NOTIFICATIONS,
+                    notification
+                  );
+                  if (response.data.id) {
+                    console.log('ajout de la notifications à ', personnel);
                   }
                 }
             }
-            
           }
         }
         this.alert.alertMaterial({
@@ -180,6 +229,23 @@ export class CardPlanningComponent implements OnInit, OnChanges {
         message: 'Erreur lors de la sauvegarde',
       });
       console.error('Voici les erreurs et difficulté', e);
+      if (idPlanning) {
+        axios
+          .delete(this.api.URL_PLANNINGS + '/' + idPlanning)
+          .then((res) => {
+            this.alert.alertMaterial({
+              title: 'information',
+              message: "Retour à l'état précedent",
+            });
+          })
+          .catch((e) => {
+            console.error("Echec voici l'erreur", e);
+            this.alert.alertMaterial({
+              title: 'error',
+              message: "Echec lors du retour à l'état précedent",
+            });
+          });
+      }
     } finally {
       this.loader.loader_modal$.next(false);
     }
