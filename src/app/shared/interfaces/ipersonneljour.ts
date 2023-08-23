@@ -6,4 +6,5 @@ export interface IPersonnelJour {
     personnel:IApiPersonnel;
     permanence?:IPermanence;
     responsable:boolean;
+    isSubstitute?:boolean;
 }

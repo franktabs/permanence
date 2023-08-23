@@ -1,4 +1,5 @@
 import { IApiDepartement } from "./iapidepartement";
+import { IParameter } from "./iparameter";
 
 export interface IApiDirection{
     id:number|null;
@@ -9,6 +10,7 @@ export interface IApiDirection{
     organizationId:number|null;
     name:string|null;
     departements?:IApiDepartement[]|null;
+    parameters?:IParameter[]|null
 }
 
 
