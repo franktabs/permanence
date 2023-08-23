@@ -13,6 +13,7 @@ import { UserGuard } from './shared/guards/user.guard';
 import { PageAccueilComponent } from './pages/page-accueil/page-accueil.component';
 import { PageAbsenceComponent } from './pages/page-absence/page-absence.component';
 import { PageRapportComponent } from './pages/page-rapport/page-rapport.component';
+import { PageParameterComponent } from './pages/page-parameter/page-parameter.component';
 
 const routes: Routes = [
   {path:"", pathMatch:"full", redirectTo:"gestion/collecte"},
@@ -27,6 +28,7 @@ const routes: Routes = [
     children: [
       { path: "collecte", component: PageCollecteDataComponent },
       { path: "planification", component: PagePlannificationComponent },
+      { path: "parameter", component: PageParameterComponent },
       { path: "reporting", component: PageReportingComponent },
       { path: "api", component: GetApiComponent },
     ]
