@@ -10,7 +10,7 @@ import { IRole } from '../interfaces/irole';
 export class AuthService {
 
   //admin:17
-  public readonly DEFAULT_PERSON:number = 15;
+  public readonly DEFAULT_PERSON:number = 8765;
 
   private _user:TypePersonnel|null=null;
 

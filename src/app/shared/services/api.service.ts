@@ -14,15 +14,13 @@ import { IPlanning } from '../interfaces/iplanning';
 import { IApiHoliday } from '../interfaces/iapiholiday';
 import { IPermanence } from '../interfaces/ipermanence';
 
-
-
 type DataApi = {
-  personnels:IApiPersonnel[],
-  absences:IApiHoliday[],
-  plannings:IPlanning[],
-  directions:IApiDirection[],
-  permanences:IPermanence[]
-}
+  personnels: IApiPersonnel[];
+  absences: IApiHoliday[];
+  plannings: IPlanning[];
+  directions: IApiDirection[];
+  permanences: IPermanence[];
+};
 
 export interface TypeApi {
   for:
@@ -34,20 +32,26 @@ export interface TypeApi {
     | 'months'
     | 'permanences'
     | 'personnel_jour'
-    | 'personnel_nuit';
+    | 'personnel_nuit'
+    | 'void';
 }
 
 @Injectable({
   providedIn: 'root',
 })
 export class ApiService {
-
-  public data:DataApi = {personnels:[], absences:[], plannings:[], directions:[], permanences:[]}
-  public personnels$:Subject<IApiPersonnel[]> = new Subject();
-  public absences$:Subject<IApiHoliday[]> = new Subject();
-  public directions$:Subject<IApiDirection[]> = new Subject();
-  public permanence$:Subject<IPermanence[]> = new Subject();
-  public plannings$:Subject<IPlanning[]> = new Subject();
+  public data: DataApi = {
+    personnels: [],
+    absences: [],
+    plannings: [],
+    directions: [],
+    permanences: [],
+  };
+  public personnels$: Subject<IApiPersonnel[]> = new Subject();
+  public absences$: Subject<IApiHoliday[]> = new Subject();
+  public directions$: Subject<IApiDirection[]> = new Subject();
+  public permanence$: Subject<IPermanence[]> = new Subject();
+  public plannings$: Subject<IPlanning[]> = new Subject();
   // public readonly IP = 'http://192.168.2.64:8080/gestion';
   public readonly IP = 'http://localhost:8000/api';
 
@@ -82,13 +86,16 @@ export class ApiService {
     return this.http.post(url, data).pipe(catchError(this.displayError) as any);
   }
 
-  public getAllData<T>(props: TypeApi): Observable<T | undefined> {
+  public getAllData<T>(
+    props: TypeApi,
+    url: string = ''
+  ): Observable<T | undefined> {
     let lien: string | null = null;
-    let obserb$:Subject<any> = new Subject()
-    let key:(keyof DataApi )|null = null;
+    let obserb$: Subject<any> = new Subject();
+    let key: keyof DataApi | null = null;
+
     if (props.for === 'absences') {
       lien = this.URL_ABSENCES;
-      
     } else if (props.for === 'directions') {
       lien = this.URL_DIRECTIONS;
     } else if (props.for === 'holidays') {
@@ -96,7 +103,7 @@ export class ApiService {
     } else if (props.for === 'personnels') {
       lien = this.URL_PERSONNELS;
       obserb$ = this.personnels$;
-      key = "personnels";
+      key = 'personnels';
     } else if (props.for === 'plannings') {
       lien = this.URL_PLANNINGS;
     } else if (props.for === 'months') {
@@ -107,6 +114,8 @@ export class ApiService {
       lien = this.URL_PERSONNEL_JOURS;
     } else if (props.for === 'personnel_nuit') {
       lien = this.URL_PERSONNEL_NUITS;
+    } else if (props.for === 'void') {
+      lien = url;
     }
 
     if (lien) {
