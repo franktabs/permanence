@@ -59,7 +59,7 @@ export class PageParameterComponent implements OnInit {
         // for(let data of datas){
           datas.sort((data1, data2)=>{
             if(data1.organizationId && data2.organizationId){
-              return data2.organizationId.toString().localeCompare(data1.organizationId.toString())
+              return data1.organizationId.toString().localeCompare(data2.organizationId.toString())
             }
             return 0;
           })
