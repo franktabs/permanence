@@ -53,7 +53,8 @@ export class ApiService {
   public permanence$: Subject<IPermanence[]> = new Subject();
   public plannings$: Subject<IPlanning[]> = new Subject();
   // public readonly IP = 'http://192.168.2.64:8080/gestion';
-  public readonly IP = 'http://localhost:8000/api';
+  public url:URL = new URL(window.location.href)
+  public readonly IP = 'http://'+this.url.hostname+':8000/api';
 
   public readonly URL_PERSONNELS = this.IP + '/personnel';
   public readonly URL_ABSENCES = this.IP + '/absence';

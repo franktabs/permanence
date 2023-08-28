@@ -17,6 +17,7 @@ import { AlertService } from '../../services/alert.service';
 import axios from 'axios';
 import { ApiService } from '../../services/api.service';
 import { IRole } from '../../interfaces/irole';
+import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 
 //Tous les absences d'un utlisateur
 @Component({
@@ -30,13 +31,15 @@ export class Modal3Component implements OnInit, OnChanges {
 
   @Input() tabs: IApiRemplacement[] | null = null;
 
+  @Input() user! : IApiPersonnel;
+
   public _tabAbsences: IApiRemplacement[] | null = [];
 
   public tabRemplacement: IApiRemplacement[] | null = [];
 
   public authRoles: IRole['name'][] = [];
 
-  public user!: TypePersonnel;
+  public userAuthenticated!: TypePersonnel;
 
   constructor(
     private userAuth: AuthService,
@@ -53,6 +56,8 @@ export class Modal3Component implements OnInit, OnChanges {
     return this._tabAbsences;
   }
 
+  
+
   ngOnInit(): void {
 
     // if (
@@ -65,7 +70,7 @@ export class Modal3Component implements OnInit, OnChanges {
     // }
 
     if (this.userAuth.user) {
-      this.user = this.userAuth.user;
+      this.userAuthenticated = this.userAuth.user;
     }
 
     this.authRoles = this.userAuth.rolesName;
@@ -82,12 +87,12 @@ export class Modal3Component implements OnInit, OnChanges {
     this.closeChange.emit(true);
   }
 
-  async validateAbsence(absence: IApiRemplacement, val: boolean) {
+  async validateAbsence(absence: IApiRemplacement, valBool: boolean) {
     this.loader.loader_modal$.next(true);
     let copyRemplacement: IApiRemplacement = JSON.parse(
       JSON.stringify(absence)
     );
-    copyRemplacement.validate = val;
+    copyRemplacement.validate = valBool;
     // delete copyRemplacement.personnel;
     // delete copyRemplacement.remplaceur;
     try {
@@ -96,11 +101,13 @@ export class Modal3Component implements OnInit, OnChanges {
         copyRemplacement
       );
       if (response.data.id) {
-        absence.validate = val;
+        absence.validate = valBool;
         this.alert.alertMaterial({
           message: 'Action enregistrer',
           title: 'success',
         });
+
+
       }
     } catch (e) {
       this.alert.alertMaterial({

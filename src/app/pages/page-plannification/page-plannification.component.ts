@@ -610,6 +610,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let group2 = shuffleArray([...this.group2]);
     let group3 = shuffleArray([...this.group3]);
 
+    console.log("voici les différents groupes creer", group1, group2, group3)
+
     let nbrGroup1 = group1.length;
     let nbrGroup2 = group2.length;
     let nbrGroup3 = group3.length;

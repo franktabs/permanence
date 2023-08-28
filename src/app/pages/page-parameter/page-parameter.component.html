@@ -16,7 +16,9 @@
                     </div>
                     <div class="anim-slide-e">
                         <button mat-raised-button color="btn-noir"
-                            [disabled]="!(api2_DSI && api2_DSI.valeur)">
+                            [disabled]="!(api2_DSI && api2_DSI.valeur)"
+                            (click)="reloadDataOrganisation('recreate')"
+                            >
                             <i class="bi bi-building-fill-gear "></i>
                             Reecreer tous les Organisations
                         </button>
@@ -27,13 +29,15 @@
                 <legend>Personnel</legend>
                 <div class="d-flex gap-2">
                     <div class="anim-slide-s">
-                        <button mat-raised-button color="primary" [disabled]="!(api1_DSI && api1_DSI.valeur)">
+                        <button mat-raised-button color="primary" [disabled]="!(api1_DSI && api1_DSI.valeur)" (click)="reloadDataPersonnel()">
                             <i class="bi bi-person-gear"></i>
                             Mettre a jour les données du personnel
                         </button>
                     </div>
                     <div class="anim-slide-e">
-                        <button mat-raised-button color="btn-noir" [disabled]="!(api1_DSI && api1_DSI.valeur)">
+                        <button mat-raised-button color="btn-noir" [disabled]="!(api1_DSI && api1_DSI.valeur)"
+                        (click)="reloadDataPersonnel('recreate')"
+                        >
                             <i class="bi bi-person-fill-gear"></i>
                             Récreer tous le personnel
                         </button>

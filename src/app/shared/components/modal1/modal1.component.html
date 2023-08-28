@@ -1,5 +1,5 @@
 <div class="my-modal ">
-    <app-modal3 [(close)]="closeModal3" *ngIf="!closeModal3" [tabs]="rows.absentList"></app-modal3>
+    <app-modal3 [(close)]="closeModal3" *ngIf="!closeModal3" [tabs]="rows.absentList" [user]="rows" ></app-modal3>
     <app-modal-holiday *ngIf="openModalHoliday" ></app-modal-holiday>
     <div class="my-body shadow-lg anim-scaleIn see-modal1">
         <button class="btn btn-close my-close" (click)="closeModal()"></button>
