@@ -55,6 +55,7 @@ export class ApiService {
   // public readonly IP = 'http://192.168.2.64:8080/gestion';
   public url:URL = new URL(window.location.href)
   public readonly IP = 'http://'+this.url.hostname+':18000/schedule';
+  // public readonly IP = 'http://'+this.url.hostname+':9001/permanences-service/rest/api/v1';
 
   public readonly URL_PERSONNELS = this.IP + '/personnel';
   public readonly URL_ABSENCES = this.IP + '/absence';

@@ -9,23 +9,24 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { IPersonnel } from '../../interfaces/ipersonnel';
-import { IHolidays } from '../../interfaces/iholidays';
-import { IAbsence } from '../../interfaces/iabsence';
-import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
-import { IApiHoliday } from '../../interfaces/iapiholiday';
-import { IApiRemplacement } from '../../interfaces/iapiremplacement';
-import { MatDialog } from '@angular/material/dialog';
-import { ModalRoleComponent } from '../modal-role/modal-role.component';
-import { IRole } from '../../interfaces/irole';
-import { AuthService } from '../../services/auth.service';
-import { IPermanence } from '../../interfaces/ipermanence';
-import { IApiPersonnel } from '../../interfaces/iapipersonnel';
+import {IPersonnel} from '../../interfaces/ipersonnel';
+import {IHolidays} from '../../interfaces/iholidays';
+import {IAbsence} from '../../interfaces/iabsence';
+import {TypeAbsence, TypePersonnel} from '../../utils/types-map';
+import {IApiHoliday} from '../../interfaces/iapiholiday';
+import {IApiRemplacement} from '../../interfaces/iapiremplacement';
+import {MatDialog} from '@angular/material/dialog';
+import {ModalRoleComponent} from '../modal-role/modal-role.component';
+import {IRole} from '../../interfaces/irole';
+import {AuthService} from '../../services/auth.service';
+import {IPermanence} from '../../interfaces/ipermanence';
+import {IApiPersonnel} from '../../interfaces/iapipersonnel';
 import axios from 'axios';
-import { ApiService } from '../../services/api.service';
-import { IPersonnelJour } from '../../interfaces/ipersonneljour';
-import { AlertService } from '../../services/alert.service';
-import { IPersonnelNuit } from '../../interfaces/ipersonnelNuit';
+import {ApiService} from '../../services/api.service';
+import {IPersonnelJour} from '../../interfaces/ipersonneljour';
+import {AlertService} from '../../services/alert.service';
+import {IPersonnelNuit} from '../../interfaces/ipersonnelNuit';
+import {IPlanning} from "../../interfaces/iplanning";
 
 //modal utilisé pour afficher les informations sur une ressource
 // provenant d'un click sur une ligne du tableau
@@ -53,13 +54,15 @@ export class Modal1Component implements OnInit, OnChanges {
 
   public userRoles: IRole['name'][] = [];
 
-  public openModalHoliday:boolean = false;
+  public openModalHoliday: boolean = false;
+
+  public planningList:IPlanning[] = [];
 
 
   public infoAbsence: {
     keys: Array<keyof IApiRemplacement> | null;
     value: IApiRemplacement | null;
-  } = { keys: null, value: null };
+  } = {keys: null, value: null};
 
   constructor(
     public dialog: MatDialog,
@@ -67,7 +70,8 @@ export class Modal1Component implements OnInit, OnChanges {
     private api: ApiService,
     private alert: AlertService,
     private elementRef: ElementRef
-  ) {}
+  ) {
+  }
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['rows']) {
@@ -75,20 +79,47 @@ export class Modal1Component implements OnInit, OnChanges {
 
       let person: IApiPersonnel = obj;
 
-      axios
-        .get(this.api.URL_PERMANENCES + '/personnel/' + person.id)
-        .then((res) => {
-          let permanenceData: IPermanence[] = res.data;
-          this.permanences = permanenceData;
-          this.nbrPermanences = this.permanences.length || 0;
+      // axios
+      //   .get(this.api.URL_PERMANENCES + '/personnel/' + person.id)
+      //   .then((res) => {
+      //     let permanenceData: IPermanence[] = res.data;
+      //     this.permanences = permanenceData;
+      //     this.nbrPermanences = this.permanences.length || 0;
+
+      //     let plannings:IPlanning[] = [];
+      //     let idListPlanning:Set<number> = new Set();
+
+      //     for(let permanence of this.permanences){
+      //       let planning:IPlanning = permanence.month?.planning as IPlanning ;
+      //       console.log("permanence en cours => ", permanence);
+      //       if(planning.id && !idListPlanning.has(planning.id)){
+      //         idListPlanning.add(planning.id);
+      //         plannings.push(planning);
+      //       }
+      //     }
+          
+      //     this.planningList = plannings;
+      //   })
+      //   .catch((err) => {
+      //     console.error("Voici l'erreur", err);
+      //     this.alert.alertMaterial({
+      //       message: "Une erreurs lors des recueils des données s'est produite",
+      //       title: 'error',
+      //     });
+      //   });
+
+      axios.get(this.api.URL_PLANNINGS+'/personnel/'+person.id)
+        .then((res)=>{
+          let planningData:IPlanning[] = res.data;
+          this.planningList = planningData;
         })
-        .catch((err) => {
+        .catch((err)=>{
           console.error("Voici l'erreur", err);
           this.alert.alertMaterial({
             message: "Une erreurs lors des recueils des données s'est produite",
             title: 'error',
           });
-        });
+        })
       // let personnels_jour = person.personnels_jour;
       // let personnels_nuit = person.personnels_nuit;
       // if(personnels_jour && personnels_jour.length){
@@ -196,5 +227,9 @@ export class Modal1Component implements OnInit, OnChanges {
     let dialogRel = this.dialog.open(ModalRoleComponent, {
       data: this.rows,
     });
+  }
+
+  voirPlanning(planning:IPlanning){
+    console.log("Planning d'un personnel => ",planning)
   }
 }

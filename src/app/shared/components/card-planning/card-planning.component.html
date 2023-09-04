@@ -1,7 +1,7 @@
-<div class="bg-white shadow-by-material2 my-card see-my-card anim-slide-b">
+<div class="bg-white shadow-by-material2 my-card see-my-card" [ngClass]="{'anim-slide-b':typeDisplay=='ALL', 'anim-scaleIn':typeDisplay=='PERSON'}">
     <div class="p-2">
         <div class="fs-6 fst-italic border-bottom border-1 border-black text-center pb-2 text-capitalize d-flex">
-            <ng-container [ngSwitch]="planning.isValid">
+            <ng-container [ngSwitch]="planning.isValid" *ngIf="typeDisplay=='ALL', else otherDisplay">
 
                 <div class="flex-fill">
                     <span *ngSwitchCase="null">
@@ -23,9 +23,14 @@
                     <i class="bi bi-trash"></i>
                 </span>
             </ng-container>
+            <ng-template #otherDisplay >
+                <div class="flex-fill d-flex justify-content-center flex-column gap-2 align-items-center" >
+                    <span>Programmer  {{nbrAppartion}} fois </span> <button mat-raised-button color="btn-noir" (click)="handleClick()">Voir <i class="bi-eye bi"></i> </button> 
+                </div>
+            </ng-template>
         </div>
         <div class="d-flex align-items-center p-2">
-            <div class="d-flex gap-2 flex-column part1-planning p-2">
+            <div class="d-flex gap-2 flex-column part1-planning p-2" *ngIf="typeDisplay=='ALL'" >
                 <div class="d-flex flex-column fs-2 gap-2 align-items-center">
                     <span><i class="bi bi-calendar2-range"></i></span>
                     <span>Plannings</span>
@@ -50,7 +55,7 @@
                 </div>
             </div>
         </div>
-        <div class="d-flex justify-content-between border-top border-1 border-black pt-2">
+        <div class="d-flex justify-content-between border-top border-1 border-black pt-2" *ngIf="typeDisplay=='ALL'">
 
             <div class="d-flex gap-2"  >
                 <ng-container *ngIf="authRoles.includes('VALIDER PLANNING')" >

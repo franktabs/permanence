@@ -33,6 +33,10 @@ export class CardPlanningComponent implements OnInit, OnChanges {
 
   public authRoles: RoleType[] = [];
 
+  @Input() typeDisplay: 'PERSON' | 'ALL' = 'ALL';
+
+  public nbrAppartion: number = 0;
+
   @Output() planningEmit: EventEmitter<IPlanning> = new EventEmitter();
 
   constructor(
@@ -294,12 +298,26 @@ export class CardPlanningComponent implements OnInit, OnChanges {
       let currentValue: IPlanning[] = changes['plannings'].currentValue;
       if (this.indice) {
         this.planning = currentValue[this.indice];
+        if (this.planning && this.planning.months) {
+          for (let month of this.planning.months) {
+            if (month.permanences) {
+              this.nbrAppartion += month.permanences.length;
+            }
+          }
+        }
       }
     }
     if (changes['indice']) {
       let currentValue: IPlanning = changes['indice'].currentValue;
       if (this.plannings) {
         this.planning = this.plannings[this.indice];
+        if (this.planning && this.planning.months) {
+          for (let month of this.planning.months) {
+            if (month.permanences) {
+              this.nbrAppartion += month.permanences.length;
+            }
+          }
+        }
       }
     }
   }
