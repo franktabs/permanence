@@ -517,7 +517,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     nbrParcours: number = 0
   ): IApiPersonnel {
     if (nbrParcours >= group.length) return person;
-    let lastPerson  = JSON.parse(JSON.stringify(person));
+    let lastPerson = JSON.parse(JSON.stringify(person));
 
     if (person.sexe == 'F') {
       let initParcours = nbrParcours;
@@ -536,23 +536,25 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           '\nde la personne =>',
           person,
           '\net la personne =>',
-          group[lastPosition],
+          group[(i - nbrParcours + group.length) % group.length],
           'date =>',
           date
         );
-        let temps = group[lastPosition];
-        group[lastPosition] = person;
-        lastPerson  = JSON.parse(JSON.stringify(person));
+        let temps = group[(i - nbrParcours + group.length) % group.length];
+        group[(i - nbrParcours + group.length) % group.length] = person;
+        lastPerson = JSON.parse(JSON.stringify(person));
         group[i] = temps;
         console.log('changement de position de group après =>', [...group]);
       }
       if (initParcours == nbrParcours) {
+        console.log('person before =>', lastPerson);
         return lastPerson;
       } else {
+        console.log('person before =>', lastPerson);
         return this.findPerson(lastPerson, group, i, date || '', nbrParcours);
       }
     }
-
+    console.log('person before =>', lastPerson);
     return lastPerson;
   }
 
@@ -571,7 +573,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let continuer = true;
     let lastPosition = index;
     let i = index;
-    let lastPerson  = JSON.parse(JSON.stringify(person));
+    let lastPerson = JSON.parse(JSON.stringify(person));
     while (continuer && nbrParcours < group.length) {
       let holidays = person.vacancies;
       if (holidays && holidays.length) {
@@ -599,20 +601,20 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         '\nde la personne =>',
         person,
         '\net la personne =>',
-        group[lastPosition],
+        group[(i - nbrParcours + group.length) % group.length],
         'date =>',
         date
       );
 
-      let temps = group[lastPosition];
-      lastPerson  = JSON.parse(JSON.stringify(person));
-      group[lastPosition] = person;
+      let temps = group[(i - nbrParcours + group.length) % group.length];
+      lastPerson = JSON.parse(JSON.stringify(person));
+      group[(i - nbrParcours + group.length) % group.length] = person;
       group[i] = temps;
-      
+
       console.log('changement de position de group après =>', [...group]);
     }
     if (temps == 'jour') return lastPerson;
-    console.log("person before =>", lastPerson)
+    console.log('person before =>', lastPerson);
     return this.findMan(lastPerson, group, i, date, nbrParcours);
   }
   findPersonDay(
@@ -728,10 +730,12 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           lastPosition = repartiGroup3 % nbrGroup3;
           let person2 = group3[repartiGroup3++ % nbrGroup3];
           console.log(
-            'postion person2 =>',
+            'avant findPerson person2 =>',
             person2,
             '\nlastPosition',
-            lastPosition
+            lastPosition,
+            '\ndate',
+            date
           );
           person2 = this.findPerson(
             person2,
@@ -739,6 +743,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             lastPosition,
             stringDate(date)
           );
+          console.log('après findPerson person2 =>', person2, '\ndate', date);
           // if (person1.sexe == 'F') {
           //   let i = lastPosition;
           //   while (person1.sexe == 'F') {
@@ -1162,5 +1167,15 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
+  }
+
+  disabledNewPlanning(){
+    let disabled = false;
+    for(let planning of this.plannings){
+      if(!planning.id){
+        return true;
+      }
+    }
+    return disabled;
   }
 }
