@@ -660,6 +660,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let nbrGroup1 = group1.length;
     let nbrGroup2 = group2.length;
     let nbrGroup3 = group3.length;
+    let oneOrTwoPerson = [1, 2];
 
     let jourFerier: { jour1: IPermanence | null; jour2: IPermanence | null } = {
       jour1: null,
@@ -671,6 +672,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
     let repartiGroup2 = 0;
     let repartiGroup3 = 0;
+    let repartiOneOrTwo = 0;
 
     let idCountChief: { [key in number]: number } = { '-1': -1 };
 
@@ -782,17 +784,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
               'jour'
             );
 
-            let person2: IApiPersonnel | null =
-              group2[repartiGroup2++ % nbrGroup2];
-            lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-            person2 = this.uniquePersonDay(
-              person2,
-              [person1],
-              group2,
-              lastPosition,
-              date,
-              'jour'
-            );
+            
 
             let person3: IApiPersonnel | null =
               group3[repartiGroup3++ % nbrGroup3];
@@ -805,6 +797,38 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
               0,
               'jour'
             );
+
+            let oneOrTwo =
+              oneOrTwoPerson[repartiOneOrTwo++ % oneOrTwoPerson.length];
+
+            let person2:IApiPersonnel|null = null;
+            if(oneOrTwo==2){
+
+              person2=
+                group2[repartiGroup2++ % nbrGroup2];
+              lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+              person2 = this.uniquePersonDay(
+                person2,
+                [person1],
+                group2,
+                lastPosition,
+                date,
+                'jour'
+              );
+            }else if(oneOrTwo==1){
+              person2=
+                group3[repartiGroup3++ % nbrGroup3];
+              lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+              person2 = this.uniquePersonDay(
+                person2,
+                [person3],
+                group3,
+                lastPosition,
+                date,
+                'jour'
+              );
+            }
+
 
             [person1, person2, person3].forEach((pers) => {
               if (pers != null) {
