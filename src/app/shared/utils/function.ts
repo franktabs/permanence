@@ -1,4 +1,4 @@
-import { IApiPersonnel } from "../interfaces/iapipersonnel";
+import { IApiPersonnel } from '../interfaces/iapipersonnel';
 
 export type TypeFormatJSON<T, J> = {
   obj: { [key in keyof T]?: any };
@@ -178,34 +178,98 @@ export function stringMonth(i: number): string {
   }
 }
 
-
-export function  scrollToDiv(elm:string) {
+export function scrollToDiv(elm: string) {
   const element = document.querySelector(elm);
   element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
-export function separatePersonnel(tab:IApiPersonnel[], optionsManager:IApiPersonnel[], optionsRessources:IApiPersonnel[]=[]){
-  tab.forEach((person)=>{
-    if((person.fonction.toLowerCase().includes("manager") || person.fonction.toLowerCase().includes("chef") ) && !(person.fonction.toLowerCase().includes("directeur") || person.fonction.toLowerCase().includes("admin-0") )){
-      optionsManager.push(person)
-    }else if(!(person.fonction.toLowerCase().includes("directeur") ||   person.fonction.toLowerCase().includes("admin-0" )) ){
+export function separatePersonnel(
+  tab: IApiPersonnel[],
+  optionsManager: IApiPersonnel[],
+  optionsRessources: IApiPersonnel[] = []
+) {
+  tab.forEach((person) => {
+    if (
+      (person.fonction.toLowerCase().includes('manager') ||
+        person.fonction.toLowerCase().includes('chef')) &&
+      !(
+        person.fonction.toLowerCase().includes('directeur') ||
+        person.fonction.toLowerCase().includes('admin-0')
+      )
+    ) {
+      optionsManager.push(person);
+    } else if (
+      !(
+        person.fonction.toLowerCase().includes('directeur') ||
+        person.fonction.toLowerCase().includes('admin-0')
+      )
+    ) {
       optionsRessources.push(person);
     }
-  })
-  console.log("Managers =>", optionsManager)
-  console.log("Ressources =>", optionsRessources)
+  });
+  console.log('Managers =>', optionsManager);
+  console.log('Ressources =>', optionsRessources);
 }
 
-export function separatePersonnelTFJ(tab:IApiPersonnel[], optionsManager:IApiPersonnel[]=[], optionsTFJ:IApiPersonnel[]=[], optionsRessources:IApiPersonnel[]=[]){
-  tab.forEach((person)=>{
-    if((person.fonction.toLowerCase().includes("manager") || person.fonction.toLowerCase().includes("chef") ) && !(person.fonction.toLowerCase().includes("directeur") || person.fonction.toLowerCase().includes("admin-0") )){
-      optionsManager.push(person)
-    }else if(!(person.fonction.toLowerCase().includes("directeur") ||   person.fonction.toLowerCase().includes("admin-0" )) && person.sexe=="M" ){
+export function separatePersonnelTFJ(
+  tab: IApiPersonnel[],
+  optionsManager: IApiPersonnel[] = [],
+  optionsTFJ: IApiPersonnel[] = [],
+  optionsRessources: IApiPersonnel[] = []
+) {
+  tab.forEach((person) => {
+    if (
+      (person.fonction.toLowerCase().includes('manager') ||
+        person.fonction.toLowerCase().includes('chef')) &&
+      !(
+        person.fonction.toLowerCase().includes('directeur') ||
+        person.fonction.toLowerCase().includes('admin-0')
+      )
+    ) {
+      optionsManager.push(person);
+    } else if (
+      !(
+        person.fonction.toLowerCase().includes('directeur') ||
+        person.fonction.toLowerCase().includes('admin-0')
+      ) &&
+      person.sexe == 'M'
+    ) {
       optionsTFJ.push(person);
-    }else if(!(person.fonction.toLowerCase().includes("directeur") ||   person.fonction.toLowerCase().includes("admin-0" ))){
-      optionsRessources.push(person)
+    } else if (
+      !(
+        person.fonction.toLowerCase().includes('directeur') ||
+        person.fonction.toLowerCase().includes('admin-0')
+      )
+    ) {
+      optionsRessources.push(person);
     }
+  });
+
+  console.log('Managers =>', optionsManager);
+  console.log('Ressources =>', optionsRessources);
+}
+
+export function enleverPersonnel(
+  tab: IApiPersonnel[],
+  tabExclude: IApiPersonnel[],
+  personnels: IApiPersonnel[] = []
+) {
+  let idExlude = tabExclude.map((person)=>{
+    return person.id;
   })
-  console.log("Managers =>", optionsManager)
-  console.log("Ressources =>", optionsRessources)
+  tab.forEach((person) => {
+    if (
+      !(
+        person.fonction.toLowerCase().includes('manager') ||
+        person.fonction.toLowerCase().includes('chef') ||
+        person.fonction.toLowerCase().includes('directeur') ||
+        person.fonction.toLowerCase().includes('admin-0') || 
+        idExlude.includes(person.id)
+      )
+    
+    ) {
+      personnels.push(person)
+    }
+  });
+  return personnels;
 }

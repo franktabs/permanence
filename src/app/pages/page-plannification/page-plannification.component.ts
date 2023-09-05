@@ -14,6 +14,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import {
   checkPointDate,
   countDate,
+  enleverPersonnel,
   formatJSON,
   isEqualDate,
   mapJSON,
@@ -174,6 +175,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
   }
 
   initOperationGroupPersonnels(subs: IApiPersonnel[]) {
+    subs = enleverPersonnel(subs, this.group1);
     subs.forEach((person, ind) => {
       // if (person.fonction.toLowerCase().includes('responsable du tfj')) {
       //   this.group1.push(person);
@@ -182,16 +184,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         person.departement?.name?.toLowerCase().includes('production') ||
         person.departement?.name?.toLowerCase().includes('collaborative')
       ) {
-        let inGroup1 = false;
-        for (let responsable of this.group1) {
-          if (responsable.id == person.id) {
-            inGroup1 = true;
-            break;
-          }
-        }
-        if (!inGroup1) {
-          this.group2.push(person);
-        }
+        this.group2.push(person);
       } else if (
         person.departement?.name?.toLowerCase().includes('logiciel') ||
         person.departement?.name?.toLowerCase().includes('réseau') ||
@@ -200,16 +193,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         person.departement?.name?.toLowerCase().includes('securite') ||
         person.departement?.name?.toLowerCase().includes('support')
       ) {
-        let inGroup1 = false;
-        for (let responsable of this.group1) {
-          if (responsable.id == person.id) {
-            inGroup1 = true;
-            break;
-          }
-        }
-        if (!inGroup1) {
-          this.group3.push(person);
-        }
+        this.group3.push(person);
       }
     });
   }
