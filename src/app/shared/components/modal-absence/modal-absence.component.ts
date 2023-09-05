@@ -5,7 +5,7 @@ import { AuthService } from '../../services/auth.service';
 import { AlertService } from '../../services/alert.service';
 import { LoaderService } from '../../services/loader.service';
 import { IApiHoliday } from '../../interfaces/iapiholiday';
-import { stringDate } from '../../utils/function';
+import { filterPersonnelRessource, stringDate } from '../../utils/function';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import axios from 'axios';
 
@@ -53,12 +53,12 @@ export class ModalAbsenceComponent implements OnInit {
     let existPersonnel = false;
     let dataPersonnel = this.api.data.personnels;
     if(dataPersonnel && dataPersonnel.length){
-      this.options = dataPersonnel;
+      this.options = filterPersonnelRessource(dataPersonnel);
       existPersonnel = true
     }
 
     this.api.personnels$.subscribe((subs)=>{
-      this.options = subs;
+      this.options = filterPersonnelRessource(subs);
     })
 
     if(!existPersonnel){

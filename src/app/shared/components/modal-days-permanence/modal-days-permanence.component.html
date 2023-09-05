@@ -8,7 +8,7 @@
     <div class="my-border p-3" >
         <div *ngFor="let month of months" class="px-2" >
             <div>
-                <h1 class="m-0 my-border-bottom" >Mois: {{month.name}} <span class="fs-6" >(Apparition: {{month.permanences?.length || 0}} ) </span> </h1>
+                <h1 class="m-0 my-border-bottom text-capitalize" >Mois: {{month.name}} <span class="fs-6" >(Apparition: {{month.permanences?.length || 0}} ) </span> </h1>
             </div>
             <div class=" d-flex flex-wrap day-content pt-2">
                 <ng-container *ngFor="let permanence of month.permanences">

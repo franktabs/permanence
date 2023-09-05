@@ -14,7 +14,7 @@ import { AuthService } from 'src/app/shared/services/auth.service';
 import {
   checkPointDate,
   countDate,
-  enleverPersonnel,
+  filterPersonnelRessource,
   formatJSON,
   isEqualDate,
   mapJSON,
@@ -175,7 +175,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
   }
 
   initOperationGroupPersonnels(subs: IApiPersonnel[]) {
-    subs = enleverPersonnel(subs, this.group1);
+    subs = filterPersonnelRessource(subs, this.group1);
     subs.forEach((person, ind) => {
       // if (person.fonction.toLowerCase().includes('responsable du tfj')) {
       //   this.group1.push(person);
@@ -248,7 +248,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         if (theMonth.permanences) {
           theMonth.permanences.sort((permanence1, permanence2) => {
             return permanence1.date.localeCompare(permanence2.date);
-          })
+          });
         }
       }
     // thePermanences.sort((permanence1, permanence2) => {
@@ -627,6 +627,28 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     return person;
   }
 
+  trierPersonChief(
+    tabs: IApiPersonnel[],
+    countChief: { [key in number]: number }
+  ) {
+    tabs.sort((pers1, pers2) => {
+      let nbrChiefPers1 = countChief[pers1.id || '-1'];
+      let nbrChiefPers2 = countChief[pers2.id || '-1'];
+      if ((nbrChiefPers1 == -1 || !nbrChiefPers1) && pers1.id) {
+        countChief[pers1.id] = 0;
+        nbrChiefPers1 = 0;
+      }
+      if ((nbrChiefPers2 == -1 || !nbrChiefPers2) && pers2.id) {
+        countChief[pers2.id] = 0;
+        nbrChiefPers2 = 0;
+      }
+      return nbrChiefPers1 - nbrChiefPers2;
+    });
+
+    countChief[tabs[0].id || -1] += 1;
+    return tabs;
+  }
+
   fillPlanning() {
     let decalage = 0;
     let group1 = shuffleArray([...this.group1]);
@@ -649,6 +671,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
     let repartiGroup2 = 0;
     let repartiGroup3 = 0;
+
+    let idCountChief: { [key in number]: number } = { '-1': -1 };
 
     this.permanences.forEach((permanence, index) => {
       let date = new Date(permanence.date);
@@ -790,6 +814,25 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                   permanence: personnel_permanence,
                 };
                 permanence.personnels_jour?.push(persJour);
+              } else {
+                pers = group3[repartiGroup3++ % nbrGroup3];
+                lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+                pers = this.uniquePersonDay(
+                  pers,
+                  [person3],
+                  group3,
+                  lastPosition,
+                  date,
+                  'jour'
+                );
+                if (pers != null) {
+                  let persJour: IPersonnelJour = {
+                    personnel: pers,
+                    responsable: false,
+                    permanence: personnel_permanence,
+                  };
+                  permanence.personnels_jour?.push(persJour);
+                }
               }
             });
 
@@ -816,7 +859,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
               'nuit'
             );
 
-            [person4, person5].forEach((pers, i) => {
+            let personsNuitList = [person4, person5];
+            personsNuitList = this.trierPersonChief(
+              personsNuitList,
+              idCountChief
+            );
+
+            personsNuitList.forEach((pers, i) => {
               if (pers) {
                 let persNuit: IPersonnelNuit = {
                   personnel: pers,
@@ -904,7 +953,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             'jour'
           );
 
-          [person1, person2].forEach((pers, i) => {
+          let personsJourList = [person1, person2];
+          personsJourList = this.trierPersonChief(
+            personsJourList,
+            idCountChief
+          );
+
+          personsJourList.forEach((pers, i) => {
             if (pers != null) {
               let persJour: IPersonnelJour = {
                 personnel: pers,
@@ -937,7 +992,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             'nuit'
           );
 
-          [person3, person4].forEach((pers, i) => {
+          let personsNuitList = [person3, person4];
+          personsNuitList = this.trierPersonChief(
+            personsNuitList,
+            idCountChief
+          );
+
+          personsNuitList.forEach((pers, i) => {
             if (pers) {
               let persNuit: IPersonnelNuit = {
                 personnel: pers,

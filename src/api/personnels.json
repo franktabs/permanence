@@ -15,6 +15,34 @@
       "screenname": null
     },
     {
+      "firstname": "Stive Jordan",
+      "emailaddress": "stivejordan@example.com",
+      "telephoneCisco": "0123",
+      "telephoneMobile": "681234567",
+      "userId": 4399,
+      "sexe": "M",
+      "fonction": "Ingénieure",
+      "service": "INFORMATIQUE",
+      "libAge": "production et de la plateforme collaborative",
+      "organizationId": 287742,
+      "agent": true,
+      "screenname": null
+    },
+    {
+      "firstname": "Andre Hals",
+      "emailaddress": "andrehals@example.com",
+      "telephoneCisco": "0123",
+      "telephoneMobile": "681234567",
+      "userId": 4398,
+      "sexe": "M",
+      "fonction": "Ingénieure",
+      "service": "INFORMATIQUE",
+      "libAge": "production et de la plateforme collaborative",
+      "organizationId": 287742,
+      "agent": true,
+      "screenname": null
+    },
+    {
       "id": 3,
       "firstname": "Jane Smith",
       "emailaddress": "janesmith@example.com",

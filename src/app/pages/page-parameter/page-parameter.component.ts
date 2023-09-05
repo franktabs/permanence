@@ -77,7 +77,7 @@ export class PageParameterComponent implements OnInit {
           title: 'information',
         });
         this.api.data.personnels = [];
-
+        location.reload()
         // }
       }
     } catch (e) {
@@ -105,6 +105,7 @@ export class PageParameterComponent implements OnInit {
           message: response.data.length + ' donnée(s) mise à jour ',
           title: 'information',
         });
+        location.reload()
         // }
       }
     } catch (e) {

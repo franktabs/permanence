@@ -249,9 +249,11 @@ export function separatePersonnelTFJ(
   console.log('Ressources =>', optionsRessources);
 }
 
-export function enleverPersonnel(
+export function filterPersonnelRessource(
   tab: IApiPersonnel[],
-  tabExclude: IApiPersonnel[],
+  tabExclude: IApiPersonnel[] = [
+
+  ],
   personnels: IApiPersonnel[] = []
 ) {
   let idExlude = tabExclude.map((person)=>{
