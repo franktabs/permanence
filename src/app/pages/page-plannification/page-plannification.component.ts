@@ -517,28 +517,43 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     nbrParcours: number = 0
   ): IApiPersonnel {
     if (nbrParcours >= group.length) return person;
+    let lastPerson  = JSON.parse(JSON.stringify(person));
+
     if (person.sexe == 'F') {
       let initParcours = nbrParcours;
       let lastPosition = index;
       let i = lastPosition;
+
       while (person.sexe == 'F' && nbrParcours < group.length) {
         i = (i + 1) % group.length;
         person = group[i];
         nbrParcours++;
       }
       if (i != lastPosition) {
+        console.log(
+          'changement de position de group avant =>',
+          [...group],
+          '\nde la personne =>',
+          person,
+          '\net la personne =>',
+          group[lastPosition],
+          'date =>',
+          date
+        );
         let temps = group[lastPosition];
         group[lastPosition] = person;
+        lastPerson  = JSON.parse(JSON.stringify(person));
         group[i] = temps;
+        console.log('changement de position de group après =>', [...group]);
       }
       if (initParcours == nbrParcours) {
-        return person;
+        return lastPerson;
       } else {
-        return this.findPerson(person, group, i, date || '', nbrParcours);
+        return this.findPerson(lastPerson, group, i, date || '', nbrParcours);
       }
     }
 
-    return person;
+    return lastPerson;
   }
 
   findPerson(
@@ -556,6 +571,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let continuer = true;
     let lastPosition = index;
     let i = index;
+    let lastPerson  = JSON.parse(JSON.stringify(person));
     while (continuer && nbrParcours < group.length) {
       let holidays = person.vacancies;
       if (holidays && holidays.length) {
@@ -577,12 +593,27 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       }
     }
     if (i != lastPosition) {
+      console.log(
+        'changement de position de group avant =>',
+        [...group],
+        '\nde la personne =>',
+        person,
+        '\net la personne =>',
+        group[lastPosition],
+        'date =>',
+        date
+      );
+
       let temps = group[lastPosition];
+      lastPerson  = JSON.parse(JSON.stringify(person));
       group[lastPosition] = person;
       group[i] = temps;
+      
+      console.log('changement de position de group après =>', [...group]);
     }
-    if (temps == 'jour') return person;
-    return this.findMan(person, group, i, date, nbrParcours);
+    if (temps == 'jour') return lastPerson;
+    console.log("person before =>", lastPerson)
+    return this.findMan(lastPerson, group, i, date, nbrParcours);
   }
   findPersonDay(
     person: IApiPersonnel,
@@ -668,7 +699,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     };
     let sameditAvant: IPermanence | null = null;
 
-    console.log('groupe formé', group1, group2, group3);
+    console.log('groupe formé', [...group1], [...group2], [...group3]);
 
     let repartiGroup2 = 0;
     let repartiGroup3 = 0;
@@ -694,8 +725,14 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             stringDate(date)
           );
 
+          lastPosition = repartiGroup3 % nbrGroup3;
           let person2 = group3[repartiGroup3++ % nbrGroup3];
-          lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+          console.log(
+            'postion person2 =>',
+            person2,
+            '\nlastPosition',
+            lastPosition
+          );
           person2 = this.findPerson(
             person2,
             group3,
@@ -784,8 +821,6 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
               'jour'
             );
 
-            
-
             let person3: IApiPersonnel | null =
               group3[repartiGroup3++ % nbrGroup3];
             lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
@@ -801,11 +836,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             let oneOrTwo =
               oneOrTwoPerson[repartiOneOrTwo++ % oneOrTwoPerson.length];
 
-            let person2:IApiPersonnel|null = null;
-            if(oneOrTwo==2){
-
-              person2=
-                group2[repartiGroup2++ % nbrGroup2];
+            let person2: IApiPersonnel | null = null;
+            if (oneOrTwo == 2) {
+              person2 = group2[repartiGroup2++ % nbrGroup2];
               lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
               person2 = this.uniquePersonDay(
                 person2,
@@ -815,9 +848,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                 date,
                 'jour'
               );
-            }else if(oneOrTwo==1){
-              person2=
-                group3[repartiGroup3++ % nbrGroup3];
+            } else if (oneOrTwo == 1) {
+              person2 = group3[repartiGroup3++ % nbrGroup3];
               lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
               person2 = this.uniquePersonDay(
                 person2,
@@ -828,7 +860,6 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                 'jour'
               );
             }
-
 
             [person1, person2, person3].forEach((pers) => {
               if (pers != null) {
