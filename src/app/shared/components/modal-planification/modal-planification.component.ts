@@ -12,7 +12,7 @@ import { ApiService } from '../../services/api.service';
 import { TypePersonnel } from '../../utils/types-map';
 import { FormControl } from '@angular/forms';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
-import { mapJSON, separatePersonnel } from '../../utils/function';
+import { mapJSON, separatePersonnel, separatePersonnelTFJ } from '../../utils/function';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { mapPersonnel } from '../../utils/tables-map';
 import { IPermanence } from '../../interfaces/ipermanence';
@@ -42,11 +42,15 @@ export class ModalPlanificationComponent implements OnInit {
   public arrayNumPeriode: number[] = [1, 2, 3];
   public feriers: Ferier[] = [];
 
-  public optionsManager!: TypePersonnel[];
-  public optionsRessources!:TypePersonnel[];
+  public optionsManager: TypePersonnel[] = [];
+  public optionsRessources:TypePersonnel[] =[];
   public controlSuperviseur = new FormControl<string | TypePersonnel>('');
   public filteredOptions$!: Observable<TypePersonnel[]>;
   public responsableTFJ:Array<string | IApiPersonnel> = Array.of("", "", "", "", "")
+  public arrayNumResponsableTFJ =Array.from(
+    { length: this.responsableTFJ.length },
+    (_, index) => index 
+  );
 
   // public numberFerier:number[] = [1];
   // public tailleFerier:number = this.ferier.length;
@@ -64,7 +68,7 @@ export class ModalPlanificationComponent implements OnInit {
         let transSubs = subs;
         // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
         if(subs)
-        separatePersonnel(subs, this.optionsManager, this.optionsRessources)
+        separatePersonnelTFJ(subs, this.optionsManager, this.optionsRessources)
       });
   }
 
@@ -169,6 +173,7 @@ export class ModalPlanificationComponent implements OnInit {
   }
 
   public receiveResponsable(i:number, event:any){
-    this.responsableTFJ[i-1] = event;
+    console.log("position ", i)
+    this.responsableTFJ[i] = event;
   }
 }

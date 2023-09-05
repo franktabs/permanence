@@ -298,14 +298,7 @@ export class CardPlanningComponent implements OnInit, OnChanges {
       let currentValue: IPlanning[] = changes['plannings'].currentValue;
       if (this.indice) {
         this.planning = currentValue[this.indice];
-        this.nbrAppartion = 0;
-        if (this.planning && this.planning.months) {
-          for (let month of this.planning.months) {
-            if (month.permanences) {
-              this.nbrAppartion += month.permanences.length;
-            }
-          }
-        }
+        this.initNbrApparition();
       }
     }
     if (changes['indice']) {
@@ -313,14 +306,7 @@ export class CardPlanningComponent implements OnInit, OnChanges {
       this.indice = currentValue;
       if (this.plannings) {
         this.planning = this.plannings[this.indice];
-        this.nbrAppartion = 0;
-        if (this.planning && this.planning.months) {
-          for (let month of this.planning.months) {
-            if (month.permanences) {
-              this.nbrAppartion += month.permanences.length;
-            }
-          }
-        }
+        this.initNbrApparition();
       }
     }
   }
@@ -346,7 +332,39 @@ export class CardPlanningComponent implements OnInit, OnChanges {
     this.loader.loader_modal$.next(false);
   }
 
-  remove() {
-    this.plannings.splice(this.indice, 1);
+  initNbrApparition() {
+    this.nbrAppartion = 0;
+    if (this.planning && this.planning.months) {
+      for (let month of this.planning.months) {
+        if (month.permanences) {
+          this.nbrAppartion += month.permanences.length;
+        }
+      }
+    }
+  }
+
+  async remove() {
+    this.loader.loader_modal$.next(true);
+    if (this.planning.id) {
+      try {
+        let response = await axios.delete(
+          this.api.URL_PLANNINGS + '/' + this.planning.id
+        );
+        if (response.status >= 200 && response.status < 300) {
+          this.alert.alertMaterial({
+            message: 'Suppression Réussi',
+            title: 'success',
+          });
+          this.plannings.splice(this.indice, 1);
+        }
+      } catch (e) {
+        console.error("voici l'erreur =>", e);
+        this.alert.alertError();
+      }
+    }else{
+
+      this.plannings.splice(this.indice, 1);
+    }
+    this.loader.loader_modal$.next(false);
   }
 }

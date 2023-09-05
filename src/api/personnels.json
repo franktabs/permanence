@@ -4030,7 +4030,7 @@
     {
       "id": 21,
       "firstname": "Michael Wilson",
-      "emailaddress": "michaelwilson@afriland.example.com",
+      "emailaddress": "ichaelwilson@afriland.example.com",
       "telephoneCisco": "0345",
       "telephoneMobile": "65678901",
       "userId": 1223,
@@ -4089,6 +4089,48 @@
       "personnelNuits": [],
       "annonces": [],
       "notifications": []
+    },
+    {
+      "firstname": "Andre Molton",
+      "emailaddress": "michaelwil@afriland.example.com",
+      "telephoneCisco": "0344",
+      "telephoneMobile": "65678902",
+      "userId": 1209,
+      "sexe": "M",
+      "fonction": "Chef de projet logiciel",
+      "service": "INFORMATIQUE",
+      "libAge": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS",
+      "organizationId": 287740,
+      "agent": true,
+      "screenname": null
+    },
+    {
+      "firstname": "Loic Jean",
+      "emailaddress": "michlwilson@afriland.example.com",
+      "telephoneCisco": "0344",
+      "telephoneMobile": "65678902",
+      "userId": 1210,
+      "sexe": "M",
+      "fonction": "Chef de  securite",
+      "service": "INFORMATIQUE",
+      "libAge": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS",
+      "organizationId": 287740,
+      "agent": true,
+      "screenname": null
+    },
+    {
+      "firstname": "Kola Berata",
+      "emailaddress": "michaelwilon@afriland.example.com",
+      "telephoneCisco": "0344",
+      "telephoneMobile": "65678902",
+      "userId": 1211,
+      "sexe": "M",
+      "fonction": "Chef de support",
+      "service": "INFORMATIQUE",
+      "libAge": "DEPARTEMENT DEVELOPPEMENT ET INTEGRATION DES LOGICIELS",
+      "organizationId": 287740,
+      "agent": true,
+      "screenname": null
     },
     {
       "id": 22,

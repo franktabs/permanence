@@ -22,8 +22,19 @@
                 (planningEmit)="voirPlanning($event)"></app-card-planning>
         </div>
         <span id="planning" ></span>
-        <ng-container *ngIf="visiblePlanning">
-            <div class="mt-5 pe-2 month-planning shadow-by-material2 anim-slide-s "  *ngFor="let point of remplissage.pointDate, let i = index">
+        <ng-container *ngIf="visiblePlanning && planningVisible && planningVisible.months">
+            <div class="mt-5 pe-2 month-planning shadow-by-material2 anim-slide-s "  *ngFor="let month of planningVisible.months, let i = index">
+                <h1> Superviseur : {{ (month.superviseur && month.superviseur.firstname)  }} </h1>
+                <div class="ligne"></div>
+                <div class='planning mt-2 overflow-x-auto pt-2 '>
+                    <ng-container *ngFor="let permanence of month.permanences">
+                        <app-day [permanence]="permanence">
+                        </app-day>
+                    </ng-container>
+                </div>
+            </div>
+
+            <!-- <div class="mt-5 pe-2 month-planning shadow-by-material2 anim-slide-s "  *ngFor="let point of remplissage.pointDate, let i = index">
                 <h1> Superviseur : {{displaySuperviseur(i) || "Aucun défini" }} </h1>
                 <div class="ligne"></div>
                 <div class='planning mt-2 overflow-x-auto pt-2 '>
@@ -32,7 +43,7 @@
                         </app-day>
                     </ng-container>
                 </div>
-            </div>
+            </div> -->
         </ng-container>
     </div>
 </div>

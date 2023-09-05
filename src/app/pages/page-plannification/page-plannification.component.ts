@@ -184,7 +184,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       ) {
         let inGroup1 = false;
         for (let responsable of this.group1) {
-          if (responsable.id != person.id) {
+          if (responsable.id == person.id) {
             inGroup1 = true;
             break;
           }
@@ -202,13 +202,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       ) {
         let inGroup1 = false;
         for (let responsable of this.group1) {
-          if (responsable.id != person.id) {
+          if (responsable.id == person.id) {
             inGroup1 = true;
             break;
           }
         }
         if (!inGroup1) {
-          this.group2.push(person);
+          this.group3.push(person);
         }
       }
     });
@@ -262,15 +262,27 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     if (planning.months)
       for (let theMonth of planning.months) {
         if (theMonth.permanences) {
-          for (let permanence of theMonth.permanences) {
-            thePermanences.push(permanence);
-          }
+          theMonth.permanences.sort((permanence1, permanence2) => {
+            return permanence1.date.localeCompare(permanence2.date);
+          })
         }
       }
-    thePermanences.sort((permanence1, permanence2) => {
-      return permanence1.date.localeCompare(permanence2.date);
-    });
-    this.permanences = thePermanences;
+    // thePermanences.sort((permanence1, permanence2) => {
+    //   return permanence1.date.localeCompare(permanence2.date);
+    // });
+    // this.permanences = thePermanences;
+    // if (planning.months)
+    //   for (let theMonth of planning.months) {
+    //     if (theMonth.permanences) {
+    //       for (let permanence of theMonth.permanences) {
+    //         thePermanences.push(permanence);
+    //       }
+    //     }
+    //   }
+    // thePermanences.sort((permanence1, permanence2) => {
+    //   return permanence1.date.localeCompare(permanence2.date);
+    // });
+    // this.permanences = thePermanences;
 
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
     this.buildPointDate(new Date(planning.start), planning.periode);

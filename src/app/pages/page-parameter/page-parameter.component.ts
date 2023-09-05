@@ -18,93 +18,97 @@ import { scrollToDiv } from 'src/app/shared/utils/function';
   ],
 })
 export class PageParameterComponent implements OnInit {
+  public parameters: IParameter[] = [];
 
-  public parameters:IParameter[] = [];
+  public api1_DSI!: IParameter;
 
-  public api1_DSI!:IParameter ;
+  public api2_DSI!: IParameter;
 
-  public api2_DSI!:IParameter;
-
-  constructor(private api:ApiService, private alert:AlertService, private loader:LoaderService) {}
+  constructor(
+    private api: ApiService,
+    private alert: AlertService,
+    private loader: LoaderService
+  ) {}
 
   ngOnInit(): void {
     scrollToDiv('body');
-    axios.get(this.api.URL_PARAMETERS).then(
-      (res)=>{
+    axios
+      .get(this.api.URL_PARAMETERS)
+      .then((res) => {
         this.parameters = res.data;
-        for(let parameter of this.parameters){
-          if(parameter.code=="api1_DSI"){
+        for (let parameter of this.parameters) {
+          if (parameter.code == 'api1_DSI') {
             this.api1_DSI = parameter;
-          }else if(parameter.code=="api2_DSI"){
+          } else if (parameter.code == 'api2_DSI') {
             this.api2_DSI = parameter;
           }
         }
-      }
-    ).catch((e)=>{
-      console.error("voici l'erreur", e);
-      this.alert.alertError();
-    })
-
+      })
+      .catch((e) => {
+        console.error("voici l'erreur", e);
+        this.alert.alertError();
+      });
   }
 
-
-  async reloadDataOrganisation(action:"recreate"|"actualise"='actualise'){
+  async reloadDataOrganisation(action: 'recreate' | 'actualise' = 'actualise') {
     this.loader.loader_modal$.next(true);
-    try{
-
-      if(this.api2_DSI.valeur){
-  
+    try {
+      if (this.api2_DSI.valeur) {
         let response = await axios.get(this.api2_DSI.valeur);
-        let datas:IApiDirection[] = response.data;
-        console.log("données de l'api parametre", datas)
+        let datas: IApiDirection[] = response.data;
+        console.log("données de l'api parametre", datas);
 
         // for(let data of datas){
-          datas.sort((data1, data2)=>{
-            if(data1.organizationId && data2.organizationId){
-              return data1.organizationId.toString().localeCompare(data2.organizationId.toString())
-            }
-            return 0;
-          })
-          
-          response = await axios.post(this.api.URL_DIRECTIONS+"/config-"+action, datas)
-          this.alert.alertMaterial({message:response.data.length+" donnée(s) mise à jour ", title:"information"});
-          this.api.data.personnels = [];
+        datas.sort((data1, data2) => {
+          if (data1.organizationId && data2.organizationId) {
+            return data1.organizationId
+              .toString()
+              .localeCompare(data2.organizationId.toString());
+          }
+          return 0;
+        });
+
+        response = await axios.post(
+          this.api.URL_DIRECTIONS + '/config-' + action,
+          datas
+        );
+        this.alert.alertMaterial({
+          message: response.data.length + ' donnée(s) mise à jour ',
+          title: 'information',
+        });
+        this.api.data.personnels = [];
 
         // }
       }
-    }catch(e){
-      console.error("Voici l'erreur", e)
+    } catch (e) {
+      console.error("Voici l'erreur", e);
       this.alert.alertError();
     }
     this.loader.loader_modal$.next(false);
   }
 
-
-  async reloadDataPersonnel(action:"recreate"|"actualise"='actualise'){
+  async reloadDataPersonnel(action: 'recreate' | 'actualise' = 'actualise') {
     this.loader.loader_modal$.next(true);
-    try{
-
-      if(this.api1_DSI.valeur){
-  
+    try {
+      if (this.api1_DSI.valeur) {
         let response = await axios.get(this.api1_DSI.valeur);
-        let datas:IApiPersonnel[] = response.data;
-        console.log("données de l'api parametre", datas)
+        let datas: IApiPersonnel[] = response.data;
+        console.log("données de l'api parametre", datas);
 
-        // for(let data of datas){
-          // datas.sort((data1, data2)=>{
-          //   if(data1.organizationId && data2.organizationId){
-          //     return data1.organizationId.toString().localeCompare(data2.organizationId.toString())
-          //   }
-          //   return 0;
-          // })
-          
-          response = await axios.post(this.api.URL_PERSONNELS+"/config-"+action, datas);
-          this.api.data.personnels = [];
-          this.alert.alertMaterial({message:response.data.length+" donnée(s) mise à jour ", title:"information"});
+        response = await axios.post(
+          this.api.URL_PERSONNELS + '/config-' + action,
+          datas
+        );
+        this.api.data.personnels = [];
+        console.log("données de l'api mise a jour", response.data);
+        this.alert.alertMaterial({
+          message: response.data.length + ' donnée(s) mise à jour ',
+          title: 'information',
+        });
         // }
       }
-    }catch(e){
-      console.error("Voici l'erreur", e)
+    } catch (e) {
+      console.error("Voici l'erreur", e);
       this.alert.alertError();
     }
     this.loader.loader_modal$.next(false);

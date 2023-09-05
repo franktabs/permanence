@@ -19,7 +19,7 @@
                         Problème rencontré
                     </span>
                 </div>
-                <span class="text-danger fs-3 remove" *ngIf="!planning.id" (click)="remove()" >
+                <span class="text-danger fs-3 remove" *ngIf="authRoles.includes('VALIDER PLANNING') || !planning.id " (click)="remove()" >
                     <i class="bi bi-trash"></i>
                 </span>
             </ng-container>
