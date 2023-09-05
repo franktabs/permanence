@@ -1,3 +1,5 @@
+import { IApiPersonnel } from "../interfaces/iapipersonnel";
+
 export type TypeFormatJSON<T, J> = {
   obj: { [key in keyof T]?: any };
   correspondance: { [key in keyof T]?: keyof J };
@@ -180,4 +182,14 @@ export function stringMonth(i: number): string {
 export function  scrollToDiv(elm:string) {
   const element = document.querySelector(elm);
   element?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+export function separatePersonnel(tab:IApiPersonnel[], optionsManager:IApiPersonnel[], optionsRessources:IApiPersonnel[]=[]){
+  tab.forEach((person)=>{
+    if((person.fonction.toLowerCase().includes("manager") || person.fonction.toLowerCase().includes("chef") ) && !(person.fonction.toLowerCase().includes("directeur") || person.fonction.toLowerCase().includes("admin-0") )){
+      optionsManager.push(person)
+    }else if(!(person.fonction.toLowerCase().includes("directeur") ||   person.fonction.toLowerCase().includes("admin-0" )) ){
+      optionsRessources.push(person);
+    }
+  })
 }

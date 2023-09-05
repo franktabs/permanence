@@ -80,14 +80,17 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
   public authRoles: RoleType[] = [];
 
-  constructor(private api: ApiService, private auth: AuthService, private elementRef: ElementRef) {}
+  constructor(
+    private api: ApiService,
+    private auth: AuthService,
+    private elementRef: ElementRef
+  ) {}
 
   ngOnInit(): void {
     this.authRoles = this.auth.rolesName;
 
     this.initDataPersonnels();
     this.initDataPlannings();
-
 
     // let dataPersonnel = this.api.data.personnels;
     // this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {});
@@ -125,11 +128,11 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
     this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
       this.api.data.personnels = subs;
-      this.initOperationPersonnels(subs);
+      // this.initOperationPersonnels(subs);
     });
 
     if (dataPersonnel && dataPersonnel.length) {
-      this.initOperationPersonnels(dataPersonnel);
+      // this.initOperationPersonnels(dataPersonnel);
     } else {
       this.api
         .getAllData<IApiPersonnel[]>({ for: 'personnels' })
@@ -146,16 +149,16 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     this.api.plannings$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
       this.api.data.plannings = subs;
       this.plannings = subs;
-      this.plannings.sort((planning1, planning2)=>{
-        return planning2.submissionDate.localeCompare(planning1.submissionDate)
-      })
+      this.plannings.sort((planning1, planning2) => {
+        return planning2.submissionDate.localeCompare(planning1.submissionDate);
+      });
     });
 
     if (dataPlanning && dataPlanning.length) {
       this.plannings = dataPlanning;
-      this.plannings.sort((planning1, planning2)=>{
-        return planning2.submissionDate.localeCompare(planning1.submissionDate)
-      })
+      this.plannings.sort((planning1, planning2) => {
+        return planning2.submissionDate.localeCompare(planning1.submissionDate);
+      });
     } else {
       this.api
         .getAllData<IPlanning[] | undefined>({ for: 'plannings' })
@@ -170,21 +173,43 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     this.plannings = subs;
   }
 
-  initOperationPersonnels(subs: IApiPersonnel[]) {
+  initOperationGroupPersonnels(subs: IApiPersonnel[]) {
     subs.forEach((person, ind) => {
-      if (person.fonction.toLowerCase().includes('responsable du tfj')) {
-        this.group1.push(person);
-      } else if (
+      // if (person.fonction.toLowerCase().includes('responsable du tfj')) {
+      //   this.group1.push(person);
+      // } else
+      if (
         person.departement?.name?.toLowerCase().includes('production') ||
         person.departement?.name?.toLowerCase().includes('collaborative')
       ) {
-        this.group2.push(person);
+        let inGroup1 = false;
+        for (let responsable of this.group1) {
+          if (responsable.id != person.id) {
+            inGroup1 = true;
+            break;
+          }
+        }
+        if (!inGroup1) {
+          this.group2.push(person);
+        }
       } else if (
-        person.departement?.name?.toLowerCase().includes('logiciels') ||
+        person.departement?.name?.toLowerCase().includes('logiciel') ||
         person.departement?.name?.toLowerCase().includes('réseau') ||
-        person.departement?.name?.toLowerCase().includes('sécurité')
+        person.departement?.name?.toLowerCase().includes('reseau') ||
+        person.departement?.name?.toLowerCase().includes('sécurité') ||
+        person.departement?.name?.toLowerCase().includes('securite') ||
+        person.departement?.name?.toLowerCase().includes('support')
       ) {
-        this.group3.push(person);
+        let inGroup1 = false;
+        for (let responsable of this.group1) {
+          if (responsable.id != person.id) {
+            inGroup1 = true;
+            break;
+          }
+        }
+        if (!inGroup1) {
+          this.group2.push(person);
+        }
       }
     });
   }
@@ -196,6 +221,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
   set dataPlanning(value: DataPlanning | null) {
     this._dataPlanning = value;
+    this.group1 = value?.group1 as IApiPersonnel[];
+    this.initOperationGroupPersonnels(this.api.data.personnels);
     if (value) {
       this.generatePlanning(+value.periode);
     }
@@ -249,7 +276,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     this.buildPointDate(new Date(planning.start), planning.periode);
     this.visiblePlanning = true;
     setTimeout(() => {
-      scrollToDiv("#planning")
+      scrollToDiv('#planning');
     }, 500);
   }
 
@@ -610,7 +637,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let group2 = shuffleArray([...this.group2]);
     let group3 = shuffleArray([...this.group3]);
 
-    console.log("voici les différents groupes creer", group1, group2, group3)
+    console.log('voici les différents groupes creer', group1, group2, group3);
 
     let nbrGroup1 = group1.length;
     let nbrGroup2 = group2.length;
@@ -750,7 +777,14 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             let person3: IApiPersonnel | null =
               group3[repartiGroup3++ % nbrGroup3];
             lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-            person3 = this.findPerson(person3, group3,lastPosition, stringDate(date), 0, "jour" );
+            person3 = this.findPerson(
+              person3,
+              group3,
+              lastPosition,
+              stringDate(date),
+              0,
+              'jour'
+            );
 
             [person1, person2, person3].forEach((pers) => {
               if (pers != null) {
@@ -777,7 +811,14 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             let person5: IApiPersonnel | null =
               group3[repartiGroup3++ % nbrGroup3];
             lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-            person5 = this.findPerson(person5, group3, lastPosition, stringDate(date), 0, "nuit");
+            person5 = this.findPerson(
+              person5,
+              group3,
+              lastPosition,
+              stringDate(date),
+              0,
+              'nuit'
+            );
 
             [person4, person5].forEach((pers, i) => {
               if (pers) {
@@ -844,40 +885,64 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         decalage++;
 
         if (permanence.type == 'simple') {
-
           let person1 = group2[repartiGroup2++ % nbrGroup2];
           let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-          person1 = this.findPerson(person1, group2,lastPosition, stringDate(date), 0, "jour" );
+          person1 = this.findPerson(
+            person1,
+            group2,
+            lastPosition,
+            stringDate(date),
+            0,
+            'jour'
+          );
 
-          let person2:IApiPersonnel | null = group3[repartiGroup3++ % nbrGroup3];
+          let person2: IApiPersonnel | null =
+            group3[repartiGroup3++ % nbrGroup3];
           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-          person2 = this.findPerson(person2, group3, lastPosition, stringDate(date), 0, "jour");
+          person2 = this.findPerson(
+            person2,
+            group3,
+            lastPosition,
+            stringDate(date),
+            0,
+            'jour'
+          );
 
-
-          [person1, person2].forEach((pers, i)=>{
+          [person1, person2].forEach((pers, i) => {
             if (pers != null) {
               let persJour: IPersonnelJour = {
                 personnel: pers,
-                responsable: i==0,
+                responsable: i == 0,
                 permanence: personnel_permanence,
               };
               permanence.personnels_jour?.push(persJour);
             }
-          })
-
-        
+          });
 
           let person3 = group2[repartiGroup2++ % nbrGroup2];
           lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-          person3 = this.findPerson(person3, group2, lastPosition, stringDate(date), 0, "nuit") ;
-
+          person3 = this.findPerson(
+            person3,
+            group2,
+            lastPosition,
+            stringDate(date),
+            0,
+            'nuit'
+          );
 
           let person4 = group3[repartiGroup3++ % nbrGroup3];
           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-          person4 = this.findPerson(person4, group3, lastPosition, stringDate(date), 0, "nuit");
+          person4 = this.findPerson(
+            person4,
+            group3,
+            lastPosition,
+            stringDate(date),
+            0,
+            'nuit'
+          );
 
-          [person3, person4].forEach((pers, i)=>{
-            if(pers){
+          [person3, person4].forEach((pers, i) => {
+            if (pers) {
               let persNuit: IPersonnelNuit = {
                 personnel: pers,
                 responsable: i == 0,
@@ -886,7 +951,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
               permanence.personnels_nuit?.push(persNuit);
             }
-          })
+          });
 
           // let person1Jour: IPersonnelJour = {
           //   personnel: person1,
@@ -979,11 +1044,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit(){
-    scrollToDiv("#mat-typography");
+  ngAfterViewInit() {
+    scrollToDiv('#mat-typography');
   }
-
-
 
   ngOnDestroy(): void {
     this.destroy$.next(true);

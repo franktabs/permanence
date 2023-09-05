@@ -52,7 +52,7 @@
                 </form>
             </div>
             <div class="m-3 p-3 part2 d-flex flex-column">
-                <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Personnel</h1>
+                <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Superviseur</h1>
                 <!-- <mat-form-field class="example-full-width" appearance="fill">
                     <mat-label>Nom du superviseur </mat-label>
                     <input matInput placeholder="Un superviseur du mois" [formControl]="controlSuperviseur" [matAutocomplete]="auto"  required>
@@ -68,12 +68,20 @@
                 </mat-form-field> -->
                 <app-personnel-autocomplete (dataPerson)="receiveSuperviseur(ind, $event)"
                     *ngFor="let ind of arrayNumPeriode" forLabel="Nom du superviseur N°{{ind}} "
-                    forPlaceholder="Superviseur du mois" [options]="options" name="superviseur{{ind}}">
+                    forPlaceholder="Superviseur du mois" [options]="optionsManager" name="superviseur{{ind}}">
+                </app-personnel-autocomplete>
+            </div>
+            <div class="m-3 p-3 part3 d-flex flex-column">
+                <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Responsable TFJ</h1>
+
+                <app-personnel-autocomplete (dataPerson)="receiveResponsable(ind, $event)"
+                    *ngFor="let resp of responsableTFJ, let ind = index" forLabel="Nom du responsable N°{{ind}} "
+                    forPlaceholder="Responsable TFJ" [options]="optionsRessources" name="responsable{{ind}}">
                 </app-personnel-autocomplete>
             </div>
         </div>
         <div class="text-end px-4 ">
-            <button mat-raised-button color="btn-bordeau" type="submit" (click)="generer()">Generer <i
+            <button mat-raised-button color="btn-bordeau" type="submit" (click)="generer()" [disabled]="isDisabled()">Generer <i
                     class="bi bi-table"></i>
             </button>
         </div>

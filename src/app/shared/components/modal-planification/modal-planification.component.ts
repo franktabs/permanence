@@ -12,7 +12,7 @@ import { ApiService } from '../../services/api.service';
 import { TypePersonnel } from '../../utils/types-map';
 import { FormControl } from '@angular/forms';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
-import { mapJSON } from '../../utils/function';
+import { mapJSON, separatePersonnel } from '../../utils/function';
 import { IPersonnel } from '../../interfaces/ipersonnel';
 import { mapPersonnel } from '../../utils/tables-map';
 import { IPermanence } from '../../interfaces/ipermanence';
@@ -25,6 +25,7 @@ export type DataPlanning = {
   periode: number | string;
   feriers: Ferier[];
   superviseur: string[] | TypePersonnel[] | null[];
+  group1: Array<string|TypePersonnel>
 };
 
 @Component({
@@ -41,9 +42,11 @@ export class ModalPlanificationComponent implements OnInit {
   public arrayNumPeriode: number[] = [1, 2, 3];
   public feriers: Ferier[] = [];
 
-  public options!: TypePersonnel[];
+  public optionsManager!: TypePersonnel[];
+  public optionsRessources!:TypePersonnel[];
   public controlSuperviseur = new FormControl<string | TypePersonnel>('');
   public filteredOptions$!: Observable<TypePersonnel[]>;
+  public responsableTFJ:Array<string | IApiPersonnel> = Array.of("", "", "", "", "")
 
   // public numberFerier:number[] = [1];
   // public tailleFerier:number = this.ferier.length;
@@ -60,7 +63,8 @@ export class ModalPlanificationComponent implements OnInit {
       .subscribe((subs) => {
         let transSubs = subs;
         // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
-        this.options = transSubs || [];
+        if(subs)
+        separatePersonnel(subs, this.optionsManager, this.optionsRessources)
       });
   }
 
@@ -95,12 +99,36 @@ export class ModalPlanificationComponent implements OnInit {
     // this.numberFerier = Array.from({ length: this.ferier.length }, (_, index) => index + 1);
   }
 
+  public isDisabled(){
+    let errors = false;
+    for (let i = 0; i < +this.periode; i++) {
+      let person = this.superviseur[i];
+      if (!person || typeof person == 'string') {
+        return errors = true;
+      }
+    }
+
+    for(let responsable of this.responsableTFJ){
+      if(!responsable || typeof responsable == "string"){
+        return errors = true;
+      }
+    }
+
+    for (let ferier of this.feriers) {
+      if (!ferier.jour) {
+        return errors = true;
+      }
+    }
+    return errors;
+  }
+
   public generer() {
     this.loader.loader_modal$.next(true); 
-    let data = {
+    let data:DataPlanning = {
       periode: this.periode,
       feriers: this.feriers,
       superviseur: this.superviseur,
+      group1:this.responsableTFJ
     };
     let errors = false;
     for (let i = 0; i < +this.periode; i++) {
@@ -110,6 +138,15 @@ export class ModalPlanificationComponent implements OnInit {
         break;
       }
     }
+
+    
+    for(let responsable of this.responsableTFJ){
+      if(!responsable || typeof responsable == "string"){
+        errors = true;
+        break;
+      }
+    }
+
     for (let ferier of this.feriers) {
       if (!ferier.jour) {
         errors = true;
@@ -129,5 +166,9 @@ export class ModalPlanificationComponent implements OnInit {
 
   public receiveSuperviseur(i: number, event: any) {
     this.superviseur[i - 1] = event;
+  }
+
+  public receiveResponsable(i:number, event:any){
+    this.responsableTFJ[i-1] = event;
   }
 }

@@ -12,4 +12,6 @@ export interface IApiDepartement {
   direction?: IApiDirection | null;
   personnels?: IApiPersonnel[] | null;
   userId:number|null;
+
+
 }

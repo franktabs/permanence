@@ -298,6 +298,7 @@ export class CardPlanningComponent implements OnInit, OnChanges {
       let currentValue: IPlanning[] = changes['plannings'].currentValue;
       if (this.indice) {
         this.planning = currentValue[this.indice];
+        this.nbrAppartion = 0;
         if (this.planning && this.planning.months) {
           for (let month of this.planning.months) {
             if (month.permanences) {
@@ -308,9 +309,11 @@ export class CardPlanningComponent implements OnInit, OnChanges {
       }
     }
     if (changes['indice']) {
-      let currentValue: IPlanning = changes['indice'].currentValue;
+      let currentValue: number = changes['indice'].currentValue;
+      this.indice = currentValue;
       if (this.plannings) {
         this.planning = this.plannings[this.indice];
+        this.nbrAppartion = 0;
         if (this.planning && this.planning.months) {
           for (let month of this.planning.months) {
             if (month.permanences) {
