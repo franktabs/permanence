@@ -27,6 +27,7 @@ import {IPersonnelJour} from '../../interfaces/ipersonneljour';
 import {AlertService} from '../../services/alert.service';
 import {IPersonnelNuit} from '../../interfaces/ipersonnelNuit';
 import {IPlanning} from "../../interfaces/iplanning";
+import { ModalDaysPermanenceComponent } from '../modal-days-permanence/modal-days-permanence.component';
 
 //modal utilisé pour afficher les informations sur une ressource
 // provenant d'un click sur une ligne du tableau
@@ -231,5 +232,9 @@ export class Modal1Component implements OnInit, OnChanges {
 
   voirPlanning(planning:IPlanning){
     console.log("Planning d'un personnel => ",planning)
+    this.permanences = [];
+    this.dialog.open(ModalDaysPermanenceComponent, {
+        data: {months:planning.months, personnel:this.rows}
+      })
   }
 }

@@ -58,6 +58,7 @@ import { LimitStringPipe } from './shared/pipes/limit-string.pipe';
 import { ModalAbsenceComponent } from './shared/components/modal-absence/modal-absence.component';
 import { ModalHolidayComponent } from './shared/components/modal-holiday/modal-holiday.component';
 import { PageParameterComponent } from './pages/page-parameter/page-parameter.component';
+import { ModalDaysPermanenceComponent } from './shared/components/modal-days-permanence/modal-days-permanence.component';
 
 
 registerLocaleData(localeFr)
@@ -105,7 +106,8 @@ registerLocaleData(localeFr)
     LimitStringPipe,
     ModalAbsenceComponent,
     ModalHolidayComponent,
-    PageParameterComponent
+    PageParameterComponent,
+    ModalDaysPermanenceComponent
   ],
   imports: [
     BrowserModule,

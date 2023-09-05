@@ -101,8 +101,8 @@
                   </ng-container>
               </div>-->
               <h1 class="m-0">Planning d'apparition </h1>
-              <div class=" d-flex flex-row overflow-x-auto pt-2 ">
-                <div *ngFor="let planning of planningList, let i = index" class="my-border" >
+              <div class=" d-flex flex-row overflow-x-auto p-3 gap-2  ">
+                <div *ngFor="let planning of planningList, let i = index"  >
 
                   <app-card-planning  [plannings]="planningList" [indice]="i" typeDisplay="PERSON"
                                      (planningEmit)="voirPlanning($event)">

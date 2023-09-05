@@ -1,6 +1,6 @@
 <div class="bg-white shadow-by-material2 my-card see-my-card" [ngClass]="{'anim-slide-b':typeDisplay=='ALL', 'anim-scaleIn':typeDisplay=='PERSON'}">
     <div class="p-2">
-        <div class="fs-6 fst-italic border-bottom border-1 border-black text-center pb-2 text-capitalize d-flex">
+        <div class="fs-6 border-bottom border-1 border-black text-center pb-2 text-capitalize d-flex">
             <ng-container [ngSwitch]="planning.isValid" *ngIf="typeDisplay=='ALL', else otherDisplay">
 
                 <div class="flex-fill">
@@ -25,7 +25,7 @@
             </ng-container>
             <ng-template #otherDisplay >
                 <div class="flex-fill d-flex justify-content-center flex-column gap-2 align-items-center" >
-                    <span>Programmer  {{nbrAppartion}} fois </span> <button mat-raised-button color="btn-noir" (click)="handleClick()">Voir <i class="bi-eye bi"></i> </button> 
+                    <span class="color-bordeau" >Programmer  {{nbrAppartion}} fois </span> <button mat-raised-button color="btn-noir" (click)="handleClick()">Voir <i class="bi-eye bi"></i> </button> 
                 </div>
             </ng-template>
         </div>
