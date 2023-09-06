@@ -13,6 +13,7 @@ import { IApiPersonnel } from '../interfaces/iapipersonnel';
 import { IPlanning } from '../interfaces/iplanning';
 import { IApiHoliday } from '../interfaces/iapiholiday';
 import { IPermanence } from '../interfaces/ipermanence';
+import axios from 'axios';
 
 type DataApi = {
   personnels: IApiPersonnel[];
@@ -53,26 +54,26 @@ export class ApiService {
   public permanence$: Subject<IPermanence[]> = new Subject();
   public plannings$: Subject<IPlanning[]> = new Subject();
   // public readonly IP = 'http://192.168.2.64:8080/gestion';
-  public url:URL = new URL(window.location.href)
+  public url: URL = new URL(window.location.href);
 
+  public IP = 'http://' + this.url.hostname + ':180/schedule';
+  // public readonly IP = 'http://'+this.url.hostname+':18100/permanences-service/rest/api/v1';
+  // public readonly IP = 'http://192.168.11.75:18100/permanences-service/rest/api/v1';
 
-  // public readonly IP = 'http://'+this.url.hostname+':18000/schedule';
-  public readonly IP = 'http://'+this.url.hostname+':9001/permanences-service/rest/api/v1';
-
-  public readonly URL_PERSONNELS = this.IP + '/personnel';
-  public readonly URL_ABSENCES = this.IP + '/absence';
-  public readonly URL_PLANNINGS = this.IP + '/planning';
-  public readonly URL_DIRECTIONS = this.IP + '/direction';
-  public readonly URL_MONTHS = this.IP + '/month';
-  public readonly URL_PERMANENCES = this.IP + '/permanence';
-  public readonly URL_PERSONNEL_JOURS = this.IP + '/personnel_jour';
-  public readonly URL_PERSONNEL_NUITS = this.IP + '/personnel_nuit';
-  public readonly URL_HOLIDAYS = this.IP + '/absence';
-  public readonly URL_REMPLACEMENTS = this.IP + '/remplacement';
-  public readonly URL_ROLES = this.IP + '/role';
-  public readonly URL_ANNONCES = this.IP + '/annonce';
-  public readonly URL_NOTIFICATIONS = this.IP + '/notification';
-  public readonly URL_PARAMETERS = this.IP + '/parameter';
+  public URL_PERSONNELS = this.IP + '/personnel';
+  public URL_ABSENCES = this.IP + '/absence';
+  public URL_PLANNINGS = this.IP + '/planning';
+  public URL_DIRECTIONS = this.IP + '/direction';
+  public URL_MONTHS = this.IP + '/month';
+  public URL_PERMANENCES = this.IP + '/permanence';
+  public URL_PERSONNEL_JOURS = this.IP + '/personnel_jour';
+  public URL_PERSONNEL_NUITS = this.IP + '/personnel_nuit';
+  public URL_HOLIDAYS = this.IP + '/absence';
+  public URL_REMPLACEMENTS = this.IP + '/remplacement';
+  public URL_ROLES = this.IP + '/role';
+  public URL_ANNONCES = this.IP + '/annonce';
+  public URL_NOTIFICATIONS = this.IP + '/notification';
+  public URL_PARAMETERS = this.IP + '/parameter';
 
   // public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
   // public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
@@ -84,7 +85,30 @@ export class ApiService {
   // public readonly URL_POST_ABSENCES = this.IP + '/person/absence/create/';
   // public readonly URL_DIRECTIONS = this.IP + '/direction/allDirections';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    this.initIP();
+  }
+
+  initIP() {
+    let urls = localStorage.getItem('urlBackend');
+    if (urls) {
+      this.IP = urls;
+    }
+    this.URL_PERSONNELS = this.IP + '/personnel';
+    this.URL_ABSENCES = this.IP + '/absence';
+    this.URL_PLANNINGS = this.IP + '/planning';
+    this.URL_DIRECTIONS = this.IP + '/direction';
+    this.URL_MONTHS = this.IP + '/month';
+    this.URL_PERMANENCES = this.IP + '/permanence';
+    this.URL_PERSONNEL_JOURS = this.IP + '/personnel_jour';
+    this.URL_PERSONNEL_NUITS = this.IP + '/personnel_nuit';
+    this.URL_HOLIDAYS = this.IP + '/absence';
+    this.URL_REMPLACEMENTS = this.IP + '/remplacement';
+    this.URL_ROLES = this.IP + '/role';
+    this.URL_ANNONCES = this.IP + '/annonce';
+    this.URL_NOTIFICATIONS = this.IP + '/notification';
+    this.URL_PARAMETERS = this.IP + '/parameter';
+  }
 
   public postData<T>(url: string, data: T): Observable<T> {
     return this.http.post(url, data).pipe(catchError(this.displayError) as any);

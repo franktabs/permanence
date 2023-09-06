@@ -6,6 +6,7 @@ import { Subject } from 'rxjs';
 })
 export class LoaderService {
   public loader_modal$: Subject<boolean> = new Subject();
+  public init_data$: Subject<boolean> = new Subject();
 
   constructor() {
     this.loader_modal$.next(false);

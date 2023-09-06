@@ -5,7 +5,7 @@
       "emailaddress": "admin@afrilandfirstbank.com",
       "telephoneCisco": "01644",
       "telephoneMobile": "673498292",
-      "userId": "00000",
+      "userId": 0,
       "sexe": "M",
       "fonction": "admin-0",
       "service": "INFORMATIQUE",
