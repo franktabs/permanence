@@ -1,4 +1,8 @@
-import { Component, ElementRef, OnDestroy, OnInit } from '@angular/core';
+import { LiveAnnouncer } from '@angular/cdk/a11y';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import axios from 'axios';
 import { Subject, takeUntil } from 'rxjs';
 import { DataPlanning } from 'src/app/shared/components/modal-planification/modal-planification.component';
 import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
@@ -34,6 +38,12 @@ type Remplissage = {
   superviseur: number;
   pointDate: number[];
 };
+
+type ApparitionPerson = {
+  departement: string,
+  firstname:string,
+  apparition:number
+}
 
 @Component({
   selector: 'app-page-plannification',
@@ -81,10 +91,19 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
   public authRoles: RoleType[] = [];
 
+  public displayedColumns: (keyof ApparitionPerson)[] = ["departement", "firstname", "apparition"];
+  
+  public dataSource!:MatTableDataSource<ApparitionPerson>;
+
+
+  @ViewChild(MatSort) sort!: MatSort;
+
+
   constructor(
     private api: ApiService,
     private auth: AuthService,
-    private elementRef: ElementRef
+    private elementRef: ElementRef,
+    private _liveAnnouncer: LiveAnnouncer
   ) {}
 
   ngOnInit(): void {
@@ -239,7 +258,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     return this._resetPlanning;
   }
 
-  voirPlanning(planning: IPlanning) {
+  async voirPlanning(planning: IPlanning) {
     this.visiblePlanning = false;
     let thePermanences: IPermanence[] = [];
     this.planningVisible = planning;
@@ -271,6 +290,31 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
     this.buildPointDate(new Date(planning.start), planning.periode);
     this.visiblePlanning = true;
+    if(this.planningVisible.id){
+
+      let dataPersonnel = this.api.data.personnels
+      let apparitions:ApparitionPerson[] = [];
+      try{
+        let response = await axios.get(this.api.URL_PLANNINGS+"/count-personnels/"+this.planningVisible.id);
+        let dataAppartion:{[key in number] : number} = response.data;
+        for(let person of dataPersonnel){
+          let idPerson = person.id as number;
+          let nbrAppartion = dataAppartion[idPerson];
+          apparitions.push({
+            "departement": person.departement?.name||"non defini",
+            "firstname":person.firstname,
+            "apparition":nbrAppartion||0
+          })
+        }
+      this.dataSource = new MatTableDataSource(apparitions);
+      this.dataSource.sort = this.sort;
+
+      }
+      catch(e){
+        console.log("Voici l'erreur => ", e);
+        
+      }
+    }
     setTimeout(() => {
       scrollToDiv('#planning');
     }, 500);
@@ -1161,9 +1205,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngAfterViewInit() {
-    scrollToDiv('#mat-typography');
-  }
+
 
   ngOnDestroy(): void {
     this.destroy$.next(true);
@@ -1177,5 +1219,22 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       }
     }
     return disabled;
+  }
+
+  ngAfterViewInit() {
+    scrollToDiv('#mat-typography');
+  }
+
+
+  announceSortChange(sortState: Sort) {
+    // This example uses English messages. If your application supports
+    // multiple language, you would internationalize these strings.
+    // Furthermore, you can customize the message to add additional
+    // details about the values being sorted.
+    if (sortState.direction) {
+      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+    } else {
+      this._liveAnnouncer.announce('Sorting cleared');
+    }
   }
 }

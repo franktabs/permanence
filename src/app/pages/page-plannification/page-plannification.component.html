@@ -26,6 +26,39 @@
             <app-card-planning *ngFor="let planning of plannings, let i = index" [plannings]="plannings" [indice]="i"
                 (planningEmit)="voirPlanning($event)"></app-card-planning>
         </div>
+        <div *ngIf="visiblePlanning && planningVisible && planningVisible.id ">
+            <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)"
+                class="mat-elevation-z8">
+
+
+                <!-- Name Column -->
+                <ng-container matColumnDef="departement">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by departement">
+                        Departement
+                    </th>
+                    <td mat-cell *matCellDef="let element"> {{element.departement}} </td>
+                </ng-container>
+
+                <!-- Weight Column -->
+                <ng-container matColumnDef="firstname">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by firstname">
+                        Nom
+                    </th>
+                    <td mat-cell *matCellDef="let element"> {{element.firstname}} </td>
+                </ng-container>
+
+                <!-- Symbol Column -->
+                <ng-container matColumnDef="apparition">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by apparition">
+                        Apparition
+                    </th>
+                    <td mat-cell *matCellDef="let element"> {{element.apparition}} </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+            </table>
+        </div>
         <span id="planning"></span>
         <ng-container *ngIf="visiblePlanning && planningVisible && planningVisible.months">
             <div class="mt-5 pe-2 month-planning shadow-by-material2 anim-slide-s "

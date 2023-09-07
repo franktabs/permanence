@@ -56,7 +56,7 @@ export class ApiService {
   // public readonly IP = 'http://192.168.2.64:8080/gestion';
   public url: URL = new URL(window.location.href);
 
-  public IP = 'http://' + this.url.hostname + ':180/schedule';
+  public IP = 'http://' + this.url.hostname + ':18000/schedule';
   // public readonly IP = 'http://'+this.url.hostname+':18100/permanences-service/rest/api/v1';
   // public readonly IP = 'http://192.168.11.75:18100/permanences-service/rest/api/v1';
 
@@ -90,9 +90,9 @@ export class ApiService {
   }
 
   initIP() {
-    let urls = localStorage.getItem('urlBackend');
-    if (urls) {
-      this.IP = urls;
+    let url = localStorage.getItem('urlBackend');
+    if (url) {
+      this.IP = url;
     }
     this.URL_PERSONNELS = this.IP + '/personnel';
     this.URL_ABSENCES = this.IP + '/absence';
