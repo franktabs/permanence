@@ -24,7 +24,7 @@
         </div>
         <div class="mt-5 d-flex gap-4 align-items-center flex-wrap">
             <ng-container *ngFor="let planning of plannings, let i = index">
-                <div [ngClass]="{'bg-bordeau':planningVisible==planning || (planningVisible && planning &&  planningVisible.id==planning.id)   }" class="p-2 " >
+                <div [ngClass]="{'bg-bordeau':planningVisible==planning || (planningVisible && planning &&  planningVisible.id==planning.id)   }" class="p-3 " >
 
                     <app-card-planning [plannings]="plannings" [indice]="i" (planningEmit)="voirPlanning($event)">
                     </app-card-planning>
