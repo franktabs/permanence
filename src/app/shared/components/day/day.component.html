@@ -1,6 +1,6 @@
 <app-modal1 [(isOpen)]="openModal" *ngIf="openModal" [rows]="row"></app-modal1>
 <app-modal-permanence [(open)]="visibleModalPermanence" *ngIf="visibleModalPermanence" [permanence]="permanence"
-    (refresh)="refresh($event)"></app-modal-permanence>
+    (refresh)="refresh($event)" [autorisation]="autorisation" ></app-modal-permanence>
 <div class="my-day my-card no-shadow no-border">
     <table class="table-bordered p-4 table border-black">
         <thead>

@@ -1,4 +1,4 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnInit } from '@angular/core';
 import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { IPermanence } from '../../interfaces/ipermanence';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
@@ -14,6 +14,7 @@ export class ModalDaysPermanenceComponent implements OnInit {
   public personnel!:IApiPersonnel;
   public nbrApparition:number = 0;
   public months:IMonth[]= [];
+
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: {months:IMonth[], personnel:IApiPersonnel}) { }
 

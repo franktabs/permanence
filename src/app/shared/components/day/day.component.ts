@@ -29,11 +29,14 @@ export class DayComponent implements OnInit, OnChanges {
 
   // @Input() permanences!:IPermanence[] ;
   public date!: Date;
+
+  @Input()
+  public autorisation: 'WRITE' | 'READ' = 'WRITE';
   // @Input() feriers: Ferier[] = [];
   @Input() permanence!: IPermanence;
 
   @Input()
-  public personnel!:IApiPersonnel;
+  public personnel!: IApiPersonnel;
 
   public openModal: boolean = false;
 
@@ -51,8 +54,7 @@ export class DayComponent implements OnInit, OnChanges {
 
   public authRoles: RoleType[] = [];
 
-  public userAuth!:IApiPersonnel;
-
+  public userAuth!: IApiPersonnel;
 
   constructor(private auth: AuthService) {}
 
@@ -66,16 +68,16 @@ export class DayComponent implements OnInit, OnChanges {
       let thisPermanence: IPermanence = changes['permanence'].currentValue;
       this.date = new Date(thisPermanence.date);
       this.typeFerier = thisPermanence.type;
-      thisPermanence.personnels_jour?.sort((jour1, jour2)=>{
-        if(jour1.responsable && !jour2.responsable) return -1;
-        if(!jour1.responsable && jour2.responsable) return 1
-        return 0
-      })
-      thisPermanence.personnels_nuit?.sort((jour1, jour2)=>{
-        if(jour1.responsable && !jour2.responsable) return -1;
-        if(!jour1.responsable && jour2.responsable) return 1
-        return 0
-      })
+      thisPermanence.personnels_jour?.sort((jour1, jour2) => {
+        if (jour1.responsable && !jour2.responsable) return -1;
+        if (!jour1.responsable && jour2.responsable) return 1;
+        return 0;
+      });
+      thisPermanence.personnels_nuit?.sort((jour1, jour2) => {
+        if (jour1.responsable && !jour2.responsable) return -1;
+        if (!jour1.responsable && jour2.responsable) return 1;
+        return 0;
+      });
       this.ordinaire =
         this.date.getDay() != 0 &&
         this.date.getDay() != 6 &&
@@ -169,7 +171,10 @@ export class DayComponent implements OnInit, OnChanges {
   }
 
   handleClick(person: IApiPersonnel) {
-    if(this.authRoles.includes("VOIR PAGE ADMINISTRATEUR")){
+    if (
+      this.authRoles.includes('VOIR PAGE ADMINISTRATEUR') &&
+      this.autorisation == 'WRITE'
+    ) {
       this.row = person;
       // this.row = formatJSON<IApiPersonnel, IPersonnel>({
       //   obj: person,
@@ -192,17 +197,25 @@ export class DayComponent implements OnInit, OnChanges {
         if (absent.end) {
           if (
             absent.start <= this.permanence.date &&
-            this.permanence.date <= absent.end && absent.validate
+            this.permanence.date <= absent.end &&
+            absent.validate
           ) {
-            return "rouge";
-          } 
-          else if(absent.start <= this.permanence.date &&
-            this.permanence.date <= absent.end && absent.validate==null ) {
-              return "vert"
+            return 'rouge';
+          } else if (
+            absent.start <= this.permanence.date &&
+            this.permanence.date <= absent.end &&
+            absent.validate == null
+          ) {
+            return 'vert';
           }
         } else {
-          if (absent.start == this.permanence.date && absent.validate) return "rouge";
-          else if (absent.start == this.permanence.date && absent.validate==null) return "vert"
+          if (absent.start == this.permanence.date && absent.validate)
+            return 'rouge';
+          else if (
+            absent.start == this.permanence.date &&
+            absent.validate == null
+          )
+            return 'vert';
         }
       }
     }

@@ -4,30 +4,33 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import {IPersonnel} from '../../interfaces/ipersonnel';
-import {IHolidays} from '../../interfaces/iholidays';
-import {IAbsence} from '../../interfaces/iabsence';
-import {TypeAbsence, TypePersonnel} from '../../utils/types-map';
-import {IApiHoliday} from '../../interfaces/iapiholiday';
-import {IApiRemplacement} from '../../interfaces/iapiremplacement';
-import {MatDialog} from '@angular/material/dialog';
-import {ModalRoleComponent} from '../modal-role/modal-role.component';
-import {IRole} from '../../interfaces/irole';
-import {AuthService} from '../../services/auth.service';
-import {IPermanence} from '../../interfaces/ipermanence';
-import {IApiPersonnel} from '../../interfaces/iapipersonnel';
+import { IPersonnel } from '../../interfaces/ipersonnel';
+import { IHolidays } from '../../interfaces/iholidays';
+import { IAbsence } from '../../interfaces/iabsence';
+import { TypeAbsence, TypePersonnel } from '../../utils/types-map';
+import { IApiHoliday } from '../../interfaces/iapiholiday';
+import { IApiRemplacement } from '../../interfaces/iapiremplacement';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalRoleComponent } from '../modal-role/modal-role.component';
+import { IRole } from '../../interfaces/irole';
+import { AuthService } from '../../services/auth.service';
+import { IPermanence } from '../../interfaces/ipermanence';
+import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import axios from 'axios';
-import {ApiService} from '../../services/api.service';
-import {IPersonnelJour} from '../../interfaces/ipersonneljour';
-import {AlertService} from '../../services/alert.service';
-import {IPersonnelNuit} from '../../interfaces/ipersonnelNuit';
-import {IPlanning} from "../../interfaces/iplanning";
+import { ApiService } from '../../services/api.service';
+import { IPersonnelJour } from '../../interfaces/ipersonneljour';
+import { AlertService } from '../../services/alert.service';
+import { IPersonnelNuit } from '../../interfaces/ipersonnelNuit';
+import { IPlanning } from '../../interfaces/iplanning';
 import { ModalDaysPermanenceComponent } from '../modal-days-permanence/modal-days-permanence.component';
+import { Subject, takeUntil } from 'rxjs';
+import { LoaderService } from '../../services/loader.service';
 
 //modal utilisé pour afficher les informations sur une ressource
 // provenant d'un click sur une ligne du tableau
@@ -36,7 +39,7 @@ import { ModalDaysPermanenceComponent } from '../modal-days-permanence/modal-day
   templateUrl: './modal1.component.html',
   styleUrls: ['./modal1.component.scss'],
 })
-export class Modal1Component implements OnInit, OnChanges {
+export class Modal1Component implements OnInit, OnChanges, OnDestroy {
   @Input() isOpen!: boolean;
 
   @Output() isOpenChange: EventEmitter<boolean> = new EventEmitter();
@@ -57,21 +60,38 @@ export class Modal1Component implements OnInit, OnChanges {
 
   public openModalHoliday: boolean = false;
 
-  public planningList:IPlanning[] = [];
+  public planningList: IPlanning[] = [];
 
+  public destroy$: Subject<boolean> = new Subject();
 
   public infoAbsence: {
     keys: Array<keyof IApiRemplacement> | null;
     value: IApiRemplacement | null;
-  } = {keys: null, value: null};
+  } = { keys: null, value: null };
 
   constructor(
     public dialog: MatDialog,
     private auth: AuthService,
     private api: ApiService,
     private alert: AlertService,
-    private elementRef: ElementRef
-  ) {
+    private elementRef: ElementRef,
+    private loader:LoaderService
+  ) {}
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+  }
+
+  async initPlanningPersonnel(person: IApiPersonnel) {
+    this.loader.loader_modal$.next(true)
+    try{
+      let res = await axios.get(this.api.URL_PLANNINGS + '/personnel/' + person.id)
+      let planningData: IPlanning[] = res.data;
+        this.planningList = planningData;
+    }catch(e){
+      console.error("voici l'erreur")
+      this.alert.alertError();
+    }
+    this.loader.loader_modal$.next(false);
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -98,7 +118,7 @@ export class Modal1Component implements OnInit, OnChanges {
       //         plannings.push(planning);
       //       }
       //     }
-          
+
       //     this.planningList = plannings;
       //   })
       //   .catch((err) => {
@@ -109,18 +129,10 @@ export class Modal1Component implements OnInit, OnChanges {
       //     });
       //   });
 
-      axios.get(this.api.URL_PLANNINGS+'/personnel/'+person.id)
-        .then((res)=>{
-          let planningData:IPlanning[] = res.data;
-          this.planningList = planningData;
-        })
-        .catch((err)=>{
-          console.error("Voici l'erreur", err);
-          this.alert.alertMaterial({
-            message: "Une erreurs lors des recueils des données s'est produite",
-            title: 'error',
-          });
-        })
+      this.initPlanningPersonnel(person);
+      this.api.plannings$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
+        this.initPlanningPersonnel(person);
+      });
       // let personnels_jour = person.personnels_jour;
       // let personnels_nuit = person.personnels_nuit;
       // if(personnels_jour && personnels_jour.length){
@@ -208,7 +220,8 @@ export class Modal1Component implements OnInit, OnChanges {
   }
 
   closeModal() {
-    let headerModal = this.elementRef.nativeElement.querySelector('.see-modal1');
+    let headerModal =
+      this.elementRef.nativeElement.querySelector('.see-modal1');
     // for (let i = 0; i < headerModal.length; i++) {
     //   let elemt = headerModal[i];
     //   elemt.classList.remove('anim-scaleOut');
@@ -230,11 +243,11 @@ export class Modal1Component implements OnInit, OnChanges {
     });
   }
 
-  voirPlanning(planning:IPlanning){
-    console.log("Planning d'un personnel => ",planning)
+  voirPlanning(planning: IPlanning) {
+    console.log("Planning d'un personnel => ", planning);
     this.permanences = [];
     this.dialog.open(ModalDaysPermanenceComponent, {
-        data: {months:planning.months, personnel:this.rows}
-      })
+      data: { months: planning.months, personnel: this.rows },
+    });
   }
 }

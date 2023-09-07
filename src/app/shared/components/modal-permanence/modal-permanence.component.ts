@@ -37,7 +37,10 @@ export class ModalPermanenceComponent implements OnInit, OnChanges, OnDestroy {
 
   public options!: TypePersonnel[];
 
+  @Input() autorisation:"WRITE"|"READ" = "WRITE"
+
   @Input() permanence!: IPermanence;
+
 
   public formFerier: IPermanence['type'] = this.typeFerier;
   public formPersonnelJour: Array<TypePersonnel | string> = [];
@@ -313,9 +316,12 @@ export class ModalPermanenceComponent implements OnInit, OnChanges, OnDestroy {
           //   this.api.plannings$.next(subs || []);
           // });
 
-          response =  await axios.get(this.api.URL_PLANNINGS);
-          this.api.data.plannings = response.data || [];
-          this.api.plannings$.next(response.data || []);
+          if(this.autorisation=="READ"){
+
+            response =  await axios.get(this.api.URL_PLANNINGS);
+            this.api.data.plannings = response.data || [];
+            this.api.plannings$.next(response.data || []);
+          }
           
           this.refresh.emit(true);
           this.openChange.emit(false);

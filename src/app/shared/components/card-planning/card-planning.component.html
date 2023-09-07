@@ -24,8 +24,14 @@
                 </span>
             </ng-container>
             <ng-template #otherDisplay >
-                <div class="flex-fill d-flex justify-content-center flex-column gap-2 align-items-center" >
-                    <span class="color-bordeau" >Programmer  {{nbrAppartion}} fois </span> <button mat-raised-button color="btn-noir" (click)="handleClick()">Voir <i class="bi-eye bi"></i> </button> 
+                <div class="flex-fill d-flex justify-content-center flex-column gap-2 align-items-center" *ngIf="nbrAppartion, else zeroApparition" >
+                    <span class="color-bordeau" >Programmer  {{nbrAppartion || 0 }} fois </span> <button mat-raised-button color="btn-noir" (click)="handleClick()">Voir <i class="bi-eye bi"></i> </button> 
+                </div>
+                
+            </ng-template>
+            <ng-template #zeroApparition >
+                <div>
+                    <span class="fst-italic text-center" >Aucune appartion</span>
                 </div>
             </ng-template>
         </div>

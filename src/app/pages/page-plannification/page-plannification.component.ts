@@ -193,25 +193,22 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let dataPlanning = this.api.data.plannings;
 
     this.api.plannings$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
+      console.log("changement du planning in page-plannifications")
       this.api.data.plannings = subs;
       this.plannings = subs;
+      this.planningVisible = this.plannings[0];
       this.plannings.sort((planning1, planning2) => {
         if(this.planningVisible && this.planningVisible.id && planning1.id && this.planningVisible.id == planning1.id){
           this.planningVisible = planning1
         }
-        else if(this.planningVisible && this.planningVisible.id && planning1.id && this.planningVisible.id == planning2.id){
+        else if(this.planningVisible && this.planningVisible.id && planning2.id && this.planningVisible.id == planning2.id){
           this.planningVisible = planning2
         }
         return planning2.submissionDate.localeCompare(planning1.submissionDate);
       });
+      if(this.visiblePlanning && this.planningVisible){
 
-      if(this.planningVisible?.months)
-      for (let theMonth of this.planningVisible?.months) {
-        if (theMonth.permanences) {
-          theMonth.permanences.sort((permanence1, permanence2) => {
-            return permanence1.date.localeCompare(permanence2.date);
-          });
-        }
+        this.voirPlanning(this.planningVisible)
       }
 
     });
