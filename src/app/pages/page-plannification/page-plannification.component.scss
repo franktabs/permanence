@@ -1,7 +1,19 @@
+@import "colors";
 
 .planning{
     display: grid;
     grid-template-columns: repeat(7, 1fr);
+}
+
+.table1 {
+    width: 100%;
+    background-color: white;
+    padding: 1em;
+}
+
+.ligne2 {
+    background-color: black;
+    height: 2px;
 }
 
 .ligne{
@@ -15,4 +27,31 @@
     background-color: rgb(255, 255, 255);
     box-shadow: -5px 5px 1.5em #b3b3b3;
     border-radius: 1em
+}
+
+.mat-table {
+    width: 100%;
+}
+
+.icon-title {
+    font-size: 4em;
+}
+
+.mat-header-cell {
+    font-weight: bold;
+    font-size: 1em;
+    color: $bordeau-color;
+}
+
+.mat-row:hover {
+    cursor: pointer;
+    background-color: rgb(235, 235, 235);
+}
+
+.mat-row:active {
+    background-color: rgba(199, 199, 199, 0.973);
+}
+
+th.mat-sort-header-sorted {
+    color: $bordeau-color;
 }

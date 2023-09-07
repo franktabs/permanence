@@ -1,5 +1,6 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import axios from 'axios';
@@ -39,11 +40,17 @@ type Remplissage = {
   pointDate: number[];
 };
 
-type ApparitionPerson = {
-  departement: string,
-  firstname:string,
-  apparition:number
+type ApparitionPerson ={
+  [key in keyof IApiPersonnel | keyof OtherKey]? : key extends keyof IApiPersonnel?IApiPersonnel[key]:(key extends keyof OtherKey? OtherKey[key]:never)
 }
+
+
+
+type OtherKey = {
+  departements: string,
+  apparitions:number,
+}
+
 
 @Component({
   selector: 'app-page-plannification',
@@ -91,12 +98,31 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
   public authRoles: RoleType[] = [];
 
-  public displayedColumns: (keyof ApparitionPerson)[] = ["departement", "firstname", "apparition"];
+
+  public openModal: boolean = false;
+  public row: ApparitionPerson | null = null;
+
+
+  public displayedColumns: (keyof ApparitionPerson)[] = ["departements", "firstname","sexe", "apparitions"];
   
   public dataSource!:MatTableDataSource<ApparitionPerson>;
 
+  private _paginator!:MatPaginator;
+
 
   @ViewChild(MatSort) sort!: MatSort;
+
+  @ViewChild(MatPaginator, { static: false })
+  set paginator(value: MatPaginator) {
+    this._paginator = value;
+    if (this.dataSource) {
+      this.dataSource.paginator = value;
+    }
+  }
+
+  get paginator(){
+    return this._paginator;
+  }
 
 
   constructor(
@@ -170,8 +196,24 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       this.api.data.plannings = subs;
       this.plannings = subs;
       this.plannings.sort((planning1, planning2) => {
+        if(this.planningVisible && this.planningVisible.id && planning1.id && this.planningVisible.id == planning1.id){
+          this.planningVisible = planning1
+        }
+        else if(this.planningVisible && this.planningVisible.id && planning1.id && this.planningVisible.id == planning2.id){
+          this.planningVisible = planning2
+        }
         return planning2.submissionDate.localeCompare(planning1.submissionDate);
       });
+
+      if(this.planningVisible?.months)
+      for (let theMonth of this.planningVisible?.months) {
+        if (theMonth.permanences) {
+          theMonth.permanences.sort((permanence1, permanence2) => {
+            return permanence1.date.localeCompare(permanence2.date);
+          });
+        }
+      }
+
     });
 
     if (dataPlanning && dataPlanning.length) {
@@ -301,13 +343,14 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           let idPerson = person.id as number;
           let nbrAppartion = dataAppartion[idPerson];
           apparitions.push({
-            "departement": person.departement?.name||"non defini",
-            "firstname":person.firstname,
-            "apparition":nbrAppartion||0
+            ...person,
+            "departements": person.departement?.name||"non defini",
+            "apparitions":nbrAppartion||0
           })
         }
       this.dataSource = new MatTableDataSource(apparitions);
       this.dataSource.sort = this.sort;
+      this.dataSource.paginator = this.paginator;
 
       }
       catch(e){
@@ -1236,5 +1279,16 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     } else {
       this._liveAnnouncer.announce('Sorting cleared');
     }
+  }
+
+  public handleClick(row: ApparitionPerson) {
+    console.log('handle click row data ', row);
+
+    this.row = row;
+    this.openModal = true;
+
+    // this.dialog.open(UserInfoModalComponent, {
+    //   data: row
+    // })
   }
 }

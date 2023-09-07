@@ -30,6 +30,8 @@ import { TypePersonnel } from '../../utils/types-map';
 export class Table1Component
   implements AfterViewInit, OnDestroy, OnChanges, OnInit
 {
+
+
   public displayedColumns: Array<keyof TypePersonnel> = [
     'firstname',
     'sexe',
@@ -68,6 +70,8 @@ export class Table1Component
 
 
   @ViewChild(MatSort) sort!: MatSort;
+
+  
   // set sort(value: MatSort) {
   //   // if(!value){
   //     console.log("valeur de sort", value, )

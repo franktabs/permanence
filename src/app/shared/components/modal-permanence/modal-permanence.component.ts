@@ -21,6 +21,7 @@ import { AlertService } from '../../services/alert.service';
 import { LoaderService } from '../../services/loader.service';
 import axios from 'axios';
 import { Subject, takeUntil } from 'rxjs';
+import { IPlanning } from '../../interfaces/iplanning';
 
 @Component({
   selector: 'app-modal-permanence',
@@ -305,6 +306,17 @@ export class ModalPermanenceComponent implements OnInit, OnChanges, OnDestroy {
           this.permanence.type = this.formFerier;
           this.permanence.personnels_jour = personnel_jour;
           this.permanence.personnels_nuit = personnel_nuit;
+          // this.api
+          // .getAllData<IPlanning[] | undefined>({ for: 'plannings' })
+          // .subscribe((subs) => {
+          //   this.api.data.plannings = subs || [];
+          //   this.api.plannings$.next(subs || []);
+          // });
+
+          response =  await axios.get(this.api.URL_PLANNINGS);
+          this.api.data.plannings = response.data || [];
+          this.api.plannings$.next(response.data || []);
+          
           this.refresh.emit(true);
           this.openChange.emit(false);
 
