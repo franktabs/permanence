@@ -112,11 +112,22 @@ export class ModalPlanificationComponent implements OnInit {
       }
     }
 
+    let existResponsable:number[] = [];
+
     for(let responsable of this.responsableTFJ){
       if(!responsable || typeof responsable == "string"){
         return errors = true;
+      }else{
+        if(responsable.id && existResponsable.includes(responsable.id)){
+          return errors = true;
+        }
+        else if(responsable.id) {
+          existResponsable.push(responsable.id);
+        }
       }
     }
+
+
 
     for (let ferier of this.feriers) {
       if (!ferier.jour) {

@@ -82,7 +82,6 @@ export class Modal1Component implements OnInit, OnChanges, OnDestroy {
   }
 
   async initPlanningPersonnel(person: IApiPersonnel) {
-    this.loader.loader_modal$.next(true)
     try{
       let res = await axios.get(this.api.URL_PLANNINGS + '/personnel/' + person.id)
       let planningData: IPlanning[] = res.data;
@@ -91,7 +90,6 @@ export class Modal1Component implements OnInit, OnChanges, OnDestroy {
       console.error("voici l'erreur")
       this.alert.alertError();
     }
-    this.loader.loader_modal$.next(false);
   }
 
   ngOnChanges(changes: SimpleChanges): void {

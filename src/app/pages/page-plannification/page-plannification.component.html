@@ -34,8 +34,8 @@
         <span id="planning"></span>
         <div *ngIf="visiblePlanning && planningVisible && planningVisible.id "
             class="table1 shadow-by-material2 anim-slide-e my-5">
-
             <div>
+                <span class="d-none" >{{planningVisible && planningVisible.id && (!dataSource ) && voirPlanning(planningVisible)}}</span>
                 <app-modal1 [(isOpen)]="openModal" *ngIf="openModal" [rows]="row"></app-modal1>
                 <div class="ms-4 d-flex align-items-center gap-3">
                     <div class="icon-title"> <i class="bi bi-list-ol"></i> </div>

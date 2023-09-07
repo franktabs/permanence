@@ -189,13 +189,14 @@ export class CardPlanningComponent implements OnInit, OnChanges {
           }
         if (idPlanning) {
           this.planning.id = idPlanning;
+          
           let annonce: IAnnonce = {
             type: 'VALIDATION PLANNING',
             message: 'planning enregistrer',
             submissionDate: new Date().toISOString(),
             emetteur: { id: this.auth.user?.id as number },
           };
-
+          
           let response = await axios.post(this.api.URL_ANNONCES, annonce);
           if (response.data.id) {
             annonce = response.data;
