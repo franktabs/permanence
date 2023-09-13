@@ -1,0 +1,13 @@
+<h1 mat-dialog-title> <span [innerHTML]="iconTitle" ></span> {{data.titre}} </h1>
+<div mat-dialog-content>
+  <div class="d-flex flex-column gap-2 p-3" >
+    <div *ngFor="let cle of dataForm | keyvalue " >
+        <div> <label [for]="'add'+cle"> {{cle.key  | displayKey:"any" }} </label> </div>
+        <div> <input type="text" class="form-control">  </div>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button color="btn-bordeau"  > Confirmer <i class="bi bi-save" ></i> </button>
+</div>

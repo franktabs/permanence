@@ -23,6 +23,8 @@ export class DisplayKeyPipe implements PipeTransform {
       return "fin"
     } else if(val==="submissionDate"){
       return "Soumis le"
+    } else if(val=="firstname"){
+      return "Nom "
     }
 
     return value

@@ -7,6 +7,8 @@ export type OuputTypeCard1 = {
   title:string;
 }
 
+export type TitleCard1 = "Absences"|"Personnel"|"Remplacement";
+
 //Carte affiché à l'admin ou superviseur: Congé, Personnel, Absences
 
 @Component({
@@ -17,10 +19,16 @@ export type OuputTypeCard1 = {
 export class Card1Component implements OnInit {
 
   @Input()
-  public title!:string;
+  public title!:"Absences"|"Personnel"|"Remplacement";
 
   @Input()
   public icon!:string;
+
+  @Input()
+  public iconAdd!:string;
+
+  @Output()
+  public toAdd:EventEmitter<TitleCard1> = new EventEmitter();
 
   @Input()
   public date1!:Date;
@@ -39,6 +47,10 @@ export class Card1Component implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  public handleAdd(titre:TitleCard1){
+    this.toAdd.emit(titre);
   }
 
 }

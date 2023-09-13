@@ -3,7 +3,7 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject, map, takeUntil, tap } from 'rxjs';
-import { OuputTypeCard1 } from 'src/app/shared/components/card1/card1.component';
+import { OuputTypeCard1, TitleCard1 } from 'src/app/shared/components/card1/card1.component';
 import { IApiRemplacement } from 'src/app/shared/interfaces/iapiremplacement';
 import { IApiDirection } from 'src/app/shared/interfaces/iapidirection';
 import { IApiHoliday } from 'src/app/shared/interfaces/iapiholiday';
@@ -22,6 +22,9 @@ import {
 } from 'src/app/shared/utils/function';
 import { mapDirection, mapPersonnel } from 'src/app/shared/utils/tables-map';
 import { TypeDirection, TypePersonnel } from 'src/app/shared/utils/types-map';
+import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
+import { DataDialogModalFormModelComponent, ModalFormModelComponent } from 'src/app/shared/components/modal-form-model/modal-form-model.component';
+import { OptionalKey, OptionalKeyString } from 'src/app/shared/utils/type';
 
 interface IApiPerson {
   name: string;
@@ -91,7 +94,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     return this._paginator;
   }
 
-  constructor(private api: ApiService, private auth: AuthService) {}
+  constructor(private api: ApiService, private auth: AuthService, private dialog:MatDialog) {}
 
   public set data_apiPersonnels(value: TypePersonnel[] | null) {
     this._data_apiPersonnels = value;
@@ -283,6 +286,17 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       apiFormat
     );
   }
+
+
+  addModel(titre:TitleCard1){
+    if(titre=="Personnel"){
+      console.log("ajouter un utilisateur");
+      let newPerson:OptionalKeyString<IApiPersonnel> = {firstname:"", sexe:"M", "emailaddress":"", "organizationId":undefined, }
+      this.dialog.open<ModalFormModelComponent, DataDialogModalFormModelComponent>(ModalFormModelComponent, {data:{titre:titre, dataForm:newPerson}});
+     
+    }
+  }
+
 }
 
 // export function maValidation(

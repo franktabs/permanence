@@ -59,6 +59,7 @@ import { ModalAbsenceComponent } from './shared/components/modal-absence/modal-a
 import { ModalHolidayComponent } from './shared/components/modal-holiday/modal-holiday.component';
 import { PageParameterComponent } from './pages/page-parameter/page-parameter.component';
 import { ModalDaysPermanenceComponent } from './shared/components/modal-days-permanence/modal-days-permanence.component';
+import { ModalFormModelComponent } from './shared/components/modal-form-model/modal-form-model.component';
 
 
 registerLocaleData(localeFr)
@@ -107,7 +108,8 @@ registerLocaleData(localeFr)
     ModalAbsenceComponent,
     ModalHolidayComponent,
     PageParameterComponent,
-    ModalDaysPermanenceComponent
+    ModalDaysPermanenceComponent,
+    ModalFormModelComponent
   ],
   imports: [
     BrowserModule,
