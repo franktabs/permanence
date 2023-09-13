@@ -4,10 +4,10 @@ import { LoaderService } from '../../services/loader.service';
 
 export type OuputTypeCard1 = {
   icon:string;
-  title:string;
+  title:TitleCard1;
 }
 
-export type TitleCard1 = "Absences"|"Personnel"|"Remplacement";
+export type TitleCard1 = "Absences"|"Personnel"|"Remplacement"|"";
 
 //Carte affiché à l'admin ou superviseur: Congé, Personnel, Absences
 

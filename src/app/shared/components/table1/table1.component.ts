@@ -22,6 +22,7 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatDialog } from '@angular/material/dialog';
 import { UserInfoModalComponent } from '../modals/user-info-modal/user-info-modal.component';
 import { TypePersonnel } from '../../utils/types-map';
+import { TitleCard1 } from '../card1/card1.component';
 @Component({
   selector: 'app-table1',
   templateUrl: './table1.component.html',
@@ -48,9 +49,17 @@ export class Table1Component
   private _paginator!:MatPaginator;
 
   @Input() icon!: string;
-  @Input() title!: string;
+  @Input() title!: TitleCard1;
   @Input() personnels: TypePersonnel[] | null = null;
   @Input() search: string = '';
+
+
+  @Input()
+  public iconAdd!:string;
+
+  @Output()
+  public toAdd:EventEmitter<TitleCard1> = new EventEmitter();
+
 
   private destroy$!: Subject<boolean>;
 
@@ -155,4 +164,10 @@ export class Table1Component
     console.log('element à filtrer', item, 'avec la chaine', filterValue);
     return Object.values(item).includes(filterValue);
   }
+
+
+  public handleAdd(titre:TitleCard1){
+    this.toAdd.emit(titre);
+  }
+
 }

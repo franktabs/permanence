@@ -5,15 +5,25 @@
             <div class="icon-title" [innerHTML]="icon"></div>
             <h1>{{title}}</h1>
         </div>
+        <div class="d-flex justify-content-end align-items-center p-2" *ngIf="iconAdd">
+            <button mat-raised-button color="btn-noir" (click)="handleAdd(title)">
+                <div class="d-flex justify-content-end align-items-center gap-2">
+                    <span [innerHTML]="iconAdd" class="fs-3 actionIcon"> </span>
+                    <span>Ajouter un personnel</span>
+                </div>
+            </button>
+        </div>
         <div class="ligne"></div>
-        <div >
+        <div>
             <div class="table-responsive">
-                <table mat-table [dataSource]="dataSource"  matSort (matSortChange)="announceSortChange($event)">
+                <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
 
                     <ng-container matColumnDef="firstname">
                         <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by firstname"
                             class="px-4">Nom</th>
-                        <td mat-cell *matCellDef="let element" class="px-4"> <div class="w-max-content ">{{element.firstname}}</div> </td>
+                        <td mat-cell *matCellDef="let element" class="px-4">
+                            <div class="w-max-content ">{{element.firstname}}</div>
+                        </td>
                     </ng-container>
 
                     <ng-container matColumnDef="sexe">
@@ -24,8 +34,8 @@
                     </ng-container>
 
                     <ng-container matColumnDef="emailaddress">
-                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by emailaddress"
-                            class="px-4">Email</th>
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header
+                            sortActionDescription="Sort by emailaddress" class="px-4">Email</th>
                         <td mat-cell *matCellDef="let element" class="px-4"> {{element.emailaddress}} </td>
                     </ng-container>
 
@@ -42,8 +52,8 @@
                             class="px-4">
                             Service
                         </th>
-                        <td mat-cell *matCellDef="let element" class="px-4"> 
-                            <div class="w-max-content "> {{element.service}} </div>    
+                        <td mat-cell *matCellDef="let element" class="px-4">
+                            <div class="w-max-content "> {{element.service}} </div>
                         </td>
                     </ng-container>
 

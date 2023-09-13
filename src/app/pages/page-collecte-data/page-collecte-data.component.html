@@ -36,7 +36,7 @@
             <app-card1 title="Absences" (click)="getPersonnelsHoliday()" [date1]="date1Conge" [date2]="date2Conge"
                 icon="<i class='bi bi-calendar-week' ></i>"  (theIcon)="putInActiveIcon($event)"></app-card1>
             <app-card1 title="Personnel" [date1]="date1Conge" (click)="getPersonnelsDirection()" [date2]="date2Conge"
-                icon="<i class='bi bi-person-lines-fill' ></i>" iconAdd="<i class='bi bi-person-fill-add'></i>" (toAdd)="addModel($event)" (theIcon)="putInActiveIcon($event)"></app-card1>
+                icon="<i class='bi bi-person-lines-fill' ></i>"  (theIcon)="putInActiveIcon($event)"></app-card1>
             <app-card1 title="Remplacement" (click)="getPersonnelsAbsence()" [date1]="date1Conge" [date2]="date2Conge"
                 icon="<i class='bi bi-calendar-day' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
         </div>
@@ -52,7 +52,8 @@
             </div>
             <div class="d-flex">
                 <app-table1 [icon]="toTable1.icon" [title]="toTable1.title" class="app-table1 mx-3"
-                    [personnels]="data_apiPersonnels" [search]="search"></app-table1>
+                    [personnels]="data_apiPersonnels" [search]="search" iconAdd="<i class='bi bi-person-fill-add'></i>" (toAdd)="addModel($event)" >
+                </app-table1>
 
                 <div class="d-flex flex-column">
                     <app-card2 title="Evenements" class="evenement largeur"></app-card2>

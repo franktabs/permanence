@@ -5,7 +5,7 @@ import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { OptionalKey, OptionalKeyString } from '../../utils/type';
 
 
-export type DataDialogModalFormModelComponent = {titre:TitleCard1, dataForm:OptionalKeyString<IApiPersonnel>} 
+export type DataDialogModalFormModelComponent = {titre:TitleCard1, dataForm:OptionalKeyString<IApiPersonnel>, icon:string } 
 
 @Component({
   selector: 'app-modal-form-model',
@@ -14,13 +14,14 @@ export type DataDialogModalFormModelComponent = {titre:TitleCard1, dataForm:Opti
 })
 export class ModalFormModelComponent implements OnInit {
 
-  @Input() iconTitle!:string;
+  public iconTitle!:string;
 
   public dataForm:OptionalKeyString<IApiPersonnel>;
 
 
   constructor(public dialogRef: MatDialogRef<ModalFormModelComponent>, @Inject(MAT_DIALOG_DATA) public data : DataDialogModalFormModelComponent) { 
     this.dataForm = data.dataForm;
+    this.iconTitle = data.icon;
   }
 
   ngOnInit(): void {

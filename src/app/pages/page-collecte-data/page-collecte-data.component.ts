@@ -292,7 +292,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     if(titre=="Personnel"){
       console.log("ajouter un utilisateur");
       let newPerson:OptionalKeyString<IApiPersonnel> = {firstname:"", sexe:"M", "emailaddress":"", "organizationId":undefined, }
-      this.dialog.open<ModalFormModelComponent, DataDialogModalFormModelComponent>(ModalFormModelComponent, {data:{titre:titre, dataForm:newPerson}});
+      this.dialog.open<ModalFormModelComponent, DataDialogModalFormModelComponent>(ModalFormModelComponent, {data:{titre:titre, dataForm:newPerson, icon:"<i class='bi bi-person-fill-add'></i>"}});
      
     }
   }
