@@ -1,9 +1,19 @@
-import { Component, OnChanges, OnDestroy, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnChanges,
+  OnDestroy,
+  OnInit,
+  SimpleChanges,
+  ViewChild,
+} from '@angular/core';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatTableDataSource } from '@angular/material/table';
 import { Subject, map, takeUntil, tap } from 'rxjs';
-import { OuputTypeCard1, TitleCard1 } from 'src/app/shared/components/card1/card1.component';
+import {
+  OuputTypeCard1,
+  TitleCard1,
+} from 'src/app/shared/components/card1/card1.component';
 import { IApiRemplacement } from 'src/app/shared/interfaces/iapiremplacement';
 import { IApiDirection } from 'src/app/shared/interfaces/iapidirection';
 import { IApiHoliday } from 'src/app/shared/interfaces/iapiholiday';
@@ -23,8 +33,13 @@ import {
 import { mapDirection, mapPersonnel } from 'src/app/shared/utils/tables-map';
 import { TypeDirection, TypePersonnel } from 'src/app/shared/utils/types-map';
 import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
-import { DataDialogModalFormModelComponent, ModalFormModelComponent } from 'src/app/shared/components/modal-form-model/modal-form-model.component';
+import {
+  DataDialogModalFormModelComponent,
+  ModalFormModelComponent,
+} from 'src/app/shared/components/modal-form-model/modal-form-model.component';
 import { OptionalKey, OptionalKeyString } from 'src/app/shared/utils/type';
+import axios from 'axios';
+import { LoaderService } from 'src/app/shared/services/loader.service';
 
 interface IApiPerson {
   name: string;
@@ -76,11 +91,11 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   public isTableFilter: boolean = false;
   public userAuth!: TypePersonnel | null;
   public destroy$!: Subject<boolean>;
-  public dataSource: MatTableDataSource<TypePersonnel> = new MatTableDataSource<TypePersonnel>([]);
-  public search:string = "";
+  public dataSource: MatTableDataSource<TypePersonnel> =
+    new MatTableDataSource<TypePersonnel>([]);
+  public search: string = '';
 
-  private _paginator!:MatPaginator;
-
+  private _paginator!: MatPaginator;
 
   @ViewChild(MatPaginator, { static: false })
   set paginator(value: MatPaginator) {
@@ -89,20 +104,24 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     }
   }
 
-
-  get paginator(){
+  get paginator() {
     return this._paginator;
   }
 
-  constructor(private api: ApiService, private auth: AuthService, private dialog:MatDialog) {}
+  constructor(
+    private api: ApiService,
+    private auth: AuthService,
+    private dialog: MatDialog,
+    private loader:LoaderService
+  ) {}
 
   public set data_apiPersonnels(value: TypePersonnel[] | null) {
     this._data_apiPersonnels = value;
-    
+
     if (this._data_apiPersonnels && this.allPersonnels) {
       this.dataSource.data = this._data_apiPersonnels;
       this.dataSource.paginator = this.paginator;
-      console.log("DataSource =>", this.dataSource)
+      console.log('DataSource =>', this.dataSource);
       if (this._data_apiPersonnels.length < this.allPersonnels.length) {
         this.isTableFilter = true;
       } else {
@@ -155,7 +174,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   public getPersonnelsHoliday() {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
-        let unkHolidays: IApiHoliday[] = items.vacancies as any
+        let unkHolidays: IApiHoliday[] = items.vacancies as any;
         if (unkHolidays) {
           for (let holiday of unkHolidays) {
             if (holiday?.start) {
@@ -190,7 +209,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     if (this.data_apiPersonnels) {
       let personnelsHoliday = this.data_apiPersonnels.filter((items) => {
         let isTake = false;
-        let unkAbsences:IApiRemplacement[] = items.absentList as any
+        let unkAbsences: IApiRemplacement[] = items.absentList as any;
         if (unkAbsences) {
           for (let oneAbsence of unkAbsences) {
             if (oneAbsence.start) {
@@ -213,8 +232,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   }
 
   ngOnInit(): void {
-
-    scrollToDiv("body")
+    scrollToDiv('body');
 
     this.monTest();
     this.userAuth = this.auth.user;
@@ -222,41 +240,43 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     console.log(this.date1Conge, this.date2Conge);
     this.toTable1.icon = "<i class='bi bi-person-lines-fill' ></i>";
     this.toTable1.title = 'Personnel';
-    
+
     let existPersonnel = false;
 
-    if(this.api.data["personnels"] && this.api.data.personnels.length){
-      console.log("condition d'existence vérifié")
-      existPersonnel=true;
+    if (this.api.data['personnels'] && this.api.data.personnels.length) {
+      console.log("condition d'existence vérifié");
+      existPersonnel = true;
       let allUserPersonnel = this.api.data.personnels;
       this.allPersonnels = allUserPersonnel;
       this.data_apiPersonnels = allUserPersonnel;
       this.allUsers = allUserPersonnel;
     }
 
-    this.api.personnels$.subscribe((subs)=>{
-      this.api.data["personnels"] = subs
+    this.api.personnels$.subscribe((subs) => {
+      this.api.data['personnels'] = subs;
       let allUserPersonnel = subs;
       this.allPersonnels = allUserPersonnel;
       this.data_apiPersonnels = allUserPersonnel;
       this.allUsers = allUserPersonnel;
-    })
+    });
 
     this.api
       .getAllData<IApiDirection[]>({ for: 'directions' })
       .subscribe((obs) => {
-        
-        this.data_apiDirections = mapJSON<IApiDirection, IDirection>(obs || [], mapDirection);
+        this.data_apiDirections = mapJSON<IApiDirection, IDirection>(
+          obs || [],
+          mapDirection
+        );
       });
-    
-    if(!existPersonnel){
-      console.log("condition d'existence non vérifié")
+
+    if (!existPersonnel) {
+      console.log("condition d'existence non vérifié");
       this.api
         .getAllData<IApiPersonnel[]>({ for: 'personnels' })
         .subscribe((subs) => {
           // let dataMap = mapJSON<IApiPersonnel, IPersonnel>(obs, mapPersonnel)
           this.api.data.personnels = subs || [];
-          this.api.personnels$.next(subs || [] );
+          this.api.personnels$.next(subs || []);
         });
     }
   }
@@ -269,7 +289,6 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       this.dataSource.paginator = this.paginator;
     }
   }
-
 
   monTest() {
     let correspondance: TypeFormatJSON<IApiPerson, IPerson>['correspondance'] =
@@ -287,16 +306,49 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
+  async addModel(titre: TitleCard1) {
+    if (titre == 'Personnel') {
+      console.log('ajouter un utilisateur');
+      this.loader.loader_modal$.next(true)
+      try{
+        
+        let response = await axios.get(this.api.URL_PERSONNELS+"/min-userId")
+        let personnelMinUserId : IApiPersonnel = response.data;
+        let minUserId = personnelMinUserId.userId;
+        if(minUserId>=0){
+          minUserId = -1;
+        }else{
+          minUserId -= 1;
+        }
 
-  addModel(titre:TitleCard1){
-    if(titre=="Personnel"){
-      console.log("ajouter un utilisateur");
-      let newPerson:OptionalKeyString<IApiPersonnel> = {firstname:"", sexe:"M", "emailaddress":"", "organizationId":undefined, }
-      this.dialog.open<ModalFormModelComponent, DataDialogModalFormModelComponent>(ModalFormModelComponent, {data:{titre:titre, dataForm:newPerson, icon:"<i class='bi bi-person-fill-add'></i>"}});
-     
+        let newPerson: OptionalKeyString<IApiPersonnel> = {
+          firstname: '',
+          sexe: 'M',
+          emailaddress: '',
+          organizationId: undefined,
+          userId: minUserId
+        };
+        console.log("nouvelle personne ", newPerson);
+        this.dialog.open<
+          ModalFormModelComponent,
+          DataDialogModalFormModelComponent
+        >(ModalFormModelComponent, {
+          data: {
+            titre: titre,
+            dataForm: newPerson,
+            icon: "<i class='bi bi-person-fill-add'></i>",
+          },
+        });
+        
+      }catch(e){
+        console.error("voici l'erreur ", e)
+      }
+
+      
+
+      this.loader.loader_modal$.next(false);
     }
   }
-
 }
 
 // export function maValidation(
