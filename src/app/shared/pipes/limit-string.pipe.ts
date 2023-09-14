@@ -4,7 +4,7 @@ import { Pipe, PipeTransform } from '@angular/core';
   name: 'limitString',
 })
 export class LimitStringPipe implements PipeTransform {
-  transform(chaine: string, n: number): string {
+  transform(chaine: string, n: number = 10): string {
     if (chaine.length <= n) {
       return chaine;
     } else {

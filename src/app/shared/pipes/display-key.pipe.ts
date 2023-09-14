@@ -25,7 +25,9 @@ export class DisplayKeyPipe implements PipeTransform {
       return "Soumis le"
     } else if(val=="firstname"){
       return "Nom "
-    } 
+    }  else if(val =="emailaddress"){
+      return "Email"
+    }
 
     return value
   }

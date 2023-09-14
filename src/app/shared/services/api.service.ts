@@ -74,6 +74,7 @@ export class ApiService {
   public URL_ANNONCES = this.IP + '/annonce';
   public URL_NOTIFICATIONS = this.IP + '/notification';
   public URL_PARAMETERS = this.IP + '/parameter';
+  public URL_DEPARTEMENTS = this.IP + '/departement';
 
   // public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
   // public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
@@ -108,6 +109,7 @@ export class ApiService {
     this.URL_ANNONCES = this.IP + '/annonce';
     this.URL_NOTIFICATIONS = this.IP + '/notification';
     this.URL_PARAMETERS = this.IP + '/parameter';
+    this.URL_DEPARTEMENTS = this.IP + '/departement';
   }
 
   public postData<T>(url: string, data: T): Observable<T> {
