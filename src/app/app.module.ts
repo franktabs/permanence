@@ -60,6 +60,7 @@ import { ModalHolidayComponent } from './shared/components/modal-holiday/modal-h
 import { PageParameterComponent } from './pages/page-parameter/page-parameter.component';
 import { ModalDaysPermanenceComponent } from './shared/components/modal-days-permanence/modal-days-permanence.component';
 import { ModalFormModelComponent } from './shared/components/modal-form-model/modal-form-model.component';
+import { ValidationService } from './shared/services/validation.service';
 
 
 registerLocaleData(localeFr)
@@ -121,7 +122,7 @@ registerLocaleData(localeFr)
     ReactiveFormsModule,
     
   ],
-  providers: [ApiService, AuthService, AuthGuard, LoadDataGuard, LoaderService,AlertService, {provide: LOCALE_ID, useValue:"fr-FR"}],
+  providers: [ValidationService,ApiService, AuthService, AuthGuard, LoadDataGuard, LoaderService,AlertService, {provide: LOCALE_ID, useValue:"fr-FR"}],
   bootstrap: [AppComponent]
 })
 export class AppModule {

@@ -5,28 +5,45 @@
 <div mat-dialog-content>
   <form [formGroup]="myFormGroup" novalidate>
     <div class="d-flex flex-column gap-2 p-1">
-      <div *ngFor="let cle of dataForm | keyvalue">
-        <ng-container *ngIf="isSimpleInput(cle.key); else otherInput">
+      <div *ngFor="let cle of keyDataForm ">
+        <ng-container *ngIf="isSimpleInput(cle); else otherInput">
           <div>
-            <label [for]="'add' + cle.key" class="text-uppercase fw-bold">
-              {{ cle.key | displayKey : "any" }}
+            <label [for]="'add' + cle" class="text-uppercase fw-bold">
+              {{ cle | displayKey : "any" }}
             </label>
           </div>
           <div>
             <input
               type="text"
               class="form-control py-2"
-              [formControlName]="cle.key"
-              [id]="'id' + cle.key"
+              [formControlName]="cle"
+              [id]="'id' + cle"
+
+              [ngClass]="{
+                'is-invalid':
+                  myFormGroup &&
+                  myFormGroup.controls[cle] &&
+                  myFormGroup.controls[cle].invalid &&
+                  myFormGroup.controls[cle].touched
+              }"
             />
+            <div class="invalid-feedback">
+              <div
+                *ngIf="
+                  getError(cle);
+                "
+              >
+                Ce champs est obligatoire
+              </div>
+            </div>
           </div>
         </ng-container>
         <ng-template #otherInput>
-          <ng-container [ngSwitch]="cle.key">
+          <ng-container [ngSwitch]="cle">
             <ng-container *ngSwitchCase="'emailaddress'">
               <div>
-                <label [for]="'add' + cle.key" class="text-uppercase fw-bold">
-                  {{ cle.key | displayKey : "any" }}
+                <label [for]="'add' + cle" class="text-uppercase fw-bold">
+                  {{ cle | displayKey : "any" }}
                 </label>
               </div>
               <div>
@@ -40,8 +57,8 @@
                       myFormGroup.controls['emailaddress'].touched
                   }"
                   class="form-control py-2"
-                  [formControlName]="cle.key"
-                  [id]="'id' + cle.key"
+                  [formControlName]="cle"
+                  [id]="'id' + cle"
                 />
                 <div class="invalid-feedback">
                   <div
@@ -66,7 +83,7 @@
             <ng-container *ngSwitchCase="'sexe'">
               <div>
                 <label class="text-uppercase fw-bold">
-                  {{ cle.key | displayKey : "any" }}
+                  {{ cle | displayKey : "any" }}
                 </label>
               </div>
               <div class="d-flex gap-2 align-items-center">
@@ -98,7 +115,7 @@
             </ng-container>
             <ng-container *ngSwitchCase="'organizationId'">
               <div>
-                <label [for]="'add' + cle.key" class="text-uppercase fw-bold">
+                <label [for]="'add' + cle" class="text-uppercase fw-bold">
                   {{ titre == "PERSONNEL" ? "Departement" : "Direction" }}
                 </label>
               </div>
@@ -106,7 +123,7 @@
                 <select
                 class="form-select"
                 aria-label="Default select example"
-                [formControlName]="cle.key"
+                [formControlName]="cle"
               >
                 <option *ngIf="departementRequest.hasLoading()">
                   Chargement ...
@@ -121,12 +138,12 @@
                   >
                     {{
                       departement.name || "problème rencontré"
-                        | limitString : 30
+                        | limitString : 30 | uppercase
                     }}
                   </option>
                 </ng-container>
               </select>
-              <span> <i class="bi bi-plus-circle color-bleu"></i> </span>
+              <span (click)="addOtherFor(titre)" class="cursor-pointer"  > <i class="bi bi-plus-circle color-bleu"></i> </span>
               </div>
             </ng-container>
           </ng-container>

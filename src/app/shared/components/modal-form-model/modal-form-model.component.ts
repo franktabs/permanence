@@ -1,5 +1,5 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { TitleCard1 } from '../card1/card1.component';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { OptionalKey, OptionalKeyString } from '../../utils/type';
@@ -10,96 +10,166 @@ import { ApiService } from '../../services/api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IApiDirection } from '../../interfaces/iapidirection';
 import DirectionRequest from '../../models/model-request/DirectionRequest';
+import { LoaderService } from '../../services/loader.service';
+import { AlertService } from '../../services/alert.service';
 
+export type DataDialogModalFormModelComponent = {
+  titre: TitleModalForm;
+  dataForm: OptionalKeyString<IApiDepartement | IApiDirection | IApiPersonnel>;
+  icon: string;
+};
 
-export type DataDialogModalFormModelComponent = {titre:TitleModalForm, dataForm:OptionalKeyString<IApiDepartement| IApiDirection| IApiPersonnel>, icon:string };
+export type TitleModalForm = 'DIRECTION' | 'DEPARTEMENT' | 'PERSONNEL';
 
-export type TitleModalForm = "DIRECTION"|"DEPARTEMENT"|"PERSONNEL";
-
-const VIEW_INPUT:Array<keyof OptionalKeyString<IApiPersonnel>> = ["emailaddress", "firstname", "sexe", "organizationId"];
+const VIEW_INPUT: Array<keyof DataDialogModalFormModelComponent["dataForm"]> = [
+  'emailaddress',
+  'firstname',
+  'sexe',
+  'organizationId',
+  "name"
+];
 
 @Component({
   selector: 'app-modal-form-model',
   templateUrl: './modal-form-model.component.html',
-  styleUrls: ['./modal-form-model.component.scss']
+  styleUrls: ['./modal-form-model.component.scss'],
 })
 export class ModalFormModelComponent implements OnInit {
+  public iconTitle!: string;
 
-  public iconTitle!:string;
+  public dataForm: DataDialogModalFormModelComponent['dataForm'];
 
-  public dataForm:DataDialogModalFormModelComponent['dataForm'];
+  public dataViewHtml!: any;
 
+  public departementRequest: DepartementRequest<IApiDepartement[]> =
+    new DepartementRequest([]);
 
-  public dataViewHtml!:any;
+  public directionRequest: DirectionRequest<IApiDirection[]> =
+    new DirectionRequest([]);
 
-  public departementRequest:DepartementRequest<IApiDepartement[]> = new DepartementRequest([]);
+  public typeInput: { simple: Array<(typeof VIEW_INPUT)[number]> } = {
+    simple: ['firstname', "name"],
+  };
 
-  public directionRequest : DirectionRequest<IApiDirection[]> = new DirectionRequest([])
+  public keyDataForm!:(keyof typeof this.dataForm)[];
 
-  public typeInput:{simple:Array<typeof VIEW_INPUT[number]>} = {simple:["firstname" ]};
+  public myFormGroup!: FormGroup;
 
-  public myFormGroup!:FormGroup;
+  public titre!: TitleModalForm;
 
-  public titre!:TitleModalForm;
+  constructor(
+    public dialogRef: MatDialogRef<ModalFormModelComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: DataDialogModalFormModelComponent,
+    public api: ApiService,
+    public formBuilder: FormBuilder,
+    public loader:LoaderService,
+    private dialog: MatDialog,
+    private alert: AlertService
 
-
-  constructor(public dialogRef: MatDialogRef<ModalFormModelComponent>, @Inject(MAT_DIALOG_DATA) public data : DataDialogModalFormModelComponent, public api:ApiService, public formBuilder:FormBuilder) { 
+  ) {
     this.dataForm = data.dataForm;
     this.iconTitle = data.icon;
     this.titre = data.titre;
-
-    
   }
 
   ngOnInit(): void {
+    this.keyDataForm = Object.keys(this.dataForm) as any;
+    let elemntGroup: { [key in keyof typeof this.dataForm]: any } = {};
 
-    let elemntGroup: {[key in keyof typeof this.dataForm]: any} = {};
-    
-    for(let key in this.dataForm){
-      let cle:keyof typeof this.dataForm = key as any;
-      if(cle=="emailaddress"){
-        elemntGroup.emailaddress = [this.dataForm.emailaddress, Validators.compose([Validators.email, Validators.required])]
-      }else {
-        elemntGroup[cle] = [this.dataForm[cle], Validators.required]
+    for (let key in this.dataForm) {
+      let cle: keyof typeof this.dataForm = key as any;
+      if (cle == 'emailaddress') {
+        elemntGroup.emailaddress = [
+          this.dataForm.emailaddress,
+          Validators.compose([Validators.email, Validators.required]),
+        ];
+      } else {
+        elemntGroup[cle] = [this.dataForm[cle], Validators.required];
       }
     }
     this.myFormGroup = this.formBuilder.group(elemntGroup);
     this.dataViewHtml = JSON.parse(JSON.stringify(this.dataForm));
-    if((<(keyof OptionalKeyString<IApiPersonnel>)[]>Object.keys(this.dataForm)).includes("organizationId") && this.titre=="PERSONNEL"){
+    if (
+      (<(keyof OptionalKeyString<IApiPersonnel>)[]>(
+        Object.keys(this.dataForm)
+      )).includes('organizationId') &&
+      this.titre == 'PERSONNEL'
+    ) {
       this.initDepartementList();
     }
   }
 
-  onNoClick(){
-    this.dialogRef.close()
+  onNoClick() {
+    this.dialogRef.close();
   }
 
-  isSimpleInput(key:string){
+  isSimpleInput(key: string) {
     return this.typeInput.simple.includes(key as any);
   }
 
-  async  initDepartementList(){
-    try{
+  async initDepartementList() {
+    try {
       this.departementRequest.loading();
       let response = await axios.get(this.api.URL_DEPARTEMENTS);
-      if(response.data){
+      if (response.data) {
         this.departementRequest.data = response.data;
         this.departementRequest.success();
       }
-    }catch(e){
-      console.error("voici l'erreur ", e );
+    } catch (e) {
+      console.error("voici l'erreur ", e);
       this.departementRequest.error();
     }
   }
 
-  enregistrer(){
-    console.log(this.myFormGroup.value);
+  async enregistrer() {
+    if(this.titre=="PERSONNEL"){
+      let datas:IApiPersonnel = this.myFormGroup.value;
+      this.loader.loader_modal$.next(true)
+      try{
+        let response = await axios.post(this.api.URL_PERSONNELS+"/config-actualise", [datas]);
+        console.log("personne sauvegarder",response.data);
+      } catch(e){
+        console.error("voici l'erreur ", e)
+        this.alert.alertError();
+      }
+
+      this.loader.loader_modal$.next(false)
+    }
   }
 
-  testEmail():boolean{
+  testEmail(): boolean {
     let result = this.myFormGroup.controls['emailaddress'];
-    console.log("le champs email est ", result);
+    console.log('le champs email est ', result);
     return !!result;
   }
 
+  addOtherFor(titre: TitleModalForm) {
+    if (titre == 'PERSONNEL') {
+      this.loader.loader_modal$.next(true)
+      let newDepartement: OptionalKeyString<IApiDepartement> = {
+        name: '',
+        parentorganizationId: undefined,
+        organizationId:-1
+      };
+      console.log("nouvelle personne ", newDepartement);
+        this.dialog.open<
+          ModalFormModelComponent,
+          DataDialogModalFormModelComponent
+        >(ModalFormModelComponent, {
+          data: {
+            titre: "DEPARTEMENT",
+            dataForm: newDepartement,
+            icon: "<i class='bi bi-building-add'></i>",
+          },
+        });
+      this.loader.loader_modal$.next(false)
+    }
+  }
+
+  getError(cle:string):boolean{
+    return (this.myFormGroup &&
+    this.myFormGroup.controls[cle].errors &&
+    //@ts-ignore
+    this.myFormGroup.controls[cle].errors['required'])
+  }
 }
