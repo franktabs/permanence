@@ -8,9 +8,13 @@ import DepartementRequest from '../../models/model-request/DepartementRequest';
 import axios from 'axios';
 import { ApiService } from '../../services/api.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IApiDirection } from '../../interfaces/iapidirection';
+import DirectionRequest from '../../models/model-request/DirectionRequest';
 
 
-export type DataDialogModalFormModelComponent = {titre:TitleCard1, dataForm:OptionalKeyString<IApiPersonnel>, icon:string } 
+export type DataDialogModalFormModelComponent = {titre:TitleModalForm, dataForm:OptionalKeyString<IApiDepartement| IApiDirection| IApiPersonnel>, icon:string };
+
+export type TitleModalForm = "DIRECTION"|"DEPARTEMENT"|"PERSONNEL";
 
 const VIEW_INPUT:Array<keyof OptionalKeyString<IApiPersonnel>> = ["emailaddress", "firstname", "sexe", "organizationId"];
 
@@ -23,21 +27,26 @@ export class ModalFormModelComponent implements OnInit {
 
   public iconTitle!:string;
 
-  public dataForm:OptionalKeyString<IApiPersonnel>;
+  public dataForm:DataDialogModalFormModelComponent['dataForm'];
+
 
   public dataViewHtml!:any;
 
   public departementRequest:DepartementRequest<IApiDepartement[]> = new DepartementRequest([]);
 
+  public directionRequest : DirectionRequest<IApiDirection[]> = new DirectionRequest([])
+
   public typeInput:{simple:Array<typeof VIEW_INPUT[number]>} = {simple:["firstname" ]};
 
   public myFormGroup!:FormGroup;
+
+  public titre!:TitleModalForm;
 
 
   constructor(public dialogRef: MatDialogRef<ModalFormModelComponent>, @Inject(MAT_DIALOG_DATA) public data : DataDialogModalFormModelComponent, public api:ApiService, public formBuilder:FormBuilder) { 
     this.dataForm = data.dataForm;
     this.iconTitle = data.icon;
-
+    this.titre = data.titre;
 
     
   }
@@ -56,7 +65,7 @@ export class ModalFormModelComponent implements OnInit {
     }
     this.myFormGroup = this.formBuilder.group(elemntGroup);
     this.dataViewHtml = JSON.parse(JSON.stringify(this.dataForm));
-    if((<(keyof OptionalKeyString<IApiPersonnel>)[]>Object.keys(this.dataForm)).includes("organizationId")){
+    if((<(keyof OptionalKeyString<IApiPersonnel>)[]>Object.keys(this.dataForm)).includes("organizationId") && this.titre=="PERSONNEL"){
       this.initDepartementList();
     }
   }

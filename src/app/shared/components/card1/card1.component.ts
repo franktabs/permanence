@@ -7,7 +7,7 @@ export type OuputTypeCard1 = {
   title:TitleCard1;
 }
 
-export type TitleCard1 = "Absences"|"Personnel"|"Remplacement"|"";
+export type TitleCard1 = "Absences"|"Personnel"|"Remplacement"|""|"Departement"|"Direction";
 
 //Carte affiché à l'admin ou superviseur: Congé, Personnel, Absences
 

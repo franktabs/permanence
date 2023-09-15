@@ -1,39 +1,95 @@
-<h1 mat-dialog-title class="head-4 color-bordeau "> <span [innerHTML]="iconTitle"></span> {{data.titre}} </h1>
-<hr>
+<h1 mat-dialog-title class="head-4 color-bordeau">
+  <span [innerHTML]="iconTitle"></span> {{ data.titre }}
+</h1>
+<hr />
 <div mat-dialog-content>
   <form [formGroup]="myFormGroup" novalidate>
     <div class="d-flex flex-column gap-2 p-1">
-      <div *ngFor="let cle of dataForm | keyvalue ">
-        <ng-container *ngIf="isSimpleInput(cle.key), else otherInput">
-          <div> <label [for]="'add'+cle.key" class="text-uppercase fw-bold"> {{cle.key | displayKey:"any" }} </label>
+      <div *ngFor="let cle of dataForm | keyvalue">
+        <ng-container *ngIf="isSimpleInput(cle.key); else otherInput">
+          <div>
+            <label [for]="'add' + cle.key" class="text-uppercase fw-bold">
+              {{ cle.key | displayKey : "any" }}
+            </label>
           </div>
-          <div> <input type="text" class="form-control py-2" [formControlName]="cle.key" [id]="'id'+cle.key">
+          <div>
+            <input
+              type="text"
+              class="form-control py-2"
+              [formControlName]="cle.key"
+              [id]="'id' + cle.key"
+            />
           </div>
         </ng-container>
         <ng-template #otherInput>
           <ng-container [ngSwitch]="cle.key">
             <ng-container *ngSwitchCase="'emailaddress'">
-              <div> <label [for]="'add'+cle.key" class="text-uppercase fw-bold"> {{cle.key | displayKey:"any" }}
+              <div>
+                <label [for]="'add' + cle.key" class="text-uppercase fw-bold">
+                  {{ cle.key | displayKey : "any" }}
                 </label>
               </div>
-              <div> 
-                <input type="email" [ngClass]="{'is-invalid':myFormGroup && myFormGroup.controls['emailaddress'] && myFormGroup.controls['emailaddress'].invalid && myFormGroup.controls['emailaddress'].touched }" class="form-control py-2" [formControlName]="cle.key" [id]="'id'+cle.key">
-                <div class="invalid-feedback"  >
-                  Email invalide
+              <div>
+                <input
+                  type="email"
+                  [ngClass]="{
+                    'is-invalid':
+                      myFormGroup &&
+                      myFormGroup.controls['emailaddress'] &&
+                      myFormGroup.controls['emailaddress'].invalid &&
+                      myFormGroup.controls['emailaddress'].touched
+                  }"
+                  class="form-control py-2"
+                  [formControlName]="cle.key"
+                  [id]="'id' + cle.key"
+                />
+                <div class="invalid-feedback">
+                  <div
+                    *ngIf="
+                      myFormGroup.controls['emailaddress'].errors &&
+                      myFormGroup.controls['emailaddress'].errors['email']
+                    "
+                  >
+                    Email incorrect
+                  </div>
+                  <div
+                    *ngIf="
+                      myFormGroup.controls['emailaddress'].errors &&
+                      myFormGroup.controls['emailaddress'].errors['required']
+                    "
+                  >
+                    Ce champs est obligatoire
+                  </div>
                 </div>
               </div>
             </ng-container>
             <ng-container *ngSwitchCase="'sexe'">
-              <div> <label class="text-uppercase fw-bold"> {{cle.key | displayKey:"any" }} </label> </div>
+              <div>
+                <label class="text-uppercase fw-bold">
+                  {{ cle.key | displayKey : "any" }}
+                </label>
+              </div>
               <div class="d-flex gap-2 align-items-center">
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="sexe" id="addSexeM" value="M">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    formControlName="sexe"
+                    id="addSexeM"
+                    value="M"
+                  />
                   <label class="form-check-label" for="addSexeM">
                     Masculin
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="radio" name="sexe" id="addSexeF" value="F">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    formControlName="sexe"
+                    id="addSexeF"
+                    value="F"
+                  />
                   <label class="form-check-label" for="addSexeF">
                     Feminin
                   </label>
@@ -42,26 +98,55 @@
             </ng-container>
             <ng-container *ngSwitchCase="'organizationId'">
               <div>
-                <label [for]="'add'+cle.key" class="text-uppercase fw-bold"> Departement </label>
+                <label [for]="'add' + cle.key" class="text-uppercase fw-bold">
+                  {{ titre == "PERSONNEL" ? "Departement" : "Direction" }}
+                </label>
               </div>
-              <select class="form-select" aria-label="Default select example" [formControlName]="cle.key">
-                <option *ngIf="departementRequest.hasLoading()"> Chargement ... </option>
-                <ng-container *ngFor="let departement of departementRequest.data">
-                  <option [value]="departement.organizationId" class="text-uppercase" [title]="departement.name">
-                    {{(departement.name || "problème rencontré") | limitString: 30 }} </option>
+              <div class="d-flex align-items-center gap-2" >
+                <select
+                class="form-select"
+                aria-label="Default select example"
+                [formControlName]="cle.key"
+              >
+                <option *ngIf="departementRequest.hasLoading()">
+                  Chargement ...
+                </option>
+                <ng-container
+                  *ngFor="let departement of departementRequest.data"
+                >
+                  <option
+                    [value]="departement.organizationId"
+                    class="text-uppercase"
+                    [title]="departement.name"
+                  >
+                    {{
+                      departement.name || "problème rencontré"
+                        | limitString : 30
+                    }}
+                  </option>
                 </ng-container>
               </select>
+              <span> <i class="bi bi-plus-circle color-bleu"></i> </span>
+              </div>
             </ng-container>
           </ng-container>
         </ng-template>
       </div>
     </div>
   </form>
-
-
 </div>
-<hr class="m-0">
-<div mat-dialog-actions class="d-flex justify-content-end gap-2 align-items-center">
+<hr class="m-0" />
+<div
+  mat-dialog-actions
+  class="d-flex justify-content-end gap-2 align-items-center"
+>
   <button mat-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="btn-bordeau" [disabled]="testEmail()" (click)="enregistrer()"> Confirmer <i class="bi bi-save"></i> </button>
+  <button
+    mat-raised-button
+    color="btn-bordeau"
+    [disabled]="myFormGroup.invalid"
+    (click)="enregistrer()"
+  >
+    Confirmer <i class="bi bi-save"></i>
+  </button>
 </div>

@@ -23,6 +23,14 @@ export default abstract class ModelRequest<T> {
     this.isError = false;
   }
 
+  public setData(datas:T){
+    this.data = datas;
+  }
+
+  public getData(){
+    return this.data;
+  }
+
   public hasError(): boolean {
     if (
       (this.isEnd = true && this.isLoading == false && this.isError == true)
@@ -47,6 +55,7 @@ export default abstract class ModelRequest<T> {
     }
     return false;
   }
+
 
   public hasTraited(): boolean {
     if (

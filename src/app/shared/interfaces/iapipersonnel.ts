@@ -6,8 +6,9 @@ import { IPersonnelNuit } from './ipersonnelNuit';
 import { IRole } from './irole';
 import { INotification } from './inotification';
 import { IAnnonce } from './iannonce';
+import { IModel } from './imodel';
 
-export interface IApiPersonnel {
+export interface IApiPersonnel extends IModel {
   id: number | null;
   userId: number;
   firstname: string;

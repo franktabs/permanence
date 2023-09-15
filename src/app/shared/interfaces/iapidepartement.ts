@@ -1,7 +1,8 @@
 import { IApiDirection } from './iapidirection';
 import { IApiPersonnel } from './iapipersonnel';
+import { IModel } from './imodel';
 
-export interface IApiDepartement {
+export interface IApiDepartement extends IModel{
   id: number | null;
   level: number | null;
   type_: string | null;

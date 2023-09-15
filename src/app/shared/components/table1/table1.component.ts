@@ -23,6 +23,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { UserInfoModalComponent } from '../modals/user-info-modal/user-info-modal.component';
 import { TypePersonnel } from '../../utils/types-map';
 import { TitleCard1 } from '../card1/card1.component';
+import { TitleModalForm } from '../modal-form-model/modal-form-model.component';
 @Component({
   selector: 'app-table1',
   templateUrl: './table1.component.html',
@@ -58,7 +59,7 @@ export class Table1Component
   public iconAdd!:string;
 
   @Output()
-  public toAdd:EventEmitter<TitleCard1> = new EventEmitter();
+  public toAdd:EventEmitter<TitleModalForm> = new EventEmitter();
 
 
   private destroy$!: Subject<boolean>;
@@ -166,7 +167,7 @@ export class Table1Component
   }
 
 
-  public handleAdd(titre:TitleCard1){
+  public handleAdd(titre:TitleModalForm){
     this.toAdd.emit(titre);
   }
 

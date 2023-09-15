@@ -36,6 +36,7 @@ import { MatDialog, MatDialogConfig } from '@angular/material/dialog';
 import {
   DataDialogModalFormModelComponent,
   ModalFormModelComponent,
+  TitleModalForm,
 } from 'src/app/shared/components/modal-form-model/modal-form-model.component';
 import { OptionalKey, OptionalKeyString } from 'src/app/shared/utils/type';
 import axios from 'axios';
@@ -306,8 +307,8 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  async addModel(titre: TitleCard1) {
-    if (titre == 'Personnel') {
+  async addModel(titre: TitleModalForm) {
+    if (titre == "PERSONNEL") {
       console.log('ajouter un utilisateur');
       this.loader.loader_modal$.next(true)
       try{
