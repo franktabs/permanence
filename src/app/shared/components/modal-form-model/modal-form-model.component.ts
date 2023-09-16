@@ -184,6 +184,31 @@ export class ModalFormModelComponent implements OnInit {
 
       this.loader.loader_modal$.next(false);
     }
+    else if(this.titre=="DEPARTEMENT"){
+      let datas: IApiDepartement = this.myFormGroup.value;
+      this.loader.loader_modal$.next(true);
+      try{
+        let direction = this.directionRequest.data.find((direction1)=>{
+          if(direction1?.organizationId == datas.parentorganizationId){
+            return true
+          }else{
+            return false
+          }
+        });
+
+        console.log("voici le parentOrganizationId", datas.parentorganizationId, " voici la direction correspondante ", direction)
+      }
+      catch (e) {
+        console.error("voici l'erreur ", e);
+        this.alert.alertError();
+      }
+      this.loader.loader_modal$.next(false);
+
+
+    }
+    else if(this.titre="DIRECTION"){
+      
+    }
   }
 
   testEmail(): boolean {
