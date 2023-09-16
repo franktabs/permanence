@@ -41,6 +41,7 @@ import {
 import { OptionalKey, OptionalKeyString } from 'src/app/shared/utils/type';
 import axios from 'axios';
 import { LoaderService } from 'src/app/shared/services/loader.service';
+import { AlertService } from 'src/app/shared/services/alert.service';
 
 interface IApiPerson {
   name: string;
@@ -113,7 +114,8 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     private api: ApiService,
     private auth: AuthService,
     private dialog: MatDialog,
-    private loader:LoaderService
+    private loader:LoaderService,
+    private alert:AlertService
   ) {}
 
   public set data_apiPersonnels(value: TypePersonnel[] | null) {
@@ -314,35 +316,39 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       try{
         
         let response = await axios.get(this.api.URL_PERSONNELS+"/min-userId")
-        let personnelMinUserId : IApiPersonnel = response.data;
-        let minUserId = personnelMinUserId.userId;
-        if(minUserId>=0){
-          minUserId = -1;
-        }else{
-          minUserId -= 1;
-        }
+        if(response.data){
 
-        let newPerson: OptionalKeyString<IApiPersonnel> = {
-          firstname: '',
-          sexe: 'M',
-          emailaddress: '',
-          organizationId: undefined,
-          userId: minUserId
-        };
-        console.log("nouvelle personne ", newPerson);
-        this.dialog.open<
-          ModalFormModelComponent,
-          DataDialogModalFormModelComponent
-        >(ModalFormModelComponent, {
-          data: {
-            titre: titre,
-            dataForm: newPerson,
-            icon: "<i class='bi bi-person-fill-add'></i>",
-          },
-        });
+          let personnelMinUserId : IApiPersonnel = response.data;
+          let minUserId = personnelMinUserId.userId;
+          if(minUserId>=0){
+            minUserId = -1;
+          }else{
+            minUserId -= 1;
+          }
+  
+          let newPerson: OptionalKeyString<IApiPersonnel> = {
+            firstname: '',
+            sexe: 'M',
+            emailaddress: '',
+            organizationId: undefined,
+            userId: minUserId
+          };
+          console.log("nouvelle personne ", newPerson);
+          this.dialog.open<
+            ModalFormModelComponent,
+            DataDialogModalFormModelComponent
+          >(ModalFormModelComponent, {
+            data: {
+              titre: titre,
+              dataForm: newPerson,
+              icon: "<i class='bi bi-person-fill-add'></i>",
+            },
+          });
+        }
         
       }catch(e){
-        console.error("voici l'erreur ", e)
+        console.error("voici l'erreur ", e);
+        this.alert.alertError();
       }
 
       

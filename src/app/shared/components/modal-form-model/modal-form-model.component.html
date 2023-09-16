@@ -122,37 +122,74 @@
               </div>
             </ng-container>
             <ng-container *ngSwitchCase="'organizationId'">
-              <div>
-                <label [for]="'add' + cle" class="text-uppercase fw-bold">
-                  {{ titre == "PERSONNEL" ? "Departement" : "Direction" }}
-                </label>
-              </div>
-              <div class="d-flex align-items-center gap-2" >
-                <select
-                class="form-select"
-                aria-label="Default select example"
-                [formControlName]="cle"
-              >
-                <option *ngIf="departementRequest.hasLoading()">
-                  Chargement ...
-                </option>
-                <ng-container
-                  *ngFor="let departement of departementRequest.data"
+              <ng-container *ngIf="titre=='PERSONNEL'" >
+                <div>
+                  <label [for]="'add' + cle" class="text-uppercase fw-bold">
+                    Departement
+                  </label>
+                </div>
+                <div class="d-flex align-items-center gap-2" >
+                  <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  [formControlName]="cle"
                 >
-                  <option
-                    [value]="departement.organizationId"
-                    class="text-uppercase"
-                    [title]="departement.name"
-                  >
-                    {{
-                      departement.name || "problème rencontré"
-                        | limitString : 30 | uppercase
-                    }}
+                  <option *ngIf="departementRequest.hasLoading()">
+                    Chargement ...
                   </option>
-                </ng-container>
-              </select>
-              <span (click)="addOtherFor(titre)" class="cursor-pointer"  > <i class="bi bi-plus-circle color-bleu"></i> </span>
-              </div>
+                  <ng-container
+                    *ngFor="let departement of departementRequest.data"
+                  >
+                    <option
+                      [value]="departement.organizationId"
+                      class="text-uppercase"
+                      [title]="departement.name"
+                    >
+                      {{
+                        departement.name || "problème rencontré"
+                          | limitString : 30 | uppercase
+                      }}
+                    </option>
+                  </ng-container>
+                </select>
+                <span (click)="addOtherFor(titre)" class="cursor-pointer"  > <i class="bi bi-plus-circle color-bleu"></i> </span>
+                </div>
+              </ng-container>
+            </ng-container>
+            <ng-container *ngSwitchCase="'parentorganizationId'" >
+              <ng-container *ngIf="titre=='DEPARTEMENT'" >
+                <div>
+                  <label [for]="'add' + cle" class="text-uppercase fw-bold">
+                    Direction
+                  </label>
+                </div>
+                <div class="d-flex align-items-center gap-2" >
+                  <select
+                  class="form-select"
+                  aria-label="Default select example"
+                  [formControlName]="cle"
+                >
+                  <option *ngIf="directionRequest.hasLoading()">
+                    Chargement ...
+                  </option>
+                  <ng-container
+                    *ngFor="let direction of directionRequest.data"
+                  >
+                    <option
+                      [value]="direction.organizationId"
+                      class="text-uppercase"
+                      [title]="direction.name"
+                    >
+                      {{
+                        direction.name || "problème rencontré"
+                          | limitString : 30 | uppercase
+                      }}
+                    </option>
+                  </ng-container>
+                </select>
+                <span (click)="addOtherFor(titre)" class="cursor-pointer"  > <i class="bi bi-plus-circle color-bleu"></i> </span>
+                </div>
+              </ng-container>
             </ng-container>
           </ng-container>
         </ng-template>

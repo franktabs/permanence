@@ -39,6 +39,7 @@ const VIEW_INPUT: Array<keyof DataDialogModalFormModelComponent['dataForm']> = [
   'sexe',
   'organizationId',
   'name',
+  'parentorganizationId',
 ];
 
 @Component({
@@ -55,6 +56,9 @@ export class ModalFormModelComponent implements OnInit {
 
   public departementRequest: DepartementRequest<IApiDepartement[]> =
     new DepartementRequest([]);
+
+  public DirectionRequest: DirectionRequest<IApiDirection[]> =
+    new DirectionRequest([]);
 
   public directionRequest: DirectionRequest<IApiDirection[]> =
     new DirectionRequest([]);
@@ -117,6 +121,13 @@ export class ModalFormModelComponent implements OnInit {
       this.titre == 'PERSONNEL'
     ) {
       this.initDepartementList();
+    } else if (
+      (<(keyof OptionalKeyString<IApiDirection>)[]>(
+        Object.keys(this.dataForm)
+      )).includes('parentorganizationId') &&
+      this.titre == 'DEPARTEMENT'
+    ) {
+      this.initDirectionList();
     }
   }
 
@@ -139,6 +150,20 @@ export class ModalFormModelComponent implements OnInit {
     } catch (e) {
       console.error("voici l'erreur ", e);
       this.departementRequest.error();
+    }
+  }
+
+  async initDirectionList() {
+    try {
+      this.directionRequest.loading();
+      let response = await axios.get(this.api.URL_DIRECTIONS);
+      if(response.data){
+        this.directionRequest.setData(response.data);
+        this.directionRequest.success();
+      }
+    } catch (e) {
+      console.error("voici l'erreur ", e);
+      this.directionRequest.error();
     }
   }
 
@@ -167,25 +192,89 @@ export class ModalFormModelComponent implements OnInit {
     return !!result;
   }
 
-  addOtherFor(titre: TitleModalForm) {
+  async addOtherFor(titre: TitleModalForm) {
     if (titre == 'PERSONNEL') {
       this.loader.loader_modal$.next(true);
-      let newDepartement: OptionalKeyString<IApiDepartement> = {
-        name: '',
-        parentorganizationId: undefined,
-        organizationId: -1,
-      };
-      console.log('nouvelle personne ', newDepartement);
-      this.dialog.open<
-        ModalFormModelComponent,
-        DataDialogModalFormModelComponent
-      >(ModalFormModelComponent, {
-        data: {
-          titre: 'DEPARTEMENT',
-          dataForm: newDepartement,
-          icon: "<i class='bi bi-building-add'></i>",
-        },
-      });
+
+      try {
+        let response = await axios.get(
+          this.api.URL_DEPARTEMENTS + '/min-organizationId'
+        );
+        if (response.data) {
+          let departement: IApiDepartement = response.data;
+          let minOrganizationId: number = departement.organizationId as any;
+
+          if (minOrganizationId >= 0) {
+            minOrganizationId = -1;
+          } else {
+            minOrganizationId -= 1;
+          }
+          let newDepartement: OptionalKeyString<IApiDepartement> = {
+            name: '',
+            parentorganizationId: undefined,
+            organizationId: minOrganizationId,
+          };
+          this.dialog.open<
+            ModalFormModelComponent,
+            DataDialogModalFormModelComponent
+          >(ModalFormModelComponent, {
+            data: {
+              titre: 'DEPARTEMENT',
+              dataForm: newDepartement,
+              icon: "<i class='bi bi-building-add'></i>",
+            },
+          });
+        }
+      } catch (e) {
+        console.error("voici l'erreur ", e);
+        this.alert.alertError();
+      }
+
+      this.loader.loader_modal$.next(false);
+    }
+    if (titre == 'DEPARTEMENT') {
+
+
+      this.loader.loader_modal$.next(true);
+
+      try{
+        let response = await axios.get(this.api.URL_DIRECTIONS+"/min-organizationId");
+        if(response.data){
+          let direction:IApiDirection = response.data;
+          let minOrganizationId:number = direction.organizationId as any;
+          
+          if (minOrganizationId >= 0) {
+            minOrganizationId = -1;
+          } else {
+            minOrganizationId -= 1;
+          }
+
+          let newDirection: OptionalKeyString<IApiDirection> = {
+            name: '',
+            organizationId: minOrganizationId,
+          };
+
+          this.dialog.open<
+            ModalFormModelComponent,
+            DataDialogModalFormModelComponent
+          >(ModalFormModelComponent, {
+            data: {
+              titre: "DIRECTION",
+              dataForm: newDirection,
+              icon: "<i class='bi bi-building-add'></i>",
+            },
+          });
+
+        }
+
+      }catch (e) {
+        console.error("voici l'erreur ", e);
+        this.alert.alertError();
+      }
+
+      
+
+
       this.loader.loader_modal$.next(false);
     }
   }
@@ -199,16 +288,16 @@ export class ModalFormModelComponent implements OnInit {
     );
   }
 
-  emailUnique():ValidatorFn{
-    return (control: AbstractControl): ValidationErrors | null =>{
+  emailUnique(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
       console.log("voici l'emailList", this.emailList);
-      
+
       if (this.emailList.includes(value)) {
         return { emailUnique: true };
       }
-  
+
       return null;
-    }
+    };
   }
 }
