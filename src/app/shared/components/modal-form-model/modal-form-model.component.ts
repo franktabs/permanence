@@ -1,5 +1,9 @@
 import { Component, Inject, Input, OnInit } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+} from '@angular/material/dialog';
 import { TitleCard1 } from '../card1/card1.component';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { OptionalKey, OptionalKeyString } from '../../utils/type';
@@ -7,11 +11,19 @@ import { IApiDepartement } from '../../interfaces/iapidepartement';
 import DepartementRequest from '../../models/model-request/DepartementRequest';
 import axios from 'axios';
 import { ApiService } from '../../services/api.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormBuilder,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+  Validators,
+} from '@angular/forms';
 import { IApiDirection } from '../../interfaces/iapidirection';
 import DirectionRequest from '../../models/model-request/DirectionRequest';
 import { LoaderService } from '../../services/loader.service';
 import { AlertService } from '../../services/alert.service';
+import { ValidationService } from '../../services/validation.service';
 
 export type DataDialogModalFormModelComponent = {
   titre: TitleModalForm;
@@ -21,12 +33,12 @@ export type DataDialogModalFormModelComponent = {
 
 export type TitleModalForm = 'DIRECTION' | 'DEPARTEMENT' | 'PERSONNEL';
 
-const VIEW_INPUT: Array<keyof DataDialogModalFormModelComponent["dataForm"]> = [
+const VIEW_INPUT: Array<keyof DataDialogModalFormModelComponent['dataForm']> = [
   'emailaddress',
   'firstname',
   'sexe',
   'organizationId',
-  "name"
+  'name',
 ];
 
 @Component({
@@ -48,24 +60,26 @@ export class ModalFormModelComponent implements OnInit {
     new DirectionRequest([]);
 
   public typeInput: { simple: Array<(typeof VIEW_INPUT)[number]> } = {
-    simple: ['firstname', "name"],
+    simple: ['firstname', 'name'],
   };
 
-  public keyDataForm!:(keyof typeof this.dataForm)[];
+  public keyDataForm!: (keyof typeof this.dataForm)[];
 
   public myFormGroup!: FormGroup;
 
   public titre!: TitleModalForm;
+
+  public emailList!: (string | null)[];
 
   constructor(
     public dialogRef: MatDialogRef<ModalFormModelComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DataDialogModalFormModelComponent,
     public api: ApiService,
     public formBuilder: FormBuilder,
-    public loader:LoaderService,
+    public loader: LoaderService,
     private dialog: MatDialog,
-    private alert: AlertService
-
+    private alert: AlertService,
+    private validation: ValidationService
   ) {
     this.dataForm = data.dataForm;
     this.iconTitle = data.icon;
@@ -75,13 +89,20 @@ export class ModalFormModelComponent implements OnInit {
   ngOnInit(): void {
     this.keyDataForm = Object.keys(this.dataForm) as any;
     let elemntGroup: { [key in keyof typeof this.dataForm]: any } = {};
-
+    let personnels = this.api.data.personnels;
+    this.emailList = personnels.map((personnel) => {
+      return personnel.emailaddress;
+    });
     for (let key in this.dataForm) {
       let cle: keyof typeof this.dataForm = key as any;
       if (cle == 'emailaddress') {
         elemntGroup.emailaddress = [
           this.dataForm.emailaddress,
-          Validators.compose([Validators.email, Validators.required]),
+          Validators.compose([
+            Validators.email,
+            Validators.required,
+            this.emailUnique(),
+          ]),
         ];
       } else {
         elemntGroup[cle] = [this.dataForm[cle], Validators.required];
@@ -122,18 +143,21 @@ export class ModalFormModelComponent implements OnInit {
   }
 
   async enregistrer() {
-    if(this.titre=="PERSONNEL"){
-      let datas:IApiPersonnel = this.myFormGroup.value;
-      this.loader.loader_modal$.next(true)
-      try{
-        let response = await axios.post(this.api.URL_PERSONNELS+"/config-actualise", [datas]);
-        console.log("personne sauvegarder",response.data);
-      } catch(e){
-        console.error("voici l'erreur ", e)
+    if (this.titre == 'PERSONNEL') {
+      let datas: IApiPersonnel = this.myFormGroup.value;
+      this.loader.loader_modal$.next(true);
+      try {
+        let response = await axios.post(
+          this.api.URL_PERSONNELS + '/config-actualise',
+          [datas]
+        );
+        console.log('personne sauvegarder', response.data);
+      } catch (e) {
+        console.error("voici l'erreur ", e);
         this.alert.alertError();
       }
 
-      this.loader.loader_modal$.next(false)
+      this.loader.loader_modal$.next(false);
     }
   }
 
@@ -145,31 +169,46 @@ export class ModalFormModelComponent implements OnInit {
 
   addOtherFor(titre: TitleModalForm) {
     if (titre == 'PERSONNEL') {
-      this.loader.loader_modal$.next(true)
+      this.loader.loader_modal$.next(true);
       let newDepartement: OptionalKeyString<IApiDepartement> = {
         name: '',
         parentorganizationId: undefined,
-        organizationId:-1
+        organizationId: -1,
       };
-      console.log("nouvelle personne ", newDepartement);
-        this.dialog.open<
-          ModalFormModelComponent,
-          DataDialogModalFormModelComponent
-        >(ModalFormModelComponent, {
-          data: {
-            titre: "DEPARTEMENT",
-            dataForm: newDepartement,
-            icon: "<i class='bi bi-building-add'></i>",
-          },
-        });
-      this.loader.loader_modal$.next(false)
+      console.log('nouvelle personne ', newDepartement);
+      this.dialog.open<
+        ModalFormModelComponent,
+        DataDialogModalFormModelComponent
+      >(ModalFormModelComponent, {
+        data: {
+          titre: 'DEPARTEMENT',
+          dataForm: newDepartement,
+          icon: "<i class='bi bi-building-add'></i>",
+        },
+      });
+      this.loader.loader_modal$.next(false);
     }
   }
 
-  getError(cle:string):boolean{
-    return (this.myFormGroup &&
-    this.myFormGroup.controls[cle].errors &&
-    //@ts-ignore
-    this.myFormGroup.controls[cle].errors['required'])
+  getError(cle: string): boolean {
+    return (
+      this.myFormGroup &&
+      this.myFormGroup.controls[cle].errors &&
+      //@ts-ignore
+      this.myFormGroup.controls[cle].errors['required']
+    );
+  }
+
+  emailUnique():ValidatorFn{
+    return (control: AbstractControl): ValidationErrors | null =>{
+      const value = control.value;
+      console.log("voici l'emailList", this.emailList);
+      
+      if (this.emailList.includes(value)) {
+        return { emailUnique: true };
+      }
+  
+      return null;
+    }
   }
 }

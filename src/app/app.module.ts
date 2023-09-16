@@ -122,7 +122,7 @@ registerLocaleData(localeFr)
     ReactiveFormsModule,
     
   ],
-  providers: [ValidationService,ApiService, AuthService, AuthGuard, LoadDataGuard, LoaderService,AlertService, {provide: LOCALE_ID, useValue:"fr-FR"}],
+  providers: [ApiService, AuthService, AuthGuard, LoadDataGuard, LoaderService,AlertService,ValidationService, {provide: LOCALE_ID, useValue:"fr-FR"}],
   bootstrap: [AppComponent]
 })
 export class AppModule {

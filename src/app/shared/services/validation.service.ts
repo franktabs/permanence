@@ -7,19 +7,20 @@ import { ApiService } from './api.service';
 })
 export class ValidationService {
 
-  constructor(public api:ApiService) { }
+  constructor() { }
 
 
-  emailUnique(control:AbstractControl) : ValidationErrors|null {
-    const value = control.value;
-    let personnels = this.api.data.personnels;
-    let emailList = personnels.map((personnel)=>{
-      personnel.emailaddress;
-    })
-    if(emailList.includes(value)){
-      return {"emailUnique":true}
-    }
+  // emailUnique(control:AbstractControl) : ValidationErrors|null {
+  //   const value = control.value;
+  //   console.log("api dans validation", this.api)
+  //   let personnels = this.api.data.personnels;
+  //   let emailList = personnels.map((personnel)=>{
+  //     personnel.emailaddress;
+  //   })
+  //   if(emailList.includes(value)){
+  //     return {"emailUnique":true}
+  //   }
 
-    return null;
-  }
+  //   return null;
+  // }
 }

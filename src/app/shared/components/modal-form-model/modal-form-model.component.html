@@ -72,6 +72,14 @@
                   <div
                     *ngIf="
                       myFormGroup.controls['emailaddress'].errors &&
+                      myFormGroup.controls['emailaddress'].errors['emailUnique']
+                    "
+                  >
+                    Cet email existe déjà
+                  </div>
+                  <div
+                    *ngIf="
+                      myFormGroup.controls['emailaddress'].errors &&
                       myFormGroup.controls['emailaddress'].errors['required']
                     "
                   >
@@ -161,7 +169,7 @@
   <button
     mat-raised-button
     color="btn-bordeau"
-    [disabled]="myFormGroup.invalid"
+    [disabled]="myFormGroup && myFormGroup.invalid"
     (click)="enregistrer()"
   >
     Confirmer <i class="bi bi-save"></i>
