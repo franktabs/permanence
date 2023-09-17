@@ -176,7 +176,13 @@ export class ModalFormModelComponent implements OnInit {
           this.api.URL_PERSONNELS + '/config-actualise',
           [datas]
         );
-        console.log('personne sauvegarder', response.data);
+        if(response.data!=false && response.data[0]){
+          let oldDataPersonnels = this.api.data.personnels;
+          oldDataPersonnels.push(response.data[0]);
+          this.api.personnels$.next(oldDataPersonnels);
+          this.alert.alertSave();
+          this.dialogRef.close();
+        }
       } catch (e) {
         console.error("voici l'erreur ", e);
         this.alert.alertError();
@@ -188,7 +194,7 @@ export class ModalFormModelComponent implements OnInit {
       let datas: IApiDepartement = this.myFormGroup.value;
       this.loader.loader_modal$.next(true);
       try{
-        let direction = this.directionRequest.data.find((direction1)=>{
+        let directionForm = this.directionRequest.data.find((direction1)=>{
           if(direction1?.organizationId == datas.parentorganizationId){
             return true
           }else{
@@ -196,7 +202,11 @@ export class ModalFormModelComponent implements OnInit {
           }
         });
 
-        console.log("voici le parentOrganizationId", datas.parentorganizationId, " voici la direction correspondante ", direction)
+        console.log("voici le parentOrganizationId", datas.parentorganizationId, " voici la direction correspondante ", directionForm);
+        datas.direction = directionForm;
+        let response = await axios.post(this.api.URL_DEPARTEMENTS, datas);
+
+        console.log("voici le departement sauvegarder ", response.data );
       }
       catch (e) {
         console.error("voici l'erreur ", e);
@@ -207,8 +217,16 @@ export class ModalFormModelComponent implements OnInit {
 
     }
     else if(this.titre="DIRECTION"){
-      
+      let datas:IApiDirection = this.myFormGroup.value;
+      console.log("données direction ", datas)
+
+
+      let response = await axios.post(this.api.URL_DIRECTIONS, datas);
+
+      console.log("voici la direction sauvegarder ", response.data );
+
     }
+
   }
 
   testEmail(): boolean {
@@ -316,7 +334,6 @@ export class ModalFormModelComponent implements OnInit {
   emailUnique(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
       const value = control.value;
-      console.log("voici l'emailList", this.emailList);
 
       if (this.emailList.includes(value)) {
         return { emailUnique: true };
