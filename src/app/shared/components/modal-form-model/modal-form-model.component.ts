@@ -1,4 +1,4 @@
-import { Component, Inject, Input, OnInit } from '@angular/core';
+import { Component, Inject, Input, OnDestroy, OnInit } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialog,
@@ -24,11 +24,14 @@ import DirectionRequest from '../../models/model-request/DirectionRequest';
 import { LoaderService } from '../../services/loader.service';
 import { AlertService } from '../../services/alert.service';
 import { ValidationService } from '../../services/validation.service';
+import { Subject, takeUntil } from 'rxjs';
 
 export type DataDialogModalFormModelComponent = {
   titre: TitleModalForm;
   dataForm: OptionalKeyString<IApiDepartement | IApiDirection | IApiPersonnel>;
   icon: string;
+  departementRequest?: DepartementRequest<IApiDepartement[]>;
+  directionRequest?: DirectionRequest<IApiDirection[]>;
 };
 
 export type TitleModalForm = 'DIRECTION' | 'DEPARTEMENT' | 'PERSONNEL';
@@ -47,7 +50,7 @@ const VIEW_INPUT: Array<keyof DataDialogModalFormModelComponent['dataForm']> = [
   templateUrl: './modal-form-model.component.html',
   styleUrls: ['./modal-form-model.component.scss'],
 })
-export class ModalFormModelComponent implements OnInit {
+export class ModalFormModelComponent implements OnInit, OnDestroy {
   public iconTitle!: string;
 
   public dataForm: DataDialogModalFormModelComponent['dataForm'];
@@ -56,9 +59,6 @@ export class ModalFormModelComponent implements OnInit {
 
   public departementRequest: DepartementRequest<IApiDepartement[]> =
     new DepartementRequest([]);
-
-  public DirectionRequest: DirectionRequest<IApiDirection[]> =
-    new DirectionRequest([]);
 
   public directionRequest: DirectionRequest<IApiDirection[]> =
     new DirectionRequest([]);
@@ -75,6 +75,8 @@ export class ModalFormModelComponent implements OnInit {
 
   public emailList!: (string | null)[];
 
+  public destroy$:Subject<boolean> = new Subject()
+
   constructor(
     public dialogRef: MatDialogRef<ModalFormModelComponent>,
     @Inject(MAT_DIALOG_DATA) public data: DataDialogModalFormModelComponent,
@@ -89,6 +91,9 @@ export class ModalFormModelComponent implements OnInit {
     this.iconTitle = data.icon;
     this.titre = data.titre;
   }
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+  }
 
   ngOnInit(): void {
     this.keyDataForm = Object.keys(this.dataForm) as any;
@@ -97,6 +102,12 @@ export class ModalFormModelComponent implements OnInit {
     this.emailList = personnels.map((personnel) => {
       return personnel.emailaddress;
     });
+    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs)=>{
+      let personnels = subs;
+      this.emailList = personnels.map((personnel) => {
+        return personnel.emailaddress;
+      });
+    })
     for (let key in this.dataForm) {
       let cle: keyof typeof this.dataForm = key as any;
       if (cle == 'emailaddress') {
@@ -157,7 +168,7 @@ export class ModalFormModelComponent implements OnInit {
     try {
       this.directionRequest.loading();
       let response = await axios.get(this.api.URL_DIRECTIONS);
-      if(response.data){
+      if (response.data) {
         this.directionRequest.setData(response.data);
         this.directionRequest.success();
       }
@@ -176,7 +187,7 @@ export class ModalFormModelComponent implements OnInit {
           this.api.URL_PERSONNELS + '/config-actualise',
           [datas]
         );
-        if(response.data!=false && response.data[0]){
+        if (response.data != false && response.data[0]) {
           let oldDataPersonnels = this.api.data.personnels;
           oldDataPersonnels.push(response.data[0]);
           this.api.personnels$.next(oldDataPersonnels);
@@ -189,44 +200,59 @@ export class ModalFormModelComponent implements OnInit {
       }
 
       this.loader.loader_modal$.next(false);
-    }
-    else if(this.titre=="DEPARTEMENT"){
+    } else if (this.titre == 'DEPARTEMENT') {
       let datas: IApiDepartement = this.myFormGroup.value;
       this.loader.loader_modal$.next(true);
-      try{
-        let directionForm = this.directionRequest.data.find((direction1)=>{
-          if(direction1?.organizationId == datas.parentorganizationId){
-            return true
-          }else{
-            return false
+      try {
+        let directionForm = this.directionRequest.data.find((direction1) => {
+          if (direction1?.organizationId == datas.parentorganizationId) {
+            return true;
+          } else {
+            return false;
           }
         });
 
-        console.log("voici le parentOrganizationId", datas.parentorganizationId, " voici la direction correspondante ", directionForm);
+        console.log(
+          'voici le parentOrganizationId',
+          datas.parentorganizationId,
+          ' voici la direction correspondante ',
+          directionForm
+        );
         datas.direction = directionForm;
         let response = await axios.post(this.api.URL_DEPARTEMENTS, datas);
 
-        console.log("voici le departement sauvegarder ", response.data );
-      }
-      catch (e) {
+        if (response.data && this.data.departementRequest) {
+          this.data.departementRequest.data.push(response.data);
+          this.dialogRef.close();
+          this.alert.alertSave();
+          console.log('voici le departement sauvegarder ', response.data);
+        }
+      } catch (e) {
         console.error("voici l'erreur ", e);
         this.alert.alertError();
       }
       this.loader.loader_modal$.next(false);
+    } else if ((this.titre = 'DIRECTION')) {
+      this.loader.loader_modal$.next(true);
 
+      let datas: IApiDirection = this.myFormGroup.value;
+      console.log('données direction ', datas);
 
+      try {
+        let response = await axios.post(this.api.URL_DIRECTIONS, datas);
+        if (response.data && this.data.directionRequest) {
+          this.data.directionRequest.data.push(response.data);
+          this.dialogRef.close();
+          this.alert.alertSave();
+        }
+        console.log('voici la direction sauvegarder ', response.data);
+      } catch (e) {
+        console.error("voici l'erreur ", e);
+        this.alert.alertError();
+      }
+
+      this.loader.loader_modal$.next(false);
     }
-    else if(this.titre="DIRECTION"){
-      let datas:IApiDirection = this.myFormGroup.value;
-      console.log("données direction ", datas)
-
-
-      let response = await axios.post(this.api.URL_DIRECTIONS, datas);
-
-      console.log("voici la direction sauvegarder ", response.data );
-
-    }
-
   }
 
   testEmail(): boolean {
@@ -265,6 +291,7 @@ export class ModalFormModelComponent implements OnInit {
               titre: 'DEPARTEMENT',
               dataForm: newDepartement,
               icon: "<i class='bi bi-building-add'></i>",
+              departementRequest: this.departementRequest,
             },
           });
         }
@@ -276,16 +303,16 @@ export class ModalFormModelComponent implements OnInit {
       this.loader.loader_modal$.next(false);
     }
     if (titre == 'DEPARTEMENT') {
-
-
       this.loader.loader_modal$.next(true);
 
-      try{
-        let response = await axios.get(this.api.URL_DIRECTIONS+"/min-organizationId");
-        if(response.data){
-          let direction:IApiDirection = response.data;
-          let minOrganizationId:number = direction.organizationId as any;
-          
+      try {
+        let response = await axios.get(
+          this.api.URL_DIRECTIONS + '/min-organizationId'
+        );
+        if (response.data) {
+          let direction: IApiDirection = response.data;
+          let minOrganizationId: number = direction.organizationId as any;
+
           if (minOrganizationId >= 0) {
             minOrganizationId = -1;
           } else {
@@ -302,21 +329,17 @@ export class ModalFormModelComponent implements OnInit {
             DataDialogModalFormModelComponent
           >(ModalFormModelComponent, {
             data: {
-              titre: "DIRECTION",
+              titre: 'DIRECTION',
               dataForm: newDirection,
               icon: "<i class='bi bi-building-add'></i>",
+              directionRequest: this.directionRequest,
             },
           });
-
         }
-
-      }catch (e) {
+      } catch (e) {
         console.error("voici l'erreur ", e);
         this.alert.alertError();
       }
-
-      
-
 
       this.loader.loader_modal$.next(false);
     }
