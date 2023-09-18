@@ -18,7 +18,7 @@
           class="d-flex flex-wrap  gap-1"
         >
           <ng-container *ngFor="let personnel of groupe.personnels; let i=index">
-            <li class="li-person p-1" [title]="personnel.firstname">
+            <li class="li-person py-1 px-2" [title]="personnel.firstname">
               {{ personnel.firstname | limitString : 7 }}
               <span class="li-person-close" (click)="deletePerson(i)" >
                 <i class="bi bi-x-circle-fill"></i>
@@ -41,7 +41,7 @@
       <div class="p-2">
         <ol *ngIf="groupe.criteres && groupe.criteres.length; else noCritere" class="d-flex flex-wrap  gap-1">
           <ng-container *ngFor="let critere of groupe.criteres; let i = index">
-            <li class="li-person p-1" [title]="critere.nom">
+            <li class="li-person py-1 px-2" [title]="critere.nom">
               {{ critere.nom | limitString : 7 }}
               <span class="li-person-close" (click)="deleteCritere(i)">
                 <i class="bi bi-x-circle-fill"></i>

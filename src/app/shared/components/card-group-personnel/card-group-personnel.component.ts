@@ -40,14 +40,16 @@ export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
       if( type == "PERSONNEL" && (!(!subs || typeof subs == "string"))){
         let personnel:IApiPersonnel = subs;
         this.groupe.personnels.unshift(personnel);
-      }else if (type=="CRITERE" ){
+      }else if (type=="CRITERE" && subs){
+       
+        console.log("voici le subs de retour", subs);
         let criteres_object_modal: typeof CRITERE_OBJECT = subs
         this.criteres_object = criteres_object_modal;
         let criteresExist = this.groupe.criteres.map((obj)=> obj.nom);
         this.groupe.criteres = [];
         Object.keys(criteres_object_modal).forEach((value)=>{
           let keyCritere: keyof typeof CRITERE_OBJECT = value as any;
-          if(criteres_object_modal[keyCritere]==true){
+          if(this.criteres_object[keyCritere]==true){
             this.groupe.criteres.unshift({nom:keyCritere})
           }
         })

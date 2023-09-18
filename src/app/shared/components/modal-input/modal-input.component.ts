@@ -44,7 +44,7 @@ export class ModalInputComponent implements OnInit {
       })
     }else if (this.data.type=="CRITERE"){
       if(this.data.critere_object){
-        this.criteres_object = this.data.critere_object;
+        this.criteres_object = JSON.parse(JSON.stringify(this.data.critere_object));
         this.initial_critere_object = JSON.parse(JSON.stringify(this.criteres_object));
 
       }
