@@ -1,5 +1,5 @@
 <app-head-modal-default nameModal="Configuration" icon="<i class='bi bi-gear'><i>" [(open)]="open">
-    <div>
+    <div >
         <div class="d-flex">
             <div class=" m-3 p-3 part1">
                 <h1 class="h1"><i class="bi bi-alarm"></i> Temps</h1>
@@ -51,26 +51,13 @@
 
                 </form>
             </div>
-            <div class="m-3 p-3 part2 d-flex flex-column">
+            <!-- <div class="m-3 p-3 part2 d-flex flex-column">
                 <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Superviseur</h1>
-                <!-- <mat-form-field class="example-full-width" appearance="fill">
-                    <mat-label>Nom du superviseur </mat-label>
-                    <input matInput placeholder="Un superviseur du mois" [formControl]="controlSuperviseur" [matAutocomplete]="auto"  required>
-                    <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayFn">
-                        <mat-option *ngFor="let option of filteredOptions$ | async" [value]="option">
-                          {{option.nom}}
-                        </mat-option>
-                      </mat-autocomplete>
-                </mat-form-field> -->
-                <!-- <mat-form-field class="example-full-width" appearance="fill" *ngFor="let ind of arrayNumPeriode">
-                    <mat-label>Nom du superviseur N°{{ind+1}} </mat-label>
-                    <input matInput placeholder="Un superviseur du mois"  [(ngModel)]="superviseur[ind]" required>
-                </mat-form-field> -->
                 <app-personnel-autocomplete (dataPerson)="receiveSuperviseur(ind, $event)"
                     *ngFor="let ind of arrayNumPeriode" forLabel="Nom du superviseur N°{{ind}} "
                     forPlaceholder="Superviseur du mois" [options]="optionsManager" name="superviseur{{ind}}">
                 </app-personnel-autocomplete>
-            </div>
+            </div> -->
             <div class="my-3 p-3 part3 d-flex flex-column gap-2 align-items-start">
                 <h1 class="h1 my-border-bottom m-0"> <i class="bi bi-person-fill-gear"></i> Création de Groupes</h1>
                 <button mat-raised-button color="btn-noir" (click)="ajouterGroupe()" >
@@ -93,10 +80,11 @@
                 </app-personnel-autocomplete>
             </div> -->
         </div>
-        <div class="text-end px-4 ">
-            <button mat-raised-button color="btn-bordeau" type="submit" (click)="generer()" [disabled]="isDisabled()">Generer <i
-                    class="bi bi-table"></i>
-            </button>
-        </div>
+
+    </div>
+    <div class="text-end px-4 footer-modal " >
+        <button mat-raised-button color="btn-bordeau" type="submit" (click)="generer()" [disabled]="isDisabled()">Generer <i
+                class="bi bi-table"></i>
+        </button>
     </div>
 </app-head-modal-default>
