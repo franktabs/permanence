@@ -1,1 +1,17 @@
-<p>modal-input works!</p>
+<h1 mat-dialog-title *ngIf="data.title">{{ data.title }}</h1>
+<div mat-dialog-content>
+  <app-personnel-autocomplete
+    (dataPerson)="receivePersonnel($event)"
+    forLabel="Personnel "
+    forPlaceholder="Selection un personnel"
+    [options]="optionsPersonnel"
+    name="personnel_input"
+  >
+  </app-personnel-autocomplete>
+</div>
+<div mat-dialog-actions class="d-flex justify-content-end gap-2">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+  <button mat-raised-button color="btn-bordeau" [mat-dialog-close]="personnel" [disabled]="isDisabled()">
+    Ajouter <i class="bi bi-plus" ></i>
+  </button>
+</div>

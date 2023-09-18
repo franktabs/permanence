@@ -193,8 +193,12 @@ export class ModalPlanificationComponent implements OnInit {
   }
 
   public ajouterGroupe(){
-    let numberNewGroup = this.groupes.length + 1;
-    let newGroup:IGroupe = {nom:"Groupe "+numberNewGroup, criteres:[], personnels:[]};
+    
+    let newGroup:IGroupe = {nom:"Groupe", criteres:[], personnels:[]};
     this.groupes.push(newGroup);
+  }
+
+  suprGroupe(index:number){
+    this.groupes.splice(index, 1);
   }
 }
