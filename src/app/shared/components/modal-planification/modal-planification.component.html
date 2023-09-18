@@ -71,14 +71,22 @@
                     forPlaceholder="Superviseur du mois" [options]="optionsManager" name="superviseur{{ind}}">
                 </app-personnel-autocomplete>
             </div>
-            <div class="m-3 p-3 part3 d-flex flex-column">
-                <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Creation des groupes</h1>
+            <div class="m-3 p-3 part3 d-flex flex-column gap-2 align-items-start">
+                <h1 class="h1"> <i class="bi bi-person-fill-gear my-border-bottom"></i> Création de Groupes</h1>
+                <div class="d-flex gap-2">
+                    <app-card-group-personnel>
+
+                    </app-card-group-personnel>
+                </div>
+            </div>
+            <!-- <div class="m-3 p-3 part3 d-flex flex-column">
+                <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Responsable TFJ</h1>
 
                 <app-personnel-autocomplete (dataPerson)="receiveResponsable(ind1, $event)"
                     *ngFor="let ind1 of arrayNumResponsableTFJ " forLabel="Nom du responsable N°{{ind1+1}} "
                     forPlaceholder="Responsable TFJ" [options]="optionsRessources" name="responsable{{ind1}}">
                 </app-personnel-autocomplete>
-            </div>
+            </div> -->
         </div>
         <div class="text-end px-4 ">
             <button mat-raised-button color="btn-bordeau" type="submit" (click)="generer()" [disabled]="isDisabled()">Generer <i

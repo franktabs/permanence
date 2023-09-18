@@ -1,20 +1,57 @@
-<div>
-    <div>
-        <span>Groupe</span>
+<div class="my-group-personnel">
+  <div class="my-border-bottom p-2 text-center">
+    <span class="text-capitalize fs-3">Groupe</span>
+  </div>
+  <div>
+    <div class="my-border-bottom">
+      <div class="text-secondary p-2 text-center my-border-bottom">
+        <span
+          >Personnel
+          <span class="color-bleu cursor-pointer"
+            ><i class="bi bi-plus-circle"></i>
+          </span>
+        </span>
+      </div>
+      <div class="p-2">
+        <ol
+          *ngIf="group.personnels && group.personnels.length; else noPersonnel"
+        >
+          <ng-container *ngFor="let personnel of group.personnels">
+            <li class="li-person" [title]="personnel.firstname">
+              {{ personnel.firstname | limitString : 7 }}
+              <span class="li-person-close">
+                <i class="bi bi-x-circle-fill"></i>
+              </span>
+            </li>
+          </ng-container>
+        </ol>
+        <ng-template #noPersonnel>
+          <span class="fst-italic text-secondary">Aucun personnel choisi</span>
+        </ng-template>
+      </div>
     </div>
     <div>
-        <div>
-            <div><span>Personnel <span><i class="bi bi-plus-circle" ></i> </span> </span></div>
-            <div>
-                <ng-container>
-                    
-                </ng-container>
-            </div>
-        </div>
-        <div>
-            <div><span>Critère</span></div>
-            <div></div>
-        </div>
-
+      <div class="text-secondary p-2 text-center my-border-bottom">
+        <span>Critère </span>
+        <span class="color-bleu cursor-pointer">
+          <i class="bi bi-plus-circle"></i>
+        </span>
+      </div>
+      <div class="p-2">
+        <ol *ngIf="group.criteres && group.criteres.length; else noCritere">
+          <ng-container *ngFor="let criteres of group.criteres">
+            <li class="li-person" [title]="criteres.nom">
+              {{ criteres.nom | limitString : 7 }}
+              <span class="li-person-close">
+                <i class="bi bi-x-circle-fill"></i>
+              </span>
+            </li>
+          </ng-container>
+        </ol>
+        <ng-template #noCritere>
+          <span class="fst-italic text-secondary">Aucun critère choisi</span>
+        </ng-template>
+      </div>
     </div>
-</div> 
+  </div>
+</div>

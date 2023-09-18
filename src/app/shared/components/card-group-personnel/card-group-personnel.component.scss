@@ -1,0 +1,22 @@
+$color-person:rgb(160, 160, 160);
+
+.my-group-personnel{
+    border: 1px solid black;
+    border-radius: 1em;
+
+}
+
+.li-person{
+    background-color: $color-person;
+    display: flex;
+    gap: 3px;
+    padding: 2px;
+}
+
+.li-person-close{
+    background-color: darken($color: $color-person, $amount: 14);
+    &:hover{
+        cursor: pointer;
+    }
+}
+

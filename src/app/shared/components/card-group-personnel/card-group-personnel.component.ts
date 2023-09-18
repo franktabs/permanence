@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
+import IGroupe from '../../interfaces/igroupe';
 
 @Component({
   selector: 'app-card-group-personnel',
@@ -7,6 +8,8 @@ import { Component, OnInit } from '@angular/core';
 })
 export class CardGroupPersonnelComponent implements OnInit {
 
+  @Input()
+  public group:IGroupe= {nom:"group", criteres:[], personnels:[]};
   
 
   constructor() { }
