@@ -18,6 +18,7 @@ import { mapPersonnel } from '../../utils/tables-map';
 import { IPermanence } from '../../interfaces/ipermanence';
 import { LoaderService } from '../../services/loader.service';
 import { AlertService } from '../../services/alert.service';
+import IGroupe from '../../interfaces/igroupe';
 
 export type Ferier = { jour: string; type: IPermanence['type'] };
 
@@ -41,6 +42,7 @@ export class ModalPlanificationComponent implements OnInit {
   private _periode: number = 3;
   public arrayNumPeriode: number[] = [1, 2, 3];
   public feriers: Ferier[] = [];
+  public groupes:IGroupe[] = [];
 
   public optionsManager: TypePersonnel[] = [];
   public optionsRessources:TypePersonnel[] =[];
@@ -70,6 +72,8 @@ export class ModalPlanificationComponent implements OnInit {
         if(subs)
         separatePersonnelTFJ(subs, this.optionsManager, this.optionsRessources)
       });
+
+      this.groupes = this.api.data.groupes;
   }
 
   @Input()
@@ -186,5 +190,11 @@ export class ModalPlanificationComponent implements OnInit {
   public receiveResponsable(i:number, event:any){
     console.log("position ", i)
     this.responsableTFJ[i] = event;
+  }
+
+  public ajouterGroupe(){
+    let numberNewGroup = this.groupes.length + 1;
+    let newGroup:IGroupe = {nom:"Groupe "+numberNewGroup, criteres:[], personnels:[]};
+    this.groupes.push(newGroup);
   }
 }

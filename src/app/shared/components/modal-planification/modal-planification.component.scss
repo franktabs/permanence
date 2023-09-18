@@ -31,3 +31,18 @@ tbody{
     color: $bordeau-color;
     font-weight: normal;
 }
+
+.body-groups:hover{
+
+    .close-group{
+        display: block;
+        position: absolute;
+        right: 5px;
+        top: 5px;
+        cursor: pointer;
+    }
+}
+
+.close-group{
+    display: none;
+}

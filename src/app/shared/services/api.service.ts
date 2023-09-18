@@ -15,6 +15,7 @@ import { IApiHoliday } from '../interfaces/iapiholiday';
 import { IPermanence } from '../interfaces/ipermanence';
 import axios from 'axios';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import IGroupe from '../interfaces/igroupe';
 
 type DataApi = {
   personnels: IApiPersonnel[];
@@ -22,6 +23,7 @@ type DataApi = {
   plannings: IPlanning[];
   directions: IApiDirection[];
   permanences: IPermanence[];
+  groupes:IGroupe[]
 };
 
 export interface TypeApi {
@@ -48,12 +50,14 @@ export class ApiService {
     plannings: [],
     directions: [],
     permanences: [],
+    groupes:[]
   };
   public personnels$: Subject<IApiPersonnel[]> = new Subject();
   public absences$: Subject<IApiHoliday[]> = new Subject();
   public directions$: Subject<IApiDirection[]> = new Subject();
   public permanence$: Subject<IPermanence[]> = new Subject();
   public plannings$: Subject<IPlanning[]> = new Subject();
+  public groupe$: Subject<IGroupe[]> = new Subject();
   // public readonly IP = 'http://192.168.2.64:8080/gestion';
   public url: URL = new URL(window.location.href);
 

@@ -72,10 +72,17 @@
                 </app-personnel-autocomplete>
             </div>
             <div class="my-3 p-3 part3 d-flex flex-column gap-2 align-items-start">
-                <h1 class="h1 my-border-bottom"> <i class="bi bi-person-fill-gear"></i> Création de Groupes</h1>
-                <div class="d-flex gap-2">
-                    <app-card-group-personnel>
-                    </app-card-group-personnel>
+                <h1 class="h1 my-border-bottom m-0"> <i class="bi bi-person-fill-gear"></i> Création de Groupes</h1>
+                <button mat-raised-button color="btn-noir" (click)="ajouterGroupe()" >
+                    Ajouter un nouveau groupe <i class="bi bi-plus-circle" > </i>
+                </button>
+                <div class="d-flex gap-2 body-groups " >
+                    <div *ngFor="let groupe of groupes" class="position-relative" >
+                        <span class="close-group text-danger" > <i class="bi bi-x-circle-fill" ></i> </span>
+                        <app-card-group-personnel [groupe]="groupe" >
+    
+                        </app-card-group-personnel>
+                    </div>
                 </div>
             </div>
             <!-- <div class="m-3 p-3 part3 d-flex flex-column">

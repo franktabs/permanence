@@ -9,7 +9,7 @@ import IGroupe from '../../interfaces/igroupe';
 export class CardGroupPersonnelComponent implements OnInit {
 
   @Input()
-  public group:IGroupe= {nom:"group", criteres:[], personnels:[]};
+  public groupe:IGroupe= {nom:"group", criteres:[], personnels:[]};
   
 
   constructor() { }
