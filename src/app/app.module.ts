@@ -61,6 +61,7 @@ import { PageParameterComponent } from './pages/page-parameter/page-parameter.co
 import { ModalDaysPermanenceComponent } from './shared/components/modal-days-permanence/modal-days-permanence.component';
 import { ModalFormModelComponent } from './shared/components/modal-form-model/modal-form-model.component';
 import { ValidationService } from './shared/services/validation.service';
+import { CardGroupPersonnelComponent } from './shared/components/card-group-personnel/card-group-personnel.component';
 
 
 registerLocaleData(localeFr)
@@ -110,7 +111,8 @@ registerLocaleData(localeFr)
     ModalHolidayComponent,
     PageParameterComponent,
     ModalDaysPermanenceComponent,
-    ModalFormModelComponent
+    ModalFormModelComponent,
+    CardGroupPersonnelComponent
   ],
   imports: [
     BrowserModule,
