@@ -76,7 +76,7 @@
                 <button mat-raised-button color="btn-noir" (click)="ajouterGroupe()" >
                     Ajouter un nouveau groupe <i class="bi bi-plus-circle" > </i>
                 </button>
-                <div class="d-flex gap-2  " >
+                <div class="d-flex gap-2 content-group  " >
                     <div *ngFor="let groupe of groupes; let i = index" class="position-relative group-person" >
                         <span class="close-group text-danger" (click)="suprGroupe(i)" > <i class="bi bi-x-circle-fill" ></i> </span>
                         <app-card-group-personnel [groupe]="groupe">

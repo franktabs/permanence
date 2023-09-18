@@ -7,7 +7,7 @@
       <div class="text-secondary p-2 text-center my-border-bottom">
         <span
           >Personnel
-          <span class="color-bleu cursor-pointer" (click)="ajoutPerson()"
+          <span class="color-bleu cursor-pointer" (click)="ajout('PERSONNEL')"
             ><i class="bi bi-plus-circle"></i>
           </span>
         </span>
@@ -15,7 +15,7 @@
       <div class="p-2">
         <ol
           *ngIf="groupe.personnels && groupe.personnels.length; else noPersonnel"
-          class="d-flex gap-1"
+          class="d-flex flex-wrap  gap-1"
         >
           <ng-container *ngFor="let personnel of groupe.personnels; let i=index">
             <li class="li-person p-1" [title]="personnel.firstname">
@@ -34,16 +34,16 @@
     <div>
       <div class="text-secondary p-2 text-center my-border-bottom">
         <span>Critère </span>
-        <span class="color-bleu cursor-pointer">
+        <span class="color-bleu cursor-pointer" (click)="ajout('CRITERE')" >
           <i class="bi bi-plus-circle"></i>
         </span>
       </div>
       <div class="p-2">
-        <ol *ngIf="groupe.criteres && groupe.criteres.length; else noCritere" class="d-flex gap-1">
-          <ng-container *ngFor="let criteres of groupe.criteres">
-            <li class="li-person" [title]="criteres.nom">
-              {{ criteres.nom | limitString : 7 }}
-              <span class="li-person-close">
+        <ol *ngIf="groupe.criteres && groupe.criteres.length; else noCritere" class="d-flex flex-wrap  gap-1">
+          <ng-container *ngFor="let critere of groupe.criteres; let i = index">
+            <li class="li-person p-1" [title]="critere.nom">
+              {{ critere.nom | limitString : 7 }}
+              <span class="li-person-close" (click)="deleteCritere(i)">
                 <i class="bi bi-x-circle-fill"></i>
               </span>
             </li>

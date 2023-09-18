@@ -46,3 +46,8 @@ tbody{
 .close-group{
     display: none;
 }
+
+.content-group{
+    max-width: 25vw;
+    overflow: auto;
+}

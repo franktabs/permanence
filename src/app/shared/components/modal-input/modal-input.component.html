@@ -1,17 +1,26 @@
 <h1 mat-dialog-title *ngIf="data.title">{{ data.title }}</h1>
 <div mat-dialog-content>
+    
   <app-personnel-autocomplete
     (dataPerson)="receivePersonnel($event)"
     forLabel="Personnel "
-    forPlaceholder="Selection un personnel"
+    forPlaceholder="Selectionner un personnel"
     [options]="optionsPersonnel"
     name="personnel_input"
+    *ngIf="data.type=='PERSONNEL'"
   >
   </app-personnel-autocomplete>
+  <div *ngIf="data.type=='CRITERE'" class="d-flex gap-2 flex-column">
+    <mat-slide-toggle *ngFor="let critere of criteres" [(ngModel)]="criteres_object[critere]"> {{critere}} </mat-slide-toggle>
+  </div>
+
 </div>
 <div mat-dialog-actions class="d-flex justify-content-end gap-2">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
-  <button mat-raised-button color="btn-bordeau" [mat-dialog-close]="personnel" [disabled]="isDisabled()">
-    Ajouter <i class="bi bi-plus" ></i>
+  <button *ngIf="data.type=='PERSONNEL'"  mat-raised-button color="btn-bordeau" [mat-dialog-close]="personnel" [disabled]="isDisabled()">
+    Ajouter <i class="bi bi-node-plus" ></i>
+  </button>
+  <button *ngIf="data.type=='CRITERE'"  mat-raised-button color="btn-bordeau" [mat-dialog-close]="criteres_object" [disabled]="isDisabled()">
+    Ajouter <i class="bi bi-node-plus" ></i>
   </button>
 </div>

@@ -10,7 +10,9 @@ ol {
     list-style: none;
     padding: 0;
     margin: 0;
-
+    max-width: 15vw;
+    max-height: 15vh;
+    overflow-y: auto;
     li {
         padding: 0;
         margin: 0;

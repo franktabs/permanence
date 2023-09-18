@@ -3,13 +3,18 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { IModel } from '../../interfaces/imodel';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { ApiService } from '../../services/api.service';
+import ICritere from '../../interfaces/icritere';
 
 
 export type DataModalInput = {
   title?:string,
   model?:IModel,
-  type?:string
+  type:"PERSONNEL"|"CRITERE",
+  critere_object?:typeof CRITERE_OBJECT
 }
+
+export const CRITERE_OBJECT:{[key in ICritere["nom"]]: boolean} = {"RESPONSABLE TFG":false ,"APPARAIT WEEKEND":false ,"SUPERVISEUR":false ,"APPARAIT LUNDI - VENDREDI ":false ,"REPARTI NORMALEMENT":false}
+export const CRITERES: (keyof typeof CRITERE_OBJECT)[] = ["RESPONSABLE TFG" ,"APPARAIT WEEKEND" ,"SUPERVISEUR" ,"APPARAIT LUNDI - VENDREDI " ,"REPARTI NORMALEMENT"]
 
 
 @Component({
@@ -20,6 +25,9 @@ export type DataModalInput = {
 export class ModalInputComponent implements OnInit {
 
   public personnel!:string|IApiPersonnel;
+  public criteres_object:typeof CRITERE_OBJECT= CRITERE_OBJECT;
+  public initial_critere_object!:typeof CRITERE_OBJECT;
+  public criteres: (keyof typeof CRITERE_OBJECT)[] = CRITERES;
   public optionsPersonnel:IApiPersonnel[] = [];
 
   constructor(
@@ -29,10 +37,18 @@ export class ModalInputComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    this.optionsPersonnel = this.api.data.personnels;
-    this.optionsPersonnel.sort((pers1, pers2)=>{
-      return pers1.firstname.localeCompare(pers2.firstname);
-    })
+    if(this.data.type=="PERSONNEL"){
+      this.optionsPersonnel = this.api.data.personnels;
+      this.optionsPersonnel.sort((pers1, pers2)=>{
+        return pers1.firstname.localeCompare(pers2.firstname);
+      })
+    }else if (this.data.type=="CRITERE"){
+      if(this.data.critere_object){
+        this.criteres_object = this.data.critere_object;
+        this.initial_critere_object = JSON.parse(JSON.stringify(this.criteres_object));
+
+      }
+    }
   }
 
   receivePersonnel(person:any){
@@ -45,9 +61,23 @@ export class ModalInputComponent implements OnInit {
 
   isDisabled():boolean{
 
-    if(!this.personnel || typeof this.personnel == "string"){
+    if(this.data.type=="PERSONNEL" && (!this.personnel || typeof this.personnel == "string") ){
       return true;
     }
+    if(this.data.type=="CRITERE"){
+      let different = false
+      for(let key in this.criteres_object){
+        let keyCritere : keyof typeof CRITERE_OBJECT = key as any;
+        if(this.criteres_object[keyCritere]!=this.initial_critere_object[keyCritere]){
+          different=true;
+          break
+        }
+      }
+      if(!different){
+        return true;
+      }
+    }
+
     return false
   }
 }
