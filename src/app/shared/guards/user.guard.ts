@@ -20,9 +20,9 @@ export class UserGuard implements CanActivate {
       let obser =  this.api.getAllData<TypePersonnel[]>({ for: "personnels" }).pipe(map((sub)=>{
         
         if(sub){
-
           let person = sub[this.auth.DEFAULT_PERSON];
           this.auth.login(person);
+          console.log("Deuxième authentification ", person)
         }
         if(!this.auth.isAuthenticated && !this.auth.user){
           this.router.navigateByUrl("home");

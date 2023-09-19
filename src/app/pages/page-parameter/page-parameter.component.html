@@ -1,55 +1,109 @@
 <div class="page">
-    <span class="title">
-        <i class="bi bi-gear-fill"> Paramètre /</i>
-    </span>
-    <div class="mt-5">
-        <h1 class="head-3 color-bordeau"> Paramètre Général </h1>
-        <div class="d-flex gap-4 flex-column w-max-content p-3">
-            <fieldset>
-                <legend>Direction</legend>
-                <div class="d-flex gap-2">
-                    <div class="anim-slide-s">
-                        <button mat-raised-button color="primary" [disabled]="!(api2_DSI && api2_DSI.valeur)" (click)="reloadDataOrganisation()">
-                            <i class="bi bi-building-gear "  ></i>
-                            Mettre a jour l'Organisation
-                        </button>
-                    </div>
-                    <div class="anim-slide-e">
-                        <button mat-raised-button color="btn-noir"
-                            [disabled]="!(api2_DSI && api2_DSI.valeur)"
-                            (click)="reloadDataOrganisation('recreate')"
-                            >
-                            <i class="bi bi-building-fill-gear "></i>
-                            Reecreer tous les Organisations
-                        </button>
-                    </div>
-                </div>
-            </fieldset>
-            <fieldset>
-                <legend>Personnel</legend>
-                <div class="d-flex gap-2">
-                    <div class="anim-slide-s">
-                        <button mat-raised-button color="primary" [disabled]="!(api1_DSI && api1_DSI.valeur)" (click)="reloadDataPersonnel()">
-                            <i class="bi bi-person-gear"></i>
-                            Mettre a jour les données du personnel
-                        </button>
-                    </div>
-                    <div class="anim-slide-e">
-                        <button mat-raised-button color="btn-noir" [disabled]="!(api1_DSI && api1_DSI.valeur)"
-                        (click)="reloadDataPersonnel('recreate')"
-                        >
-                            <i class="bi bi-person-fill-gear"></i>
-                            Récreer tous le personnel
-                        </button>
-                    </div>
-                </div>
-            </fieldset>
-        </div>
+  <span class="title">
+    <i class="bi bi-gear-fill"> Paramètre /</i>
+  </span>
+  <div class="mt-5">
+    <h1 class="head-3 color-bordeau">Paramètre Général</h1>
+    <div>
+      <button
+        mat-raised-button
+        color="btn-bordeau"
+        (click)="visibleParamBackend = !visibleParamBackend"
+      >
+      <i class="bi bi-arrow-bar-left" *ngIf="visibleParamBackend" ></i>
 
-        <div class="bg-white shadow-by-material2 p-4 w-50 anim-scaleIn">
-            <h1 class="text-uppercase fw-bolder">Changement des paramètres</h1>
-            <div class="ligne"></div>
-            <app-para [dataSource]="parameters"></app-para>
-        </div>
+        {{
+          visibleParamBackend == true ? "Configurer Url Backend " : "Retour "
+        }}
+        <i class="bi bi-link" *ngIf="visibleParamBackend==false" ></i>
+      </button>
     </div>
+    <ng-container *ngIf="visibleParamBackend == false">
+      <div class="d-flex gap-4 flex-column w-max-content p-3">
+        <fieldset>
+          <legend>Direction</legend>
+          <div class="d-flex gap-2">
+            <div class="anim-slide-s">
+              <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!(api2_DSI && api2_DSI.valeur)"
+                (click)="reloadDataOrganisation()"
+              >
+                <i class="bi bi-building-gear"></i>
+                Mettre a jour l'Organisation
+              </button>
+            </div>
+            <div class="anim-slide-e">
+              <button
+                mat-raised-button
+                color="btn-noir"
+                [disabled]="!(api2_DSI && api2_DSI.valeur)"
+                (click)="reloadDataOrganisation('recreate')"
+              >
+                <i class="bi bi-building-fill-gear"></i>
+                Reecreer tous les Organisations
+              </button>
+            </div>
+          </div>
+        </fieldset>
+        <fieldset>
+          <legend>Personnel</legend>
+          <div class="d-flex gap-2">
+            <div class="anim-slide-s">
+              <button
+                mat-raised-button
+                color="primary"
+                [disabled]="!(api1_DSI && api1_DSI.valeur)"
+                (click)="reloadDataPersonnel()"
+              >
+                <i class="bi bi-person-gear"></i>
+                Mettre a jour les données du personnel
+              </button>
+            </div>
+            <div class="anim-slide-e">
+              <button
+                mat-raised-button
+                color="btn-noir"
+                [disabled]="!(api1_DSI && api1_DSI.valeur)"
+                (click)="reloadDataPersonnel('recreate')"
+              >
+                <i class="bi bi-person-fill-gear"></i>
+                Récreer tous le personnel
+              </button>
+            </div>
+          </div>
+        </fieldset>
+      </div>
+
+      <div class="bg-white shadow-by-material2 p-4 w-50 anim-scaleIn">
+        <h1 class="text-uppercase fw-bolder">Changement des paramètres</h1>
+        <div class="ligne"></div>
+        <app-para [dataSource]="parameters"></app-para>
+      </div>
+    </ng-container>
+  </div>
+  <div *ngIf="visibleParamBackend" class="p-5 w-100 text-center">
+    <a href="#"
+      ><img
+        src="../assets/img/Logo_Afriland.png"
+        alt=""
+        width="468"
+        height="96"
+    /></a>
+    <h1 class="color-bordeau text-uppercase fw-bolder text-center head-1 p-3">
+      Configuration de l'url BACKEND
+    </h1>
+    <div class="w-50 d-flex flex-column align-items-center gap-3 m-auto">
+      <input
+        type="text"
+        [(ngModel)]="urlBasicBackend"
+        class="form-control"
+        name="urlBackend"
+      />
+      <button mat-raised-button color="btn-bordeau" (click)="giveUrl()">
+        Confirmer <i class="bi bi-save"></i>
+      </button>
+    </div>
+  </div>
 </div>

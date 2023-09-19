@@ -24,6 +24,11 @@ export class PageParameterComponent implements OnInit {
 
   public api2_DSI!: IParameter;
 
+  public visibleParamBackend:boolean = false;
+
+  public urlBasicBackend: string = '';
+
+
   constructor(
     private api: ApiService,
     private alert: AlertService,
@@ -114,4 +119,28 @@ export class PageParameterComponent implements OnInit {
     }
     this.loader.loader_modal$.next(false);
   }
+
+  async giveUrl() {
+
+    this.loader.loader_modal$.next(true)
+    try {
+      await axios.get(this.urlBasicBackend + '/role');
+      let parametre: IParameter = {
+        code: 'urlBackend',
+        libelle: 'API BASIC BACKEND',
+        valeur: this.urlBasicBackend,
+      };
+      this.api.IP = this.urlBasicBackend;
+      this.api.initIP()
+      await axios.post(this.api.URL_PARAMETERS, parametre);
+      localStorage.setItem("urlBackend", this.urlBasicBackend)
+      location.reload();
+    } catch (e) {
+      console.error("voici l'erreur ", e);
+      this.alert.alertError();
+    }
+    this.loader.loader_modal$.next(false)
+  }
+
+  
 }
