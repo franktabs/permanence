@@ -155,14 +155,16 @@ export class ModalPlanificationComponent implements OnInit {
   // }
 
   public isDisabled(): boolean {
-
     for (let ferier of this.feriers) {
       if (!ferier.jour) {
+        console.log("problème de ferier")
         return true;
       }
     }
 
     if(this.api.data.groupes.length < 3){
+      console.log("problème moins de 3 groupes")
+
       return true;
     }
 
@@ -170,22 +172,28 @@ export class ModalPlanificationComponent implements OnInit {
     
     for(let group of this.api.data.groupes){
       if(!group.personnels.length || !group.criteres.length){
+        console.log("problème vide personnel ou critere")
         return true;
       }
       for(let critere of group.criteres){
         criteresGroupes.add(critere.nom);
         if(critere.nom=="RESPONSABLE TFG" && group.personnels.length<5){
+          console.log("problème tfg < 5")
           return true;
         }
         else if(critere.nom=="SUPERVISEUR" && (+this.periode)>group.personnels.length ){
+          console.log("problème superviseur < a la periode")
           return true;
         }
       }
     }
     if(!criteresGroupes.has("SUPERVISEUR")){
+      console.log("problème aucun superviseur")
       return true;
     }
-    if(criteresGroupes.has("RESPONSABLE TFG")){
+    if(!criteresGroupes.has("RESPONSABLE TFG")){
+      console.log("problème aucun responsable")
+
       return true;
     }
   
@@ -241,36 +249,38 @@ export class ModalPlanificationComponent implements OnInit {
       superviseur: this.superviseur,
       group1: this.responsableTFJ,
     };
-    let errors = false;
-    for (let i = 0; i < +this.periode; i++) {
-      let person = this.superviseur[i];
-      if (!person || typeof person == 'string') {
-        errors = true;
-        break;
-      }
-    }
+    // let errors = false;
+    // for (let i = 0; i < +this.periode; i++) {
+    //   let person = this.superviseur[i];
+    //   if (!person || typeof person == 'string') {
+    //     errors = true;
+    //     break;
+    //   }
+    // }
 
-    for (let responsable of this.responsableTFJ) {
-      if (!responsable || typeof responsable == 'string') {
-        errors = true;
-        break;
-      }
-    }
+    // for (let responsable of this.responsableTFJ) {
+    //   if (!responsable || typeof responsable == 'string') {
+    //     errors = true;
+    //     break;
+    //   }
+    // }
 
-    for (let ferier of this.feriers) {
-      if (!ferier.jour) {
-        errors = true;
-        break;
-      }
-    }
-    if (errors) {
-      this.loader.loader_modal$.next(false);
-      this.alert.alertFormulaire();
-    } else {
-      console.log('données config planning', data);
-      this.dataEmit.emit(data);
-      this.openChange.emit(false);
-    }
+    // for (let ferier of this.feriers) {
+    //   if (!ferier.jour) {
+    //     errors = true;
+    //     break;
+    //   }
+    // }
+    // if (errors) {
+    //   this.loader.loader_modal$.next(false);
+    //   this.alert.alertFormulaire();
+    // } else {
+    //   console.log('données config planning', data);
+    //   this.dataEmit.emit(data);
+    //   this.openChange.emit(false);
+    // }
+    this.dataEmit.emit(data);
+    this.openChange.emit(false);
     this.loader.loader_modal$.next(false);
   }
 
