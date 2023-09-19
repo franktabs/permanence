@@ -525,3 +525,24 @@ body {
 .anim-slide-b {
   animation: slideBottomIn 1s;
 }
+@keyframes slideTopIn {
+  0% {
+    transform: translateY(-2000px);
+    opacity: 0;
+  }
+
+  90% {
+    opacity: .7;
+  }
+
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.anim-slide-t {
+  animation: slideTopIn 1s;
+}
+
+

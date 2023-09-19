@@ -21,3 +21,8 @@ legend{
     height: 1px;
     margin: 2px;
 }
+
+.form-control:focus{
+    border-color: black;
+    box-shadow: 2px 2px 1em black;
+}

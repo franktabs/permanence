@@ -1,5 +1,8 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { LoaderService } from '../../services/loader.service';
+import { ApiService } from '../../services/api.service';
+import { IApiPersonnel } from '../../interfaces/iapipersonnel';
+import { Subject, takeUntil } from 'rxjs';
 
 
 export type OuputTypeCard1 = {
@@ -16,7 +19,8 @@ export type TitleCard1 = "Absences"|"Personnel"|"Remplacement"|""|"Departement"|
   templateUrl: './card1.component.html',
   styleUrls: ['./card1.component.scss']
 })
-export class Card1Component implements OnInit {
+export class Card1Component implements OnInit, OnDestroy {
+
 
   @Input()
   public title!:"Absences"|"Personnel"|"Remplacement";
@@ -35,7 +39,16 @@ export class Card1Component implements OnInit {
 
   @Input()
   public date2!:Date;
-  constructor(private loader:LoaderService) { }
+
+  public destroy$:Subject<boolean> = new Subject();
+
+  public personnels!:IApiPersonnel[];
+  constructor(private loader:LoaderService, private api:ApiService) { }
+
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+  }
 
   @Output() public theIcon:EventEmitter<OuputTypeCard1> = new EventEmitter<OuputTypeCard1>() ;
 
@@ -47,6 +60,10 @@ export class Card1Component implements OnInit {
   }
 
   ngOnInit(): void {
+    this.personnels = this.api.data.personnels;
+    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs)=>{
+      this.personnels = subs;
+    })
   }
 
   public handleAdd(titre:TitleCard1){

@@ -130,6 +130,7 @@ export class PageParameterComponent implements OnInit {
         libelle: 'API BASIC BACKEND',
         valeur: this.urlBasicBackend,
       };
+      this.alert.alertSave();
       this.api.IP = this.urlBasicBackend;
       this.api.initIP()
       await axios.post(this.api.URL_PARAMETERS, parametre);

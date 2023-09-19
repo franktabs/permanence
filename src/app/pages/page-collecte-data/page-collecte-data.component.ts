@@ -255,7 +255,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       this.allUsers = allUserPersonnel;
     }
 
-    this.api.personnels$.subscribe((subs) => {
+    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
       this.api.data['personnels'] = subs;
       let allUserPersonnel = subs;
       this.allPersonnels = allUserPersonnel;

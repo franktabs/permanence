@@ -4,7 +4,7 @@
   </span>
   <div class="mt-5">
     <h1 class="head-3 color-bordeau">Paramètre Général</h1>
-    <div>
+    <div class="p-2">
       <button
         mat-raised-button
         color="btn-bordeau"
@@ -13,9 +13,9 @@
       <i class="bi bi-arrow-bar-left" *ngIf="visibleParamBackend" ></i>
 
         {{
-          visibleParamBackend == true ? "Configurer Url Backend " : "Retour "
+          visibleParamBackend == false ? "Configurer Url Backend " : "Retour "
         }}
-        <i class="bi bi-link" *ngIf="visibleParamBackend==false" ></i>
+        <i class="bi bi-link-45deg" *ngIf="visibleParamBackend==false" ></i>
       </button>
     </div>
     <ng-container *ngIf="visibleParamBackend == false">
@@ -83,25 +83,26 @@
       </div>
     </ng-container>
   </div>
-  <div *ngIf="visibleParamBackend" class="p-5 w-100 text-center">
+  <div *ngIf="visibleParamBackend" class="w-100 text-center">
     <a href="#"
       ><img
         src="../assets/img/Logo_Afriland.png"
         alt=""
         width="468"
         height="96"
+        class="anim-slide-t"
     /></a>
-    <h1 class="color-bordeau text-uppercase fw-bolder text-center head-1 p-3">
+    <h1 class="color-bordeau text-uppercase fw-bolder text-center head-1 p-3 anim-slide-e">
       Configuration de l'url BACKEND
     </h1>
     <div class="w-50 d-flex flex-column align-items-center gap-3 m-auto">
       <input
         type="text"
         [(ngModel)]="urlBasicBackend"
-        class="form-control"
+        class="form-control anim-slide-s"
         name="urlBackend"
       />
-      <button mat-raised-button color="btn-bordeau" (click)="giveUrl()">
+      <button mat-raised-button color="btn-bordeau" class="anim-slide-b" (click)="giveUrl()">
         Confirmer <i class="bi bi-save"></i>
       </button>
     </div>

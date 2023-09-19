@@ -9,9 +9,12 @@
         </div>
         <div id="part2" >
             <div>
-                <p class="traited">0 <br> Traité(s) <br> <span class="my-date" >( {{'09/12/2012' | dayJs: "fromNow"}} )</span> </p>
-                <div class="ligne" ></div>
-                <p class="no-traited" >0 <br> Non tratié(s) <br> <span class="my-date">( {{ date2 | timeAgo}} )</span> </p>
+                <p class="color-bleu fs-4 d-flex justify-content-center align-items-center flex-column gap-1" *ngIf="title=='Personnel'"> <span>{{personnels.length}} </span> <span> Trouvée(s) </span> </p>
+                <p class="color-bleu fs-4 d-flex justify-content-center align-items-center flex-column gap-1" *ngIf="title=='Absences'"> <span>0 </span> <span> Trouvée(s) </span> </p>
+                <p class="color-bleu fs-4 d-flex justify-content-center align-items-center flex-column gap-1" *ngIf="title=='Remplacement'"> <span>0 </span> <span> Trouvée(s) </span> </p>
+                <!-- <p class="traited">0 <br> Traité(s) <br> <span class="my-date" >( {{'09/12/2012' | dayJs: "fromNow"}} )</span> </p> -->
+                <!-- <div class="ligne" ></div>
+                <p class="no-traited" >0 <br> Non tratié(s) <br> <span class="my-date">( {{ date2 | timeAgo}} )</span> </p> -->
             </div>
         </div>
     </div>
