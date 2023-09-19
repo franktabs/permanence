@@ -1,10 +1,17 @@
 import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import axios from 'axios';
 import { Subject, takeUntil } from 'rxjs';
+import { CRITERE_OBJECT } from 'src/app/shared/components/modal-input/modal-input.component';
 import { DataPlanning } from 'src/app/shared/components/modal-planification/modal-planification.component';
 import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
 import { IMonth } from 'src/app/shared/interfaces/imonth';
@@ -40,17 +47,28 @@ type Remplissage = {
   pointDate: number[];
 };
 
-type ApparitionPerson ={
-  [key in keyof IApiPersonnel | keyof OtherKey]? : key extends keyof IApiPersonnel?IApiPersonnel[key]:(key extends keyof OtherKey? OtherKey[key]:never)
-}
+type GroupsPeople = {
+  data: {
+    personnel: IApiPersonnel;
+    criteres: (keyof typeof CRITERE_OBJECT)[];
+  }[];
+  parcours: number;
+};
 
-
+type ApparitionPerson = {
+  [key in
+    | keyof IApiPersonnel
+    | keyof OtherKey]?: key extends keyof IApiPersonnel
+    ? IApiPersonnel[key]
+    : key extends keyof OtherKey
+    ? OtherKey[key]
+    : never;
+};
 
 type OtherKey = {
-  departements: string,
-  apparitions:number,
-}
-
+  departements: string;
+  apparitions: number;
+};
 
 @Component({
   selector: 'app-page-plannification',
@@ -98,17 +116,19 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
   public authRoles: RoleType[] = [];
 
-
   public openModal: boolean = false;
   public row: ApparitionPerson | null = null;
 
+  public displayedColumns: (keyof ApparitionPerson)[] = [
+    'departements',
+    'firstname',
+    'sexe',
+    'apparitions',
+  ];
 
-  public displayedColumns: (keyof ApparitionPerson)[] = ["departements", "firstname","sexe", "apparitions"];
-  
-  public dataSource!:MatTableDataSource<ApparitionPerson>;
+  public dataSource!: MatTableDataSource<ApparitionPerson>;
 
-  private _paginator!:MatPaginator;
-
+  private _paginator!: MatPaginator;
 
   @ViewChild(MatSort) sort!: MatSort;
 
@@ -120,10 +140,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     }
   }
 
-  get paginator(){
+  get paginator() {
     return this._paginator;
   }
-
 
   constructor(
     private api: ApiService,
@@ -193,24 +212,31 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let dataPlanning = this.api.data.plannings;
 
     this.api.plannings$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
-      console.log("changement du planning in page-plannifications")
+      console.log('changement du planning in page-plannifications');
       this.api.data.plannings = subs;
       this.plannings = subs;
       this.planningVisible = this.plannings[0];
       this.plannings.sort((planning1, planning2) => {
-        if(this.planningVisible && this.planningVisible.id && planning1.id && this.planningVisible.id == planning1.id){
-          this.planningVisible = planning1
-        }
-        else if(this.planningVisible && this.planningVisible.id && planning2.id && this.planningVisible.id == planning2.id){
-          this.planningVisible = planning2
+        if (
+          this.planningVisible &&
+          this.planningVisible.id &&
+          planning1.id &&
+          this.planningVisible.id == planning1.id
+        ) {
+          this.planningVisible = planning1;
+        } else if (
+          this.planningVisible &&
+          this.planningVisible.id &&
+          planning2.id &&
+          this.planningVisible.id == planning2.id
+        ) {
+          this.planningVisible = planning2;
         }
         return planning2.submissionDate.localeCompare(planning1.submissionDate);
       });
-      if(this.visiblePlanning && this.planningVisible){
-
-        this.voirPlanning(this.planningVisible)
+      if (this.visiblePlanning && this.planningVisible) {
+        this.voirPlanning(this.planningVisible);
       }
-
     });
 
     if (dataPlanning && dataPlanning.length) {
@@ -263,8 +289,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
   set dataPlanning(value: DataPlanning | null) {
     this._dataPlanning = value;
-    this.group1 = value?.group1 as IApiPersonnel[];
-    this.initOperationGroupPersonnels(this.api.data.personnels);
+    // this.group1 = value?.group1 as IApiPersonnel[];
+    // this.initOperationGroupPersonnels(this.api.data.personnels);
     if (value) {
       this.generatePlanning(+value.periode);
     }
@@ -329,30 +355,30 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     this.remplissage = { month: -1, superviseur: 0, pointDate: [] };
     this.buildPointDate(new Date(planning.start), planning.periode);
     this.visiblePlanning = true;
-    if(this.planningVisible.id){
-
-      let dataPersonnel = this.api.data.personnels
-      let apparitions:ApparitionPerson[] = [];
-      try{
-        let response = await axios.get(this.api.URL_PLANNINGS+"/count-personnels/"+this.planningVisible.id);
-        let dataAppartion:{[key in number] : number} = response.data;
-        for(let person of dataPersonnel){
+    if (this.planningVisible.id) {
+      let dataPersonnel = this.api.data.personnels;
+      let apparitions: ApparitionPerson[] = [];
+      try {
+        let response = await axios.get(
+          this.api.URL_PLANNINGS +
+            '/count-personnels/' +
+            this.planningVisible.id
+        );
+        let dataAppartion: { [key in number]: number } = response.data;
+        for (let person of dataPersonnel) {
           let idPerson = person.id as number;
           let nbrAppartion = dataAppartion[idPerson];
           apparitions.push({
             ...person,
-            "departements": person.departement?.name||"non defini",
-            "apparitions":nbrAppartion||0
-          })
+            departements: person.departement?.name || 'non defini',
+            apparitions: nbrAppartion || 0,
+          });
         }
-      this.dataSource = new MatTableDataSource(apparitions);
-      this.dataSource.sort = this.sort;
-      this.dataSource.paginator = this.paginator;
-
-      }
-      catch(e){
+        this.dataSource = new MatTableDataSource(apparitions);
+        this.dataSource.sort = this.sort;
+        this.dataSource.paginator = this.paginator;
+      } catch (e) {
         console.log("Voici l'erreur => ", e);
-        
       }
     }
     setTimeout(() => {
@@ -594,78 +620,144 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
   }
 
   findMan(
-    person: IApiPersonnel,
-    group: IApiPersonnel[],
+    dataPerson: GroupsPeople['data'][number],
+    group: GroupsPeople['data'],
     index: number,
-    date?: string,
-    nbrParcours: number = 0
-  ): IApiPersonnel {
-    if (nbrParcours >= group.length) return person;
-    let lastPerson = JSON.parse(JSON.stringify(person));
+    date: string,
+    nbrParcours: number = 0,
+    initialIndex: number
+  ): GroupsPeople['data'][number] {
+    if (nbrParcours >= group.length) return dataPerson;
+    let lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
 
-    if (person.sexe == 'F') {
+    if (dataPerson.personnel.sexe == 'F') {
       let initParcours = nbrParcours;
       let lastPosition = index;
       let i = lastPosition;
 
-      while (person.sexe == 'F' && nbrParcours < group.length) {
+      while (dataPerson.personnel.sexe == 'F' && nbrParcours < group.length) {
         i = (i + 1) % group.length;
-        person = group[i];
+        dataPerson = group[i];
         nbrParcours++;
       }
-      if (i != lastPosition) {
-        console.log(
-          'changement de position de group avant =>',
-          [...group],
-          '\nde la personne =>',
-          person,
-          '\net la personne =>',
-          group[(i - nbrParcours + group.length) % group.length],
-          'date =>',
-          date
-        );
-        let temps = group[(i - nbrParcours + group.length) % group.length];
-        group[(i - nbrParcours + group.length) % group.length] = person;
-        lastPerson = JSON.parse(JSON.stringify(person));
-        group[i] = temps;
-        console.log('changement de position de group après =>', [...group]);
-      }
+      // if (i != lastPosition) {
+      //   console.log(
+      //     'changement de position de group avant =>',
+      //     [...group],
+      //     '\nde la dataPersonne =>',
+      //     dataPerson,
+      //     '\net la dataPersonne =>',
+      //     group[(i - nbrParcours + group.length) % group.length],
+      //     'date =>',
+      //     date
+      //   );
+      //   let temps = group[(i - nbrParcours + group.length) % group.length];
+      //   group[(i - nbrParcours + group.length) % group.length] = dataPerson;
+      //   lastPerson = JSON.parse(JSON.stringify(dataPerson));
+      //   group[i] = temps;
+      //   console.log('changement de position de group après =>', [...group]);
+      // }
+      lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
       if (initParcours == nbrParcours) {
-        console.log('person before =>', lastPerson);
-        return lastPerson;
+        console.log('dataPerson before =>', lastDataPerson);
+        return lastDataPerson;
       } else {
-        console.log('person before =>', lastPerson);
-        return this.findPerson(lastPerson, group, i, date || '', nbrParcours);
+        console.log('dataPerson before =>', lastDataPerson);
+        if (i != lastPosition) {
+          return this.findPerson(
+            lastDataPerson,
+            group,
+            i,
+            date || '',
+            nbrParcours,
+            'nuit',
+            initialIndex
+          );
+        } else {
+          group = this.decalage(initialIndex, i, group);
+          return lastDataPerson;
+        }
       }
     }
-    console.log('person before =>', lastPerson);
-    return lastPerson;
+    console.log('dataPerson before =>', lastDataPerson);
+    group = this.decalage(initialIndex, index, group);
+    return lastDataPerson;
   }
+  // findMan(
+  //   person: IApiPersonnel,
+  //   group: IApiPersonnel[],
+  //   index: number,
+  //   date?: string,
+  //   nbrParcours: number = 0
+  // ): IApiPersonnel {
+  //   if (nbrParcours >= group.length) return person;
+  //   let lastPerson = JSON.parse(JSON.stringify(person));
+
+  //   if (person.sexe == 'F') {
+  //     let initParcours = nbrParcours;
+  //     let lastPosition = index;
+  //     let i = lastPosition;
+
+  //     while (person.sexe == 'F' && nbrParcours < group.length) {
+  //       i = (i + 1) % group.length;
+  //       person = group[i];
+  //       nbrParcours++;
+  //     }
+  //     if (i != lastPosition) {
+  //       console.log(
+  //         'changement de position de group avant =>',
+  //         [...group],
+  //         '\nde la personne =>',
+  //         person,
+  //         '\net la personne =>',
+  //         group[(i - nbrParcours + group.length) % group.length],
+  //         'date =>',
+  //         date
+  //       );
+  //       let temps = group[(i - nbrParcours + group.length) % group.length];
+  //       group[(i - nbrParcours + group.length) % group.length] = person;
+  //       lastPerson = JSON.parse(JSON.stringify(person));
+  //       group[i] = temps;
+  //       console.log('changement de position de group après =>', [...group]);
+  //     }
+  //     if (initParcours == nbrParcours) {
+  //       console.log('person before =>', lastPerson);
+  //       return lastPerson;
+  //     } else {
+  //       console.log('person before =>', lastPerson);
+  //       return this.findPerson(lastPerson, group, i, date || '', nbrParcours);
+  //     }
+  //   }
+  //   console.log('person before =>', lastPerson);
+  //   return lastPerson;
+  // }
 
   findPerson(
-    person: IApiPersonnel,
-    group: IApiPersonnel[],
+    dataPerson: GroupsPeople['data'][number],
+    group: GroupsPeople['data'],
     index: number,
     date: string,
     nbrParcours: number = 0,
-    temps: 'jour' | 'nuit' = 'nuit'
-  ): IApiPersonnel {
+    temps: 'jour' | 'nuit' = 'nuit',
+    initialIndex: number = index
+  ): GroupsPeople['data'][number] {
     if (nbrParcours >= group.length) {
-      return person;
+      return dataPerson;
     }
     let initParcours = nbrParcours;
     let continuer = true;
-    let lastPosition = index;
+    let lastPosition = initialIndex;
     let i = index;
-    let lastPerson = JSON.parse(JSON.stringify(person));
+    let lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
+
     while (continuer && nbrParcours < group.length) {
-      let holidays = person.vacancies;
+      let holidays = dataPerson.personnel.vacancies;
       if (holidays && holidays.length) {
         let isHoliday = false;
         for (let holiday of holidays) {
           if (holiday.start <= date && date <= holiday.end) {
             i = (i + 1) % group.length;
-            person = group[i];
+            dataPerson = group[i];
             nbrParcours++;
             isHoliday = true;
             break;
@@ -678,91 +770,169 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         continuer = false;
       }
     }
+
+    lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
+    // if (i != lastPosition) {
+    //   console.log(
+    //     'changement de position de group avant =>',
+    //     [...group],
+    //     '\nde la dataPersonne =>',
+    //     dataPerson,
+    //     '\net la dataPersonne =>',
+    //     group[(i - nbrParcours + group.length) % group.length],
+    //     'date =>',
+    //     date
+    //   );
+
+    //   let temps = group[(i - nbrParcours + group.length) % group.length];
+    //   lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
+    //   group[(i - nbrParcours + group.length) % group.length] = dataPerson;
+    //   group[i] = temps;
+
+    //   console.log('changement de position de group après =>', [...group]);
+    // }
+    console.log('dataPerson before =>', lastDataPerson);
+    if (temps == 'jour') {
+      group = this.decalage(initialIndex, i, group);
+      return lastDataPerson;
+    }
     if (i != lastPosition) {
-      console.log(
-        'changement de position de group avant =>',
-        [...group],
-        '\nde la personne =>',
-        person,
-        '\net la personne =>',
-        group[(i - nbrParcours + group.length) % group.length],
-        'date =>',
-        date
+      return this.findMan(
+        lastDataPerson,
+        group,
+        i,
+        date,
+        nbrParcours,
+        initialIndex
       );
-
-      let temps = group[(i - nbrParcours + group.length) % group.length];
-      lastPerson = JSON.parse(JSON.stringify(person));
-      group[(i - nbrParcours + group.length) % group.length] = person;
-      group[i] = temps;
-
-      console.log('changement de position de group après =>', [...group]);
+    } else {
+      group = this.decalage(initialIndex, i, group);
+      return lastDataPerson;
     }
-    if (temps == 'jour') return lastPerson;
-    console.log('person before =>', lastPerson);
-    return this.findMan(lastPerson, group, i, date, nbrParcours);
   }
-  findPersonDay(
-    person: IApiPersonnel,
-    group: IApiPersonnel[],
-    index: number,
-    date: string,
-    nbrParcours: number = 0
-  ): IApiPersonnel {
-    if (nbrParcours >= group.length) {
-      return person;
-    }
-    let initParcours = nbrParcours;
-    let continuer = true;
-    let lastPosition = index;
-    let i = index;
-    while (continuer && nbrParcours < group.length) {
-      let holidays = person.vacancies;
-      if (holidays && holidays.length) {
-        let isHoliday = false;
-        for (let holiday of holidays) {
-          if (holiday.start <= date && date <= holiday.end) {
-            i = (i + 1) % group.length;
-            person = group[i];
-            nbrParcours++;
-            isHoliday = true;
-            break;
-          }
-        }
-        if (isHoliday == false) {
-          continuer = false;
-        }
-      } else {
-        continuer = false;
-      }
-    }
-    if (i != lastPosition) {
-      let temps = group[lastPosition];
-      group[lastPosition] = person;
-      group[i] = temps;
-    }
 
-    return person;
-  }
+  // findPerson(
+  //   person: IApiPersonnel,
+  //   group: IApiPersonnel[],
+  //   index: number,
+  //   date: string,
+  //   nbrParcours: number = 0,
+  //   temps: 'jour' | 'nuit' = 'nuit'
+  // ): IApiPersonnel {
+  //   if (nbrParcours >= group.length) {
+  //     return person;
+  //   }
+  //   let initParcours = nbrParcours;
+  //   let continuer = true;
+  //   let lastPosition = index;
+  //   let i = index;
+  //   let lastPerson = JSON.parse(JSON.stringify(person));
+  //   while (continuer && nbrParcours < group.length) {
+  //     let holidays = person.vacancies;
+  //     if (holidays && holidays.length) {
+  //       let isHoliday = false;
+  //       for (let holiday of holidays) {
+  //         if (holiday.start <= date && date <= holiday.end) {
+  //           i = (i + 1) % group.length;
+  //           person = group[i];
+  //           nbrParcours++;
+  //           isHoliday = true;
+  //           break;
+  //         }
+  //       }
+  //       if (isHoliday == false) {
+  //         continuer = false;
+  //       }
+  //     } else {
+  //       continuer = false;
+  //     }
+  //   }
+  //   if (i != lastPosition) {
+  //     console.log(
+  //       'changement de position de group avant =>',
+  //       [...group],
+  //       '\nde la personne =>',
+  //       person,
+  //       '\net la personne =>',
+  //       group[(i - nbrParcours + group.length) % group.length],
+  //       'date =>',
+  //       date
+  //     );
+
+  //     let temps = group[(i - nbrParcours + group.length) % group.length];
+  //     lastPerson = JSON.parse(JSON.stringify(person));
+  //     group[(i - nbrParcours + group.length) % group.length] = person;
+  //     group[i] = temps;
+
+  //     console.log('changement de position de group après =>', [...group]);
+  //   }
+  //   if (temps == 'jour') return lastPerson;
+  //   console.log('person before =>', lastPerson);
+  //   return this.findMan(lastPerson, group, i, date, nbrParcours);
+  // }
+
+  // findPersonDay(
+  //   person: IApiPersonnel,
+  //   group: IApiPersonnel[],
+  //   index: number,
+  //   date: string,
+  //   nbrParcours: number = 0
+  // ): IApiPersonnel {
+  //   if (nbrParcours >= group.length) {
+  //     return person;
+  //   }
+  //   let initParcours = nbrParcours;
+  //   let continuer = true;
+  //   let lastPosition = index;
+  //   let i = index;
+  //   while (continuer && nbrParcours < group.length) {
+  //     let holidays = person.vacancies;
+  //     if (holidays && holidays.length) {
+  //       let isHoliday = false;
+  //       for (let holiday of holidays) {
+  //         if (holiday.start <= date && date <= holiday.end) {
+  //           i = (i + 1) % group.length;
+  //           person = group[i];
+  //           nbrParcours++;
+  //           isHoliday = true;
+  //           break;
+  //         }
+  //       }
+  //       if (isHoliday == false) {
+  //         continuer = false;
+  //       }
+  //     } else {
+  //       continuer = false;
+  //     }
+  //   }
+  //   if (i != lastPosition) {
+  //     let temps = group[lastPosition];
+  //     group[lastPosition] = person;
+  //     group[i] = temps;
+  //   }
+
+  //   return person;
+  // }
 
   trierPersonChief(
-    tabs: IApiPersonnel[],
+    tabs: GroupsPeople["data"],
     countChief: { [key in number]: number }
-  ) {
+  ):GroupsPeople["data"] {
     tabs.sort((pers1, pers2) => {
-      let nbrChiefPers1 = countChief[pers1.id || '-1'];
-      let nbrChiefPers2 = countChief[pers2.id || '-1'];
-      if ((nbrChiefPers1 == -1 || !nbrChiefPers1) && pers1.id) {
-        countChief[pers1.id] = 0;
+      let nbrChiefPers1 = countChief[pers1.personnel.id || '-1'];
+      let nbrChiefPers2 = countChief[pers2.personnel.id || '-1'];
+      if ((nbrChiefPers1 == -1 || !nbrChiefPers1) && pers1.personnel.id) {
+        countChief[pers1.personnel.id] = 0;
         nbrChiefPers1 = 0;
       }
-      if ((nbrChiefPers2 == -1 || !nbrChiefPers2) && pers2.id) {
-        countChief[pers2.id] = 0;
+      if ((nbrChiefPers2 == -1 || !nbrChiefPers2) && pers2.personnel.id) {
+        countChief[pers2.personnel.id] = 0;
         nbrChiefPers2 = 0;
       }
       return nbrChiefPers1 - nbrChiefPers2;
     });
 
-    countChief[tabs[0].id || -1] += 1;
+    countChief[tabs[0].personnel.id || -1] += 1;
     return tabs;
   }
 
@@ -772,11 +942,33 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let group2 = shuffleArray([...this.group2]);
     let group3 = shuffleArray([...this.group3]);
 
-    console.log('voici les différents groupes creer', group1, group2, group3);
+    let groupsPeople: GroupsPeople = { data: [], parcours: 0 };
+    let groupTfg: GroupsPeople = { data: [], parcours: 0 };
+    let nbrPersonDay = {semaine:4, samediJour:4, samediNuit:4,dimancheJour:4, dimancheNuit:4, }
+
+    for (let group of this.api.data.groupes) {
+      let criteresGroup = group.criteres.map((critere) => critere.nom);
+      let oneGroupPersonnel = shuffleArray([...group.personnels]);
+      if (!criteresGroup.includes('SUPERVISEUR')) {
+        for (let personnel of oneGroupPersonnel) {
+          groupsPeople.data.push({
+            personnel: personnel,
+            criteres: criteresGroup,
+          });
+        }
+      } else if (criteresGroup.includes('RESPONSABLE TFG')) {
+        for (let personnel of oneGroupPersonnel) {
+          groupTfg.data.push({ personnel: personnel, criteres: criteresGroup });
+        }
+      }
+    }
+
+    console.log('voici les différents groupes creer', groupsPeople, groupTfg);
 
     let nbrGroup1 = group1.length;
     let nbrGroup2 = group2.length;
     let nbrGroup3 = group3.length;
+
     let oneOrTwoPerson = [1, 2];
 
     let jourFerier: { jour1: IPermanence | null; jour2: IPermanence | null } = {
@@ -784,8 +976,6 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       jour2: null,
     };
     let sameditAvant: IPermanence | null = null;
-
-    console.log('groupe formé', [...group1], [...group2], [...group3]);
 
     let repartiGroup2 = 0;
     let repartiGroup3 = 0;
@@ -802,32 +992,58 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       delete personnel_permanence.personnels_nuit;
       if (date.getDay() != 0 && date.getDay() != 6) {
         if (permanence.type == 'simple') {
-          let person1 = group1[(index - decalage) % nbrGroup1];
-          let lastPosition = (index - decalage) % nbrGroup1;
-          person1 = this.findPerson(
-            person1,
-            group1,
+          // let person1 = group1[(index - decalage) % nbrGroup1];
+          // let lastPosition = (index - decalage) % nbrGroup1;
+          // person1 = this.findPerson(
+          //   person1,
+          //   group1,
+          //   lastPosition,
+          //   stringDate(date)
+          // );
+
+          let personDataTfj =
+            groupTfg.data[(index - groupTfg.parcours) % groupTfg.data.length];
+          let lastPosition = (index - groupTfg.parcours) % groupTfg.data.length;
+          personDataTfj = this.findPerson(
+            personDataTfj,
+            groupTfg.data,
             lastPosition,
             stringDate(date)
           );
 
-          lastPosition = repartiGroup3 % nbrGroup3;
-          let person2 = group3[repartiGroup3++ % nbrGroup3];
-          console.log(
-            'avant findPerson person2 =>',
-            person2,
-            '\nlastPosition',
-            lastPosition,
-            '\ndate',
-            date
-          );
-          person2 = this.findPerson(
-            person2,
-            group3,
-            lastPosition,
-            stringDate(date)
-          );
-          console.log('après findPerson person2 =>', person2, '\ndate', date);
+          let datasPersonDay:(GroupsPeople["data"][number]  )[]= []
+          for(let c = 0; c<nbrPersonDay.semaine; c++){
+            let lastPosition = groupsPeople.parcours++ % groupsPeople.data.length;
+            let dataPerson2:GroupsPeople["data"][number] | null = groupsPeople.data[groupsPeople.parcours++ % groupsPeople.data.length];
+            dataPerson2 = this.uniquePersonDay(
+              dataPerson2,
+              datasPersonDay,
+              groupsPeople.data,
+              lastPosition,
+              date,
+              "nuit"
+            );
+            if(dataPerson2){
+              datasPersonDay.push(dataPerson2);
+            }
+          }
+          // lastPosition = repartiGroup3 % nbrGroup3;
+          // let person2 = group3[repartiGroup3++ % nbrGroup3];
+          // console.log(
+          //   'avant findPerson person2 =>',
+          //   person2,
+          //   '\nlastPosition',
+          //   lastPosition,
+          //   '\ndate',
+          //   date
+          // );
+          // person2 = this.findPerson(
+          //   person2,
+          //   group3,
+          //   lastPosition,
+          //   stringDate(date)
+          // );
+          // console.log('après findPerson person2 =>', person2, '\ndate', date);
           // if (person1.sexe == 'F') {
           //   let i = lastPosition;
           //   while (person1.sexe == 'F') {
@@ -839,19 +1055,36 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           //   group1[i] = temps;
           // }
 
-          if (person1.sexe == 'M' && person2.sexe == 'M') {
-            let person1Nuit: IPersonnelNuit = {
+          if(personDataTfj.personnel.sexe=="M"){
+            let personNuitTfj: IPersonnelNuit = {
               permanence: personnel_permanence,
-              personnel: person1,
+              personnel: personDataTfj.personnel,
               responsable: true,
             };
-            let person2Nuit: IPersonnelNuit = {
+            permanence.personnels_nuit?.push(personNuitTfj);
+          }
+          for(let personData of datasPersonDay){
+            let otherPersonNuit: IPersonnelNuit = {
               permanence: personnel_permanence,
-              personnel: person2,
+              personnel: personData.personnel,
               responsable: false,
             };
-            permanence.personnels_nuit?.push(person1Nuit, person2Nuit);
+            permanence.personnels_nuit?.push(otherPersonNuit);
           }
+
+          // if (personDataTfj.personnel.sexe == 'M' && person2.sexe == 'M') {
+          //   let person1Nuit: IPersonnelNuit = {
+          //     permanence: personnel_permanence,
+          //     personnel: person1,
+          //     responsable: true,
+          //   };
+          //   let person2Nuit: IPersonnelNuit = {
+          //     permanence: personnel_permanence,
+          //     personnel: person2,
+          //     responsable: false,
+          //   };
+          //   permanence.personnels_nuit?.push(person1Nuit, person2Nuit);
+          // }
         } else if (permanence.type == 'ouvrable') {
           if (jourFerier.jour1 == null) {
             jourFerier.jour1 = permanence;
@@ -871,27 +1104,27 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             permanenceLundi.personnels_nuit != null
           ) {
             let personNuit = permanenceLundi.personnels_nuit[0];
-            let person0: IApiPersonnel | null = null;
+            let person0: GroupsPeople["data"][number] | null = null;
             if (personNuit) {
               permanence.personnels_jour[0] = personNuit;
             } else {
               console.log('problème rencontré le Lundi, anticipation ...');
-              person0 = group1[(index - decalage) % nbrGroup1];
+              person0 = groupTfg.data[(index - groupTfg.parcours) % groupTfg.data.length];
               // let lastPosition = (index - decalage) % nbrGroup1;
               // person0 = this.findPerson(person0, group1, lastPosition,stringDate(date))
             }
             if (person0 != null) {
-              let lastPosition = (index - decalage) % nbrGroup1;
+              let lastPosition = (index - groupTfg.parcours) % groupTfg.data.length;
               person0 = this.findPerson(
                 person0,
-                group1,
+                groupTfg.data,
                 lastPosition,
                 stringDate(date),
                 0,
                 'jour'
               );
               let person0Jour: IPersonnelJour = {
-                personnel: person0,
+                personnel: person0.personnel,
                 permanence: personnel_permanence,
                 responsable: true,
               };
@@ -899,120 +1132,162 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
               permanence.personnels_jour.push(person0Jour);
             }
 
-            let person1 = group2[repartiGroup2++ % nbrGroup2];
-            let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-            person1 = this.findPerson(
-              person1,
-              group2,
-              lastPosition,
-              stringDate(date),
-              0,
-              'jour'
-            );
+            // let person1 = group2[repartiGroup2++ % nbrGroup2];
+            // let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+            // person1 = this.findPerson(
+            //   person1,
+            //   group2,
+            //   lastPosition,
+            //   stringDate(date),
+            //   0,
+            //   'jour'
+            // );
 
-            let person3: IApiPersonnel | null =
-              group3[repartiGroup3++ % nbrGroup3];
-            lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-            person3 = this.findPerson(
-              person3,
-              group3,
-              lastPosition,
-              stringDate(date),
-              0,
-              'jour'
-            );
+            // let person3: IApiPersonnel | null =
+            //   group3[repartiGroup3++ % nbrGroup3];
+            // lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+            // person3 = this.findPerson(
+            //   person3,
+            //   group3,
+            //   lastPosition,
+            //   stringDate(date),
+            //   0,
+            //   'jour'
+            // );
+
+            let datasPersonDayJour:(GroupsPeople["data"][number]  )[]= []
+            for(let c = 0; c<nbrPersonDay.samediJour-1; c++){
+              let lastPosition = groupsPeople.parcours++ % groupsPeople.data.length;
+              let dataPerson2:GroupsPeople["data"][number] | null = groupsPeople.data[groupsPeople.parcours++ % groupsPeople.data.length];
+              dataPerson2 = this.uniquePersonDay(
+                dataPerson2,
+                datasPersonDayJour,
+                groupsPeople.data,
+                lastPosition,
+                date,
+                "jour"
+              );
+              if(dataPerson2){
+                datasPersonDayJour.push(dataPerson2);
+              }
+            }
+            for(let personData of datasPersonDayJour){
+              let otherPersonJour: IPersonnelJour = {
+                permanence: personnel_permanence,
+                personnel: personData.personnel,
+                responsable: false,
+              };
+              permanence.personnels_jour?.push(otherPersonJour);
+            }
 
             let oneOrTwo =
               oneOrTwoPerson[repartiOneOrTwo++ % oneOrTwoPerson.length];
 
-            let person2: IApiPersonnel | null = null;
-            if (oneOrTwo == 2) {
-              person2 = group2[repartiGroup2++ % nbrGroup2];
-              lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-              person2 = this.uniquePersonDay(
-                person2,
-                [person1],
-                group2,
+            // let person2: IApiPersonnel | null = null;
+            // if (oneOrTwo == 2) {
+            //   person2 = group2[repartiGroup2++ % nbrGroup2];
+            //   lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+            //   person2 = this.uniquePersonDay(
+            //     person2,
+            //     [person1],
+            //     group2,
+            //     lastPosition,
+            //     date,
+            //     'jour'
+            //   );
+            // } else if (oneOrTwo == 1) {
+            //   person2 = group3[repartiGroup3++ % nbrGroup3];
+            //   lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+            //   person2 = this.uniquePersonDay(
+            //     person2,
+            //     [person3],
+            //     group3,
+            //     lastPosition,
+            //     date,
+            //     'jour'
+            //   );
+            // }
+
+            // [person1, person2, person3].forEach((pers) => {
+            //   if (pers != null) {
+            //     let persJour: IPersonnelJour = {
+            //       personnel: pers,
+            //       responsable: false,
+            //       permanence: personnel_permanence,
+            //     };
+            //     permanence.personnels_jour?.push(persJour);
+            //   } else {
+            //     pers = group3[repartiGroup3++ % nbrGroup3];
+            //     lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+            //     pers = this.uniquePersonDay(
+            //       pers,
+            //       [person3],
+            //       group3,
+            //       lastPosition,
+            //       date,
+            //       'jour'
+            //     );
+            //     if (pers != null) {
+            //       let persJour: IPersonnelJour = {
+            //         personnel: pers,
+            //         responsable: false,
+            //         permanence: personnel_permanence,
+            //       };
+            //       permanence.personnels_jour?.push(persJour);
+            //     }
+            //   }
+            // });
+
+            // let person4 = group2[repartiGroup2++ % nbrGroup2];
+            // lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+            // person4 = this.findPerson(
+            //   person4,
+            //   group2,
+            //   lastPosition,
+            //   stringDate(date),
+            //   0,
+            //   'nuit'
+            // );
+
+            // let person5: IApiPersonnel | null =
+            //   group3[repartiGroup3++ % nbrGroup3];
+            // lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+            // person5 = this.findPerson(
+            //   person5,
+            //   group3,
+            //   lastPosition,
+            //   stringDate(date),
+            //   0,
+            //   'nuit'
+            // );
+
+            let datasPersonDayNuit:(GroupsPeople["data"][number]  )[]= []
+            for(let c = 0; c<nbrPersonDay.samediNuit; c++){
+              let lastPosition = groupsPeople.parcours++ % groupsPeople.data.length;
+              let dataPerson2:GroupsPeople["data"][number] | null = groupsPeople.data[groupsPeople.parcours++ % groupsPeople.data.length];
+              dataPerson2 = this.uniquePersonDay(
+                dataPerson2,
+                datasPersonDayNuit,
+                groupsPeople.data,
                 lastPosition,
                 date,
-                'jour'
+                "nuit"
               );
-            } else if (oneOrTwo == 1) {
-              person2 = group3[repartiGroup3++ % nbrGroup3];
-              lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-              person2 = this.uniquePersonDay(
-                person2,
-                [person3],
-                group3,
-                lastPosition,
-                date,
-                'jour'
-              );
+              if(dataPerson2){
+                datasPersonDayNuit.push(dataPerson2);
+              }
             }
 
-            [person1, person2, person3].forEach((pers) => {
-              if (pers != null) {
-                let persJour: IPersonnelJour = {
-                  personnel: pers,
-                  responsable: false,
-                  permanence: personnel_permanence,
-                };
-                permanence.personnels_jour?.push(persJour);
-              } else {
-                pers = group3[repartiGroup3++ % nbrGroup3];
-                lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-                pers = this.uniquePersonDay(
-                  pers,
-                  [person3],
-                  group3,
-                  lastPosition,
-                  date,
-                  'jour'
-                );
-                if (pers != null) {
-                  let persJour: IPersonnelJour = {
-                    personnel: pers,
-                    responsable: false,
-                    permanence: personnel_permanence,
-                  };
-                  permanence.personnels_jour?.push(persJour);
-                }
-              }
-            });
-
-            let person4 = group2[repartiGroup2++ % nbrGroup2];
-            lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-            person4 = this.findPerson(
-              person4,
-              group2,
-              lastPosition,
-              stringDate(date),
-              0,
-              'nuit'
-            );
-
-            let person5: IApiPersonnel | null =
-              group3[repartiGroup3++ % nbrGroup3];
-            lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-            person5 = this.findPerson(
-              person5,
-              group3,
-              lastPosition,
-              stringDate(date),
-              0,
-              'nuit'
-            );
-
-            let personsNuitList = [person4, person5];
-            personsNuitList = this.trierPersonChief(
-              personsNuitList,
+            
+            datasPersonDayNuit = this.trierPersonChief(
+              datasPersonDayNuit,
               idCountChief
             );
 
-            personsNuitList.forEach((pers, i) => {
+            datasPersonDayNuit.forEach((pers, i) => {
               if (pers) {
                 let persNuit: IPersonnelNuit = {
-                  personnel: pers,
+                  personnel: pers.personnel,
                   responsable: i == 0,
                   permanence: personnel_permanence,
                 };
@@ -1071,42 +1346,60 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           }
         }
       } else if (date.getDay() == 0) {
-        decalage++;
+        groupTfg.parcours++;
 
-        if (permanence.type == 'simple') {
-          let person1 = group2[repartiGroup2++ % nbrGroup2];
-          let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-          person1 = this.findPerson(
-            person1,
-            group2,
-            lastPosition,
-            stringDate(date),
-            0,
-            'jour'
-          );
+        if (permanence.type == 'simple' || permanence.type=="ouvrable") {
 
-          let person2: IApiPersonnel | null =
-            group3[repartiGroup3++ % nbrGroup3];
-          lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-          person2 = this.findPerson(
-            person2,
-            group3,
-            lastPosition,
-            stringDate(date),
-            0,
-            'jour'
-          );
+          // let person1 = group2[repartiGroup2++ % nbrGroup2];
+          // let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+          // person1 = this.findPerson(
+          //   person1,
+          //   group2,
+          //   lastPosition,
+          //   stringDate(date),
+          //   0,
+          //   'jour'
+          // );
 
-          let personsJourList = [person1, person2];
-          personsJourList = this.trierPersonChief(
-            personsJourList,
+          // let person2: IApiPersonnel | null =
+          //   group3[repartiGroup3++ % nbrGroup3];
+          // lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+          // person2 = this.findPerson(
+          //   person2,
+          //   group3,
+          //   lastPosition,
+          //   stringDate(date),
+          //   0,
+          //   'jour'
+          // );
+
+          let datasPersonDayJour:(GroupsPeople["data"][number]  )[]= []
+          for(let c = 0; c<nbrPersonDay.dimancheJour; c++){
+            let lastPosition = groupsPeople.parcours++ % groupsPeople.data.length;
+            let dataPerson2:GroupsPeople["data"][number] | null = groupsPeople.data[groupsPeople.parcours++ % groupsPeople.data.length];
+            dataPerson2 = this.uniquePersonDay(
+              dataPerson2,
+              datasPersonDayJour,
+              groupsPeople.data,
+              lastPosition,
+              date,
+              "jour"
+            );
+            if(dataPerson2){
+              datasPersonDayJour.push(dataPerson2);
+            }
+          }
+
+          
+          datasPersonDayJour = this.trierPersonChief(
+            datasPersonDayJour,
             idCountChief
           );
 
-          personsJourList.forEach((pers, i) => {
+          datasPersonDayJour.forEach((pers, i) => {
             if (pers != null) {
               let persJour: IPersonnelJour = {
-                personnel: pers,
+                personnel: pers.personnel,
                 responsable: i == 0,
                 permanence: personnel_permanence,
               };
@@ -1114,42 +1407,76 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             }
           });
 
-          let person3 = group2[repartiGroup2++ % nbrGroup2];
-          lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
-          person3 = this.findPerson(
-            person3,
-            group2,
-            lastPosition,
-            stringDate(date),
-            0,
-            'nuit'
-          );
+          // let person3 = group2[repartiGroup2++ % nbrGroup2];
+          // lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+          // person3 = this.findPerson(
+          //   person3,
+          //   group2,
+          //   lastPosition,
+          //   stringDate(date),
+          //   0,
+          //   'nuit'
+          // );
 
-          let person4 = group3[repartiGroup3++ % nbrGroup3];
-          lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
-          person4 = this.findPerson(
-            person4,
-            group3,
-            lastPosition,
-            stringDate(date),
-            0,
-            'nuit'
-          );
+          // let person4 = group3[repartiGroup3++ % nbrGroup3];
+          // lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+          // person4 = this.findPerson(
+          //   person4,
+          //   group3,
+          //   lastPosition,
+          //   stringDate(date),
+          //   0,
+          //   'nuit'
+          // );
 
-          let personsNuitList = [person3, person4];
-          personsNuitList = this.trierPersonChief(
-            personsNuitList,
+          // let personsNuitList = [person3, person4];
+          // personsNuitList = this.trierPersonChief(
+          //   personsNuitList,
+          //   idCountChief
+          // );
+
+          // personsNuitList.forEach((pers, i) => {
+          //   if (pers) {
+          //     let persNuit: IPersonnelNuit = {
+          //       personnel: pers,
+          //       responsable: i == 0,
+          //       permanence: personnel_permanence,
+          //     };
+
+          //     permanence.personnels_nuit?.push(persNuit);
+          //   }
+          // });
+
+          let datasPersonDayNuit:(GroupsPeople["data"][number]  )[]= []
+          for(let c = 0; c<nbrPersonDay.dimancheNuit; c++){
+            let lastPosition = groupsPeople.parcours++ % groupsPeople.data.length;
+            let dataPerson2:GroupsPeople["data"][number] | null = groupsPeople.data[groupsPeople.parcours++ % groupsPeople.data.length];
+            dataPerson2 = this.uniquePersonDay(
+              dataPerson2,
+              datasPersonDayNuit,
+              groupsPeople.data,
+              lastPosition,
+              date,
+              "nuit"
+            );
+            if(dataPerson2){
+              datasPersonDayNuit.push(dataPerson2);
+            }
+          }
+
+          
+          datasPersonDayNuit = this.trierPersonChief(
+            datasPersonDayNuit,
             idCountChief
           );
 
-          personsNuitList.forEach((pers, i) => {
-            if (pers) {
+          datasPersonDayNuit.forEach((pers, i) => {
+            if (pers != null) {
               let persNuit: IPersonnelNuit = {
-                personnel: pers,
+                personnel: pers.personnel,
                 responsable: i == 0,
                 permanence: personnel_permanence,
               };
-
               permanence.personnels_nuit?.push(persNuit);
             }
           });
@@ -1202,17 +1529,482 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     });
   }
 
+  decalage(
+    indice1: number,
+    indice2: number,
+    tableau: GroupsPeople['data']
+  ): GroupsPeople['data'] {
+    let n = indice2 - indice1;
+    if (n != 0) {
+      let element = JSON.parse(JSON.stringify(tableau[indice2]));
+      if (n < 0) {
+        n += tableau.length;
+      }
+      for (let i = 0; i < n; i++) {
+        let insertIndice = indice2 - i;
+        let dataIndice = indice2 - i - 1;
+        if (insertIndice < 0) {
+          insertIndice += tableau.length;
+        }
+        if (dataIndice < 0) {
+          dataIndice += tableau.length;
+        }
+
+        tableau[insertIndice] = tableau[dataIndice];
+      }
+      tableau[indice1] = element;
+    }
+    console.log('voici le tableau avec le decalage ', tableau);
+    return tableau;
+  }
+
+  // fillPlanning() {
+  //   let decalage = 0;
+  //   let group1 = shuffleArray([...this.group1]);
+  //   let group2 = shuffleArray([...this.group2]);
+  //   let group3 = shuffleArray([...this.group3]);
+
+  //   console.log('voici les différents groupes creer', group1, group2, group3);
+
+  //   let nbrGroup1 = group1.length;
+  //   let nbrGroup2 = group2.length;
+  //   let nbrGroup3 = group3.length;
+  //   let oneOrTwoPerson = [1, 2];
+
+  //   let jourFerier: { jour1: IPermanence | null; jour2: IPermanence | null } = {
+  //     jour1: null,
+  //     jour2: null,
+  //   };
+  //   let sameditAvant: IPermanence | null = null;
+
+  //   console.log('groupe formé', [...group1], [...group2], [...group3]);
+
+  //   let repartiGroup2 = 0;
+  //   let repartiGroup3 = 0;
+  //   let repartiOneOrTwo = 0;
+
+  //   let idCountChief: { [key in number]: number } = { '-1': -1 };
+
+  //   this.permanences.forEach((permanence, index) => {
+  //     let date = new Date(permanence.date);
+  //     let personnel_permanence: IPermanence = JSON.parse(
+  //       JSON.stringify(permanence)
+  //     );
+  //     delete personnel_permanence.personnels_jour;
+  //     delete personnel_permanence.personnels_nuit;
+  //     if (date.getDay() != 0 && date.getDay() != 6) {
+  //       if (permanence.type == 'simple') {
+  //         let person1 = group1[(index - decalage) % nbrGroup1];
+  //         let lastPosition = (index - decalage) % nbrGroup1;
+  //         person1 = this.findPerson(
+  //           person1,
+  //           group1,
+  //           lastPosition,
+  //           stringDate(date)
+  //         );
+
+  //         lastPosition = repartiGroup3 % nbrGroup3;
+  //         let person2 = group3[repartiGroup3++ % nbrGroup3];
+  //         console.log(
+  //           'avant findPerson person2 =>',
+  //           person2,
+  //           '\nlastPosition',
+  //           lastPosition,
+  //           '\ndate',
+  //           date
+  //         );
+  //         person2 = this.findPerson(
+  //           person2,
+  //           group3,
+  //           lastPosition,
+  //           stringDate(date)
+  //         );
+  //         console.log('après findPerson person2 =>', person2, '\ndate', date);
+  //         // if (person1.sexe == 'F') {
+  //         //   let i = lastPosition;
+  //         //   while (person1.sexe == 'F') {
+  //         //     i = (i + 1) % nbrGroup1;
+  //         //     person1 = group1[i];
+  //         //   }
+  //         //   let temps = group1[lastPosition];
+  //         //   group1[lastPosition] = person1;
+  //         //   group1[i] = temps;
+  //         // }
+
+  //         if (person1.sexe == 'M' && person2.sexe == 'M') {
+  //           let person1Nuit: IPersonnelNuit = {
+  //             permanence: personnel_permanence,
+  //             personnel: person1,
+  //             responsable: true,
+  //           };
+  //           let person2Nuit: IPersonnelNuit = {
+  //             permanence: personnel_permanence,
+  //             personnel: person2,
+  //             responsable: false,
+  //           };
+  //           permanence.personnels_nuit?.push(person1Nuit, person2Nuit);
+  //         }
+  //       } else if (permanence.type == 'ouvrable') {
+  //         if (jourFerier.jour1 == null) {
+  //           jourFerier.jour1 = permanence;
+  //         } else if (jourFerier.jour1 != null && jourFerier.jour2 == null) {
+  //           if (sameditAvant != null) {
+  //             permanence.personnels_jour = sameditAvant.personnels_jour;
+  //             permanence.personnels_nuit = sameditAvant.personnels_nuit;
+  //           }
+  //         }
+  //         console.log('jour ouvrable semaine', date);
+  //       }
+  //     } else if (date.getDay() == 6) {
+  //       if (permanence.type == 'ouvrable') {
+  //         let permanenceLundi = this.permanences[index - 5];
+  //         if (
+  //           permanence.personnels_jour != null &&
+  //           permanenceLundi.personnels_nuit != null
+  //         ) {
+  //           let personNuit = permanenceLundi.personnels_nuit[0];
+  //           let person0: IApiPersonnel | null = null;
+  //           if (personNuit) {
+  //             permanence.personnels_jour[0] = personNuit;
+  //           } else {
+  //             console.log('problème rencontré le Lundi, anticipation ...');
+  //             person0 = group1[(index - decalage) % nbrGroup1];
+  //             // let lastPosition = (index - decalage) % nbrGroup1;
+  //             // person0 = this.findPerson(person0, group1, lastPosition,stringDate(date))
+  //           }
+  //           if (person0 != null) {
+  //             let lastPosition = (index - decalage) % nbrGroup1;
+  //             person0 = this.findPerson(
+  //               person0,
+  //               group1,
+  //               lastPosition,
+  //               stringDate(date),
+  //               0,
+  //               'jour'
+  //             );
+  //             let person0Jour: IPersonnelJour = {
+  //               personnel: person0,
+  //               permanence: personnel_permanence,
+  //               responsable: true,
+  //             };
+
+  //             permanence.personnels_jour.push(person0Jour);
+  //           }
+
+  //           let person1 = group2[repartiGroup2++ % nbrGroup2];
+  //           let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+  //           person1 = this.findPerson(
+  //             person1,
+  //             group2,
+  //             lastPosition,
+  //             stringDate(date),
+  //             0,
+  //             'jour'
+  //           );
+
+  //           let person3: IApiPersonnel | null =
+  //             group3[repartiGroup3++ % nbrGroup3];
+  //           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+  //           person3 = this.findPerson(
+  //             person3,
+  //             group3,
+  //             lastPosition,
+  //             stringDate(date),
+  //             0,
+  //             'jour'
+  //           );
+
+  //           let oneOrTwo =
+  //             oneOrTwoPerson[repartiOneOrTwo++ % oneOrTwoPerson.length];
+
+  //           let person2: IApiPersonnel | null = null;
+  //           if (oneOrTwo == 2) {
+  //             person2 = group2[repartiGroup2++ % nbrGroup2];
+  //             lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+  //             person2 = this.uniquePersonDay(
+  //               person2,
+  //               [person1],
+  //               group2,
+  //               lastPosition,
+  //               date,
+  //               'jour'
+  //             );
+  //           } else if (oneOrTwo == 1) {
+  //             person2 = group3[repartiGroup3++ % nbrGroup3];
+  //             lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+  //             person2 = this.uniquePersonDay(
+  //               person2,
+  //               [person3],
+  //               group3,
+  //               lastPosition,
+  //               date,
+  //               'jour'
+  //             );
+  //           }
+
+  //           [person1, person2, person3].forEach((pers) => {
+  //             if (pers != null) {
+  //               let persJour: IPersonnelJour = {
+  //                 personnel: pers,
+  //                 responsable: false,
+  //                 permanence: personnel_permanence,
+  //               };
+  //               permanence.personnels_jour?.push(persJour);
+  //             } else {
+  //               pers = group3[repartiGroup3++ % nbrGroup3];
+  //               lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+  //               pers = this.uniquePersonDay(
+  //                 pers,
+  //                 [person3],
+  //                 group3,
+  //                 lastPosition,
+  //                 date,
+  //                 'jour'
+  //               );
+  //               if (pers != null) {
+  //                 let persJour: IPersonnelJour = {
+  //                   personnel: pers,
+  //                   responsable: false,
+  //                   permanence: personnel_permanence,
+  //                 };
+  //                 permanence.personnels_jour?.push(persJour);
+  //               }
+  //             }
+  //           });
+
+  //           let person4 = group2[repartiGroup2++ % nbrGroup2];
+  //           lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+  //           person4 = this.findPerson(
+  //             person4,
+  //             group2,
+  //             lastPosition,
+  //             stringDate(date),
+  //             0,
+  //             'nuit'
+  //           );
+
+  //           let person5: IApiPersonnel | null =
+  //             group3[repartiGroup3++ % nbrGroup3];
+  //           lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+  //           person5 = this.findPerson(
+  //             person5,
+  //             group3,
+  //             lastPosition,
+  //             stringDate(date),
+  //             0,
+  //             'nuit'
+  //           );
+
+  //           let personsNuitList = [person4, person5];
+  //           personsNuitList = this.trierPersonChief(
+  //             personsNuitList,
+  //             idCountChief
+  //           );
+
+  //           personsNuitList.forEach((pers, i) => {
+  //             if (pers) {
+  //               let persNuit: IPersonnelNuit = {
+  //                 personnel: pers,
+  //                 responsable: i == 0,
+  //                 permanence: personnel_permanence,
+  //               };
+
+  //               permanence.personnels_nuit?.push(persNuit);
+  //             }
+  //           });
+
+  //           // let person4Jour: IPersonnelJour = {
+  //           //   personnel: person4,
+  //           //   responsable: false,
+  //           //   permanence: personnel_permanence,
+  //           // };
+  //           // permanence.personnels_jour?.push(
+  //           //   person1Jour,
+  //           //   person2Jour,
+  //           //   person4Jour
+  //           // );
+
+  //           // lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+  //           // person3 = this.findPerson(
+  //           //   person3,
+  //           //   group2,
+  //           //   lastPosition,
+  //           //   stringDate(date)
+  //           // );
+
+  //           // lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+  //           // person5 = this.findPerson(
+  //           //   person5,
+  //           //   group3,
+  //           //   lastPosition,
+  //           //   stringDate(date)
+  //           // );
+
+  //           // let person5Nuit: IPersonnelNuit = {
+  //           //   personnel: person5,
+  //           //   responsable: true,
+  //           //   permanence: personnel_permanence,
+  //           // };
+  //           // let person3Nuit: IPersonnelNuit = {
+  //           //   personnel: person3,
+  //           //   responsable: false,
+  //           //   permanence: personnel_permanence,
+  //           // };
+
+  //           // permanence.personnels_nuit?.push(person5Nuit, person3Nuit);
+
+  //           if (jourFerier.jour1 != null) {
+  //             jourFerier.jour1.personnels_jour = permanence.personnels_jour;
+  //             jourFerier.jour1.personnels_nuit = permanence.personnels_nuit;
+  //             jourFerier.jour1 = null;
+  //           }
+
+  //           sameditAvant = permanence;
+  //         }
+  //       }
+  //     } else if (date.getDay() == 0) {
+  //       decalage++;
+
+  //       if (permanence.type == 'simple') {
+  //         let person1 = group2[repartiGroup2++ % nbrGroup2];
+  //         let lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+  //         person1 = this.findPerson(
+  //           person1,
+  //           group2,
+  //           lastPosition,
+  //           stringDate(date),
+  //           0,
+  //           'jour'
+  //         );
+
+  //         let person2: IApiPersonnel | null =
+  //           group3[repartiGroup3++ % nbrGroup3];
+  //         lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+  //         person2 = this.findPerson(
+  //           person2,
+  //           group3,
+  //           lastPosition,
+  //           stringDate(date),
+  //           0,
+  //           'jour'
+  //         );
+
+  //         let personsJourList = [person1, person2];
+  //         personsJourList = this.trierPersonChief(
+  //           personsJourList,
+  //           idCountChief
+  //         );
+
+  //         personsJourList.forEach((pers, i) => {
+  //           if (pers != null) {
+  //             let persJour: IPersonnelJour = {
+  //               personnel: pers,
+  //               responsable: i == 0,
+  //               permanence: personnel_permanence,
+  //             };
+  //             permanence.personnels_jour?.push(persJour);
+  //           }
+  //         });
+
+  //         let person3 = group2[repartiGroup2++ % nbrGroup2];
+  //         lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+  //         person3 = this.findPerson(
+  //           person3,
+  //           group2,
+  //           lastPosition,
+  //           stringDate(date),
+  //           0,
+  //           'nuit'
+  //         );
+
+  //         let person4 = group3[repartiGroup3++ % nbrGroup3];
+  //         lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+  //         person4 = this.findPerson(
+  //           person4,
+  //           group3,
+  //           lastPosition,
+  //           stringDate(date),
+  //           0,
+  //           'nuit'
+  //         );
+
+  //         let personsNuitList = [person3, person4];
+  //         personsNuitList = this.trierPersonChief(
+  //           personsNuitList,
+  //           idCountChief
+  //         );
+
+  //         personsNuitList.forEach((pers, i) => {
+  //           if (pers) {
+  //             let persNuit: IPersonnelNuit = {
+  //               personnel: pers,
+  //               responsable: i == 0,
+  //               permanence: personnel_permanence,
+  //             };
+
+  //             permanence.personnels_nuit?.push(persNuit);
+  //           }
+  //         });
+
+  //         // let person1Jour: IPersonnelJour = {
+  //         //   personnel: person1,
+  //         //   responsable: true,
+  //         //   permanence: personnel_permanence,
+  //         // };
+  //         // permanence.personnels_jour?.push(person1Jour);
+
+  //         // lastPosition = (repartiGroup2 - 1 + nbrGroup2) % nbrGroup2;
+  //         // person2 = this.findPerson(
+  //         //   person2,
+  //         //   group2,
+  //         //   lastPosition,
+  //         //   stringDate(date)
+  //         // );
+
+  //         // let person2Nuit: IPersonnelNuit = {
+  //         //   personnel: person2,
+  //         //   responsable: true,
+  //         //   permanence: personnel_permanence,
+  //         // };
+  //         // permanence.personnels_nuit?.push(person2Nuit);
+
+  //         // lastPosition = (repartiGroup3 - 1 + nbrGroup3) % nbrGroup3;
+  //         // person4 = this.findPerson(
+  //         //   person4,
+  //         //   group3,
+  //         //   lastPosition,
+  //         //   stringDate(date)
+  //         // );
+
+  //         // let person3Jour: IPersonnelJour = {
+  //         //   personnel: person3,
+  //         //   responsable: false,
+  //         //   permanence: personnel_permanence,
+  //         // };
+
+  //         // let person4Nuit: IPersonnelNuit = {
+  //         //   personnel: person4,
+  //         //   responsable: false,
+  //         //   permanence: personnel_permanence,
+  //         // };
+  //         // permanence.personnels_jour?.push(person3Jour);
+  //         // permanence.personnels_nuit?.push(person4Nuit);
+  //       }
+  //     }
+  //   });
+  // }
+
   uniquePersonDay(
-    person: IApiPersonnel,
-    people: Array<IApiPersonnel | null>,
-    group: IApiPersonnel[],
+    person: GroupsPeople["data"][number],
+    people: Array<GroupsPeople["data"][number] | null>,
+    group: GroupsPeople["data"],
     lastPosition: number,
     date: Date,
     type: 'jour' | 'nuit'
-  ) {
+  ):GroupsPeople["data"][number] | null {
     let isIdentique = false;
     let nbrIdentique = 0;
-    let triPeople: IApiPersonnel[] = <IApiPersonnel[]>(
+    let triPeople: GroupsPeople["data"] = <GroupsPeople["data"]>(
       people.filter((p) => p != null)
     );
     do {
@@ -1226,7 +2018,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       );
       let trouve = false;
       for (let onePerson of triPeople) {
-        if (person.id == onePerson.id) {
+        if (person.personnel.id == onePerson.personnel.id) {
           isIdentique = true;
           trouve = true;
           break;
@@ -1245,16 +2037,14 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
   ngOnDestroy(): void {
     this.destroy$.next(true);
   }
 
-  disabledNewPlanning(){
+  disabledNewPlanning() {
     let disabled = false;
-    for(let planning of this.plannings){
-      if(!planning.id){
+    for (let planning of this.plannings) {
+      if (!planning.id) {
         return true;
       }
     }
@@ -1264,7 +2054,6 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
   ngAfterViewInit() {
     scrollToDiv('#mat-typography');
   }
-
 
   announceSortChange(sortState: Sort) {
     // This example uses English messages. If your application supports

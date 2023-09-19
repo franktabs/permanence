@@ -13,8 +13,8 @@ export type DataModalInput = {
   critere_object?:typeof CRITERE_OBJECT
 }
 
-export const CRITERE_OBJECT:{[key in ICritere["nom"]]: boolean} = {"RESPONSABLE TFG":false ,"APPARAIT WEEKEND":false ,"SUPERVISEUR":false ,"APPARAIT LUNDI - VENDREDI ":false ,"REPARTI NORMALEMENT":false}
-export const CRITERES: (keyof typeof CRITERE_OBJECT)[] = ["RESPONSABLE TFG" ,"APPARAIT WEEKEND" ,"SUPERVISEUR" ,"APPARAIT LUNDI - VENDREDI " ,"REPARTI NORMALEMENT"]
+export const CRITERE_OBJECT:{[key in ICritere["nom"]]: boolean} = {"RESPONSABLE TFG":false ,"APPARAIT WEEKEND":false ,"SUPERVISEUR":false ,"APPARAIT LUNDI - VENDREDI ":false ,"REPARTI NORMALEMENT":false, "APPARAIT DIMANCHE":false, "APPARAIT SAMEDI":false}
+export const CRITERES: (keyof typeof CRITERE_OBJECT)[] = ["RESPONSABLE TFG" ,"APPARAIT WEEKEND" ,"SUPERVISEUR" ,"APPARAIT LUNDI - VENDREDI " ,"REPARTI NORMALEMENT", "APPARAIT SAMEDI", "APPARAIT DIMANCHE"]
 
 
 @Component({

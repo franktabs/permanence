@@ -165,7 +165,7 @@ export class ModalPlanificationComponent implements OnInit {
     if(this.api.data.groupes.length < 3){
       return true;
     }
-    
+
     let criteresGroupes:Set<keyof typeof CRITERE_OBJECT> = new Set();
     
     for(let group of this.api.data.groupes){
@@ -193,6 +193,46 @@ export class ModalPlanificationComponent implements OnInit {
     return false;
   }
 
+  // public generer() {
+  //   this.loader.loader_modal$.next(true);
+  //   let data: DataPlanning = {
+  //     periode: this.periode,
+  //     feriers: this.feriers,
+  //     superviseur: this.superviseur,
+  //     group1: this.responsableTFJ,
+  //   };
+  //   let errors = false;
+  //   for (let i = 0; i < +this.periode; i++) {
+  //     let person = this.superviseur[i];
+  //     if (!person || typeof person == 'string') {
+  //       errors = true;
+  //       break;
+  //     }
+  //   }
+
+  //   for (let responsable of this.responsableTFJ) {
+  //     if (!responsable || typeof responsable == 'string') {
+  //       errors = true;
+  //       break;
+  //     }
+  //   }
+
+  //   for (let ferier of this.feriers) {
+  //     if (!ferier.jour) {
+  //       errors = true;
+  //       break;
+  //     }
+  //   }
+  //   if (errors) {
+  //     this.loader.loader_modal$.next(false);
+  //     this.alert.alertFormulaire();
+  //   } else {
+  //     console.log('données config planning', data);
+  //     this.dataEmit.emit(data);
+  //     this.openChange.emit(false);
+  //   }
+  //   this.loader.loader_modal$.next(false);
+  // }
   public generer() {
     this.loader.loader_modal$.next(true);
     let data: DataPlanning = {
