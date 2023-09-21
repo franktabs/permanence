@@ -1,0 +1,13 @@
+<h1 mat-dialog-title  > {{data.title}} </h1>
+<div mat-dialog-content>
+    <p class="text-capitalize text-center" >
+        {{data.content}}
+    </p>
+</div>
+<div mat-dialog-actions class="d-flex justify-content-end gap-2">
+  <button mat-raised-button (click)="onNoClick()">Cancel</button>
+
+  <button  mat-raised-button color="btn-bordeau" [mat-dialog-close]="true" >
+    Oui <i class="bi bi-node-plus" ></i>
+  </button>
+</div>
