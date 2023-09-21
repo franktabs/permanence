@@ -1,77 +1,236 @@
-<app-head-modal-default nameModal="Configuration" icon="<i class='bi bi-gear'><i>" [(open)]="open">
-    <div >
-        <div class="d-flex">
-            <div class=" m-3 p-3 part1">
-                <h1 class="h1"><i class="bi bi-alarm"></i> Temps</h1>
-                <form>
-                    <table class="table table-striped">
-                        <tbody>
-                            <tr class="align-middle">
-                                <th>
-                                    <p> <label for="select-month"> Periode </label> </p>
-                                </th>
-                                <td>
-                                    <p>
-                                        <select class="form-select" name="periode" [(ngModel)]="periode"
-                                            aria-label="Default select example" id="select-month">
-                                            <option value=1>1 mois</option>
-                                            <option value=2>2 mois</option>
-                                            <option value=3 selected>3 mois</option>
-                                        </select>
-                                    </p>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th>
-                                    <p class="w-max-content"><label for="debut">Jours Feriés</label></p>
-                                </th>
-                                <td>
-                                    <p class="d-flex gap-2 align-items-center flex-column">
-                                        <span class="w-max-content ng-star-inserted d-flex align-items-center gap-2"
-                                            *ngFor="let ferier of feriers, let i = index">
-                                            <input type="date" id="debut" class="form-control " required="true"
-                                                [name]="'jour'+i" [(ngModel)]="ferier.jour">
-                                            <select class="form-select" aria-label="Default select example"
-                                                [name]="'type'+i" [(ngModel)]="ferier.type" id="select-ferier">
-                                                <option value="non_ouvrable">Ferié Non Ouvrable </option>
-                                                <option value="ouvrable" selected>Ferié Ouvrable</option>
-                                            </select>
-                                            <i class="bi bi-plus-circle plus-x text-primary" *ngIf="feriers.length-1==i"
-                                                (click)="ajoutFerier()"></i>
-                                            <i class="bi bi-x-circle plus-x text-danger" *ngIf="feriers.length!=0"
-                                                (click)="suprFerier(i)"></i>
-                                        </span>
-                                        <i class="bi bi-plus-circle plus-x text-primary" *ngIf="feriers.length==0"
-                                            (click)="ajoutFerier()"></i>
-                                    </p>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </form>
-            </div>
-            <!-- <div class="m-3 p-3 part2 d-flex flex-column">
+<app-head-modal-default
+  nameModal="Configuration"
+  icon="<i class='bi bi-gear'><i>"
+  [(open)]="open"
+>
+  <div>
+    <div class="d-flex">
+      <div class="m-3 p-3 part1 overflow-y-auto">
+        <div>
+          <h1 class="h1"><i class="bi bi-alarm"></i> Temps</h1>
+          <form>
+            <table class="table table-striped">
+              <tbody>
+                <tr class="align-middle">
+                  <th>
+                    <p><label for="select-month"> Periode </label></p>
+                  </th>
+                  <td>
+                    <p>
+                      <select
+                        class="form-select"
+                        name="periode"
+                        [(ngModel)]="periode"
+                        aria-label="Default select example"
+                        id="select-month"
+                      >
+                        <option value="1">1 mois</option>
+                        <option value="2">2 mois</option>
+                        <option value="3" selected>3 mois</option>
+                      </select>
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <th>
+                    <p class="w-max-content">
+                      <label for="debut">Jours Feriés</label>
+                    </p>
+                  </th>
+                  <td>
+                    <p class="d-flex gap-2 align-items-center flex-column">
+                      <span
+                        class="w-max-content ng-star-inserted d-flex align-items-center gap-2"
+                        *ngFor="let ferier of feriers; let i = index"
+                      >
+                        <input
+                          type="date"
+                          id="debut"
+                          class="form-control"
+                          required="true"
+                          [name]="'jour' + i"
+                          [(ngModel)]="ferier.jour"
+                        />
+                        <select
+                          class="form-select"
+                          aria-label="Default select example"
+                          [name]="'type' + i"
+                          [(ngModel)]="ferier.type"
+                          id="select-ferier"
+                        >
+                          <option value="non_ouvrable">
+                            Ferié Non Ouvrable
+                          </option>
+                          <option value="ouvrable" selected>
+                            Ferié Ouvrable
+                          </option>
+                        </select>
+                        <i
+                          class="bi bi-plus-circle plus-x text-primary"
+                          *ngIf="feriers.length - 1 == i"
+                          (click)="ajoutFerier()"
+                        ></i>
+                        <i
+                          class="bi bi-x-circle plus-x text-danger"
+                          *ngIf="feriers.length != 0"
+                          (click)="suprFerier(i)"
+                        ></i>
+                      </span>
+                      <i
+                        class="bi bi-plus-circle plus-x text-primary"
+                        *ngIf="feriers.length == 0"
+                        (click)="ajoutFerier()"
+                      ></i>
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+        <div>
+          <h1 class="h1"><i class="bi bi-distribute-vertical"></i> Repartition</h1>
+          <form>
+            <table class="table table-striped">
+              <tbody>
+                <tr class="align-middle">
+                  <th>
+                    <p><label for="select-month"> Lundi - Vendredi </label></p>
+                  </th>
+                  <td>
+                    <p>
+                      <select
+                        class="form-select"
+                        name="semaine"
+                        [(ngModel)]="repartitionSemaine.semaine"
+                        aria-label="Default select example"
+                        id="select-month"
+                      >
+                        <option [value]="1">1 Personne</option>
+                        <option [value]="2">2 Personnes</option>
+                        <option [value]="3" selected>3 Personnes</option>
+                        <option [value]="4" selected>4 Personnes</option>
+                      </select>
+                    </p>
+                  </td>
+                </tr>
+                <tr class="align-middle">
+                  <th>
+                    <p><label for="select-month"> Samedi Jour</label></p>
+                  </th>
+                  <td>
+                    <p>
+                      <select
+                        class="form-select"
+                        name="samediJour"
+                        [(ngModel)]="repartitionSemaine.samediJour"
+                        aria-label="Default select example"
+                        id="select-month"
+                      >
+                        <option [value]="1">1 Personne</option>
+                        <option [value]="2">2 Personnes</option>
+                        <option [value]="3" selected>3 Personnes</option>
+                        <option [value]="4" selected>4 Personnes</option>
+                      </select>
+                    </p>
+                  </td>
+                </tr>
+                <tr class="align-middle">
+                  <th>
+                    <p><label for="select-month"> Samedi Nuit </label></p>
+                  </th>
+                  <td>
+                    <p>
+                      <select
+                        class="form-select"
+                        name="samediNuit"
+                        [(ngModel)]="repartitionSemaine.samediNuit"
+                        aria-label="Default select example"
+                        id="select-month"
+                      >
+                        <option [value]="1">1 Personne</option>
+                        <option [value]="2">2 Personnes</option>
+                        <option [value]="3" selected>3 Personnes</option>
+                        <option [value]="4" selected>4 Personnes</option>
+                      </select>
+                    </p>
+                  </td>
+                </tr>
+                <tr class="align-middle">
+                  <th>
+                    <p><label for="select-month"> Dimanche Jour </label></p>
+                  </th>
+                  <td>
+                    <p>
+                      <select
+                        class="form-select"
+                        name="dimancheJour"
+                        [(ngModel)]="repartitionSemaine.dimancheJour"
+                        aria-label="Default select example"
+                        id="select-month"
+                      >
+                        <option [value]="1">1 Personne</option>
+                        <option [value]="2">2 Personnes</option>
+                        <option [value]="3" selected>3 Personnes</option>
+                        <option [value]="4" selected>4 Personnes</option>
+                      </select>
+                    </p>
+                  </td>
+                </tr>
+                <tr class="align-middle">
+                  <th>
+                    <p><label for="select-month"> Dimanche Nuit </label></p>
+                  </th>
+                  <td>
+                    <p>
+                      <select
+                        class="form-select"
+                        name="dimancheNuit"
+                        [(ngModel)]="repartitionSemaine.dimancheNuit"
+                        aria-label="Default select example"
+                        id="select-month"
+                      >
+                        <option [value]="1">1 Personne</option>
+                        <option [value]="2">2 Personnes</option>
+                        <option [value]="3" selected>3 Personnes</option>
+                        <option [value]="4" selected>4 Personnes</option>
+                      </select>
+                    </p>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </form>
+        </div>
+      </div>
+      <!-- <div class="m-3 p-3 part2 d-flex flex-column">
                 <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Superviseur</h1>
                 <app-personnel-autocomplete (dataPerson)="receiveSuperviseur(ind, $event)"
                     *ngFor="let ind of arrayNumPeriode" forLabel="Nom du superviseur N°{{ind}} "
                     forPlaceholder="Superviseur du mois" [options]="optionsManager" name="superviseur{{ind}}">
                 </app-personnel-autocomplete>
             </div> -->
-            <div class="my-3 p-3 part3 d-flex flex-column gap-2 align-items-start">
-                <h1 class="h1 my-border-bottom m-0"> <i class="bi bi-person-fill-gear"></i> Création de Groupes</h1>
-                <button mat-raised-button color="btn-noir" (click)="ajouterGroupe()" >
-                    Ajouter un nouveau groupe <i class="bi bi-plus-circle" > </i>
-                </button>
-                <div class="d-flex gap-2 content-group  " >
-                    <div *ngFor="let groupe of groupes; let i = index" class="position-relative group-person" >
-                        <span class="close-group text-danger" (click)="suprGroupe(i)" > <i class="bi bi-x-circle-fill" ></i> </span>
-                        <app-card-group-personnel [groupe]="groupe">
-                        </app-card-group-personnel>
-                    </div>
-                </div>
-            </div>
-            <!-- <div class="m-3 p-3 part3 d-flex flex-column">
+      <div class="my-3 p-3 part3 d-flex flex-column gap-2 align-items-start">
+        <h1 class="h1 my-border-bottom m-0">
+          <i class="bi bi-person-fill-gear"></i> Création de Groupes
+        </h1>
+        <button mat-raised-button color="btn-noir" (click)="ajouterGroupe()">
+          Ajouter un nouveau groupe <i class="bi bi-plus-circle"> </i>
+        </button>
+        <div class="d-flex gap-2 content-group">
+          <div
+            *ngFor="let groupe of groupes; let i = index"
+            class="position-relative group-person"
+          >
+            <span class="close-group text-danger" (click)="suprGroupe(i)">
+              <i class="bi bi-x-circle-fill"></i>
+            </span>
+            <app-card-group-personnel [groupe]="groupe">
+            </app-card-group-personnel>
+          </div>
+        </div>
+      </div>
+      <!-- <div class="m-3 p-3 part3 d-flex flex-column">
                 <h1 class="h1"> <i class="bi bi-person-fill-gear"></i> Responsable TFJ</h1>
 
                 <app-personnel-autocomplete (dataPerson)="receiveResponsable(ind1, $event)"
@@ -79,12 +238,17 @@
                     forPlaceholder="Responsable TFJ" [options]="optionsRessources" name="responsable{{ind1}}">
                 </app-personnel-autocomplete>
             </div> -->
-        </div>
-
     </div>
-    <div class="text-end px-4 footer-modal " >
-        <button mat-raised-button color="btn-bordeau" type="submit" (click)="generer()" [disabled]="isDisabled()">Generer <i
-                class="bi bi-table"></i>
-        </button>
-    </div>
+  </div>
+  <div class="text-end px-4 footer-modal">
+    <button
+      mat-raised-button
+      color="btn-bordeau"
+      type="submit"
+      (click)="generer()"
+      [disabled]="isDisabled()"
+    >
+      Generer <i class="bi bi-table"></i>
+    </button>
+  </div>
 </app-head-modal-default>

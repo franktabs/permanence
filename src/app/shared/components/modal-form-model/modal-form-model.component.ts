@@ -196,7 +196,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
           this.alert.alertSave();
           if(this.data.action=="ADD"){
             oldDataPersonnels.unshift(response.data[0]);
-            this.api.personnels$.next(oldDataPersonnels);
+            this.api.personnels$.next(JSON.parse(JSON.stringify(oldDataPersonnels)));
           }else if( this.data.action=="UPDATE"){
             response = await axios.get(this.api.URL_PERSONNELS);
             if(response.data){

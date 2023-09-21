@@ -24,6 +24,7 @@ import { LoaderService } from '../../services/loader.service';
 import { AlertService } from '../../services/alert.service';
 import IGroupe from '../../interfaces/igroupe';
 import { CRITERE_OBJECT } from '../modal-input/modal-input.component';
+import { RepartitionSemaine } from 'src/app/pages/page-plannification/page-plannification.component';
 
 export type Ferier = { jour: string; type: IPermanence['type'] };
 
@@ -48,6 +49,8 @@ export class ModalPlanificationComponent implements OnInit {
   public arrayNumPeriode: number[] = [1, 2, 3];
   public feriers: Ferier[] = [];
   public groupes: IGroupe[] = [];
+
+  public repartitionSemaine:RepartitionSemaine = {semaine:4, samediJour:4, samediNuit:2, dimancheJour:4, dimancheNuit:2}
 
   public optionsManager: TypePersonnel[] = [];
   public optionsRessources: TypePersonnel[] = [];
@@ -242,7 +245,6 @@ export class ModalPlanificationComponent implements OnInit {
   //   this.loader.loader_modal$.next(false);
   // }
   public generer() {
-    this.loader.loader_modal$.next(true);
     let data: DataPlanning = {
       periode: this.periode,
       feriers: this.feriers,
@@ -281,7 +283,6 @@ export class ModalPlanificationComponent implements OnInit {
     // }
     this.dataEmit.emit(data);
     this.openChange.emit(false);
-    this.loader.loader_modal$.next(false);
   }
 
   public receiveSuperviseur(i: number, event: any) {

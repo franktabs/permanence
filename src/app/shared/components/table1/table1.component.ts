@@ -113,7 +113,7 @@ export class Table1Component
     if (changes['personnels']) {
       let newData: TypePersonnel[] = changes['personnels'].currentValue;
       this.dataSource = new MatTableDataSource<TypePersonnel>(newData);
-      console.log('changement données du personnels');
+      console.log('changement données du personnels', newData);
       // this.paginator.length = (newData || []).length;
       // this.paginator.firstPage();
       this.dataSource.paginator = this.paginator;
@@ -157,6 +157,7 @@ export class Table1Component
 
     if (this.propagation == 'REMOVE') {
       console.log('suppression de ', row);
+      this.handleAction({titre:"PERSONNEL", action:"REMOVE", row:row})
     } else if (this.propagation == 'UPDATE') {
       console.log('modification de ', row);
       this.handleAction({titre:"PERSONNEL", action:"UPDATE", row:row})

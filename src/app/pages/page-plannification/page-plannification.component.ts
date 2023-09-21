@@ -41,6 +41,14 @@ import {
 } from 'src/app/shared/utils/tables-map';
 import { TypePersonnel } from 'src/app/shared/utils/types-map';
 
+export type RepartitionSemaine = {
+  semaine: number,
+  samediJour: number,
+  samediNuit: number,
+  dimancheJour: number,
+  dimancheNuit: number,
+}
+
 type Remplissage = {
   month: number;
   superviseur: number;

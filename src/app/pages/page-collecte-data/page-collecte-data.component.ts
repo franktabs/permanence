@@ -43,6 +43,7 @@ import axios from 'axios';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { HandleActionTable1 } from 'src/app/shared/components/table1/table1.component';
+import { DataModalConfirm, ModalConfirmComponent } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
 
 interface IApiPerson {
   name: string;
@@ -125,7 +126,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     if (this._data_apiPersonnels && this.allPersonnels) {
       this.dataSource.data = this._data_apiPersonnels;
       this.dataSource.paginator = this.paginator;
-      console.log('DataSource =>', this.dataSource);
+      console.log('DataSource =>', this.dataSource.data);
       if (this._data_apiPersonnels.length < this.allPersonnels.length) {
         this.isTableFilter = true;
       } else {
@@ -248,7 +249,6 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     let existPersonnel = false;
 
     if (this.api.data['personnels'] && this.api.data.personnels.length) {
-      console.log("condition d'existence vérifié");
       existPersonnel = true;
       let allUserPersonnel = this.api.data.personnels;
       this.allPersonnels = allUserPersonnel;
@@ -274,7 +274,6 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       });
 
     if (!existPersonnel) {
-      console.log("condition d'existence non vérifié");
       this.api
         .getAllData<IApiPersonnel[]>({ for: 'personnels' })
         .subscribe((subs) => {
@@ -312,7 +311,6 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
 
   async handleModel(attr:HandleActionTable1) {
     if (attr.titre == "PERSONNEL" && attr.action=="ADD") {
-      console.log('ajouter un utilisateur');
       this.loader.loader_modal$.next(true)
       try{
         
@@ -380,7 +378,41 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
         action:"UPDATE"
       },
     });
+    }else if(attr.titre=="PERSONNEL" && attr.action=="REMOVE"&& attr.row){
+      let dialogRef =  this.dialog.open<ModalConfirmComponent, DataModalConfirm>(ModalConfirmComponent, {data:{title:"Confirmation de Suppression", content:"Etes-vous sûre ?"}})
+      dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((subs)=>{
+        if(subs==true){
+          this.suppression(attr);
+        }
+      })
+
     }
+  }
+
+  async suppression(attr:HandleActionTable1){
+    this.loader.loader_modal$.next(true)
+    try{
+      if(attr.row?.id!=0){
+        let response = await axios.delete(this.api.URL_PERSONNELS+"/"+attr.row?.id);
+        if(response.status<=299 && response.status>=200){
+          this.alert.alertMaterial({"message":"Suppression Réussi", "title":"success"})
+          response = await axios.get(this.api.URL_PERSONNELS);
+          if(response.data){
+            this.api.personnels$.next(response.data);
+          }
+        }
+        
+      }else{
+        this.alert.alertMaterial({"message":"Impossible de supprimer cet utilisateur", "title":"error"})
+
+      }
+
+    }catch(e){
+      console.log("Voici l'erreur", e);
+      this.alert.alertError();
+    }
+    this.loader.loader_modal$.next(false)
+
   }
 }
 
