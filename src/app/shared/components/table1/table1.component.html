@@ -6,7 +6,7 @@
             <h1>{{title}}</h1>
         </div>
         <div class="d-flex justify-content-end align-items-center p-2" *ngIf="iconAdd">
-            <button mat-raised-button color="btn-noir" (click)="handleAdd('PERSONNEL')">
+            <button mat-raised-button color="btn-noir" (click)="handleAction({'titre':'PERSONNEL', 'action':'ADD'})">
                 <div class="d-flex justify-content-end align-items-center gap-2">
                     <span [innerHTML]="iconAdd" class="fs-3 actionIcon"> </span>
                     <span>Ajouter un personnel</span>

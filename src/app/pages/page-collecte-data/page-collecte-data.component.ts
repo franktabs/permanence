@@ -42,6 +42,7 @@ import { OptionalKey, OptionalKeyString } from 'src/app/shared/utils/type';
 import axios from 'axios';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
+import { HandleActionTable1 } from 'src/app/shared/components/table1/table1.component';
 
 interface IApiPerson {
   name: string;
@@ -309,8 +310,8 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  async addModel(titre: TitleModalForm) {
-    if (titre == "PERSONNEL") {
+  async handleModel(attr:HandleActionTable1) {
+    if (attr.titre == "PERSONNEL" && attr.action=="ADD") {
       console.log('ajouter un utilisateur');
       this.loader.loader_modal$.next(true)
       try{
@@ -339,7 +340,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
             DataDialogModalFormModelComponent
           >(ModalFormModelComponent, {
             data: {
-              titre: titre,
+              titre: attr.titre,
               dataForm: newPerson,
               icon: "<i class='bi bi-person-fill-add'></i>",
             },
@@ -354,6 +355,18 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       
 
       this.loader.loader_modal$.next(false);
+    }
+    else if(attr.titre=="PERSONNEL" && attr.action=="UPDATE" && attr.row){
+      this.dialog.open<
+      ModalFormModelComponent,
+      DataDialogModalFormModelComponent
+    >(ModalFormModelComponent, {
+      data: {
+        titre: attr.titre,
+        dataForm: attr.row,
+        icon: "<i class='bi bi-person-fill-add'></i>",
+      },
+    });
     }
   }
 }

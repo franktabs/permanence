@@ -24,6 +24,14 @@ import { UserInfoModalComponent } from '../modals/user-info-modal/user-info-moda
 import { TypePersonnel } from '../../utils/types-map';
 import { TitleCard1 } from '../card1/card1.component';
 import { TitleModalForm } from '../modal-form-model/modal-form-model.component';
+import { IApiPersonnel } from '../../interfaces/iapipersonnel';
+
+
+type PropagationTable1 = "ADD"|'UPDATE' | 'REMOVE' | null;
+
+export type HandleActionTable1 = {titre: TitleModalForm, action:PropagationTable1, row?:IApiPersonnel};
+
+ 
 @Component({
   selector: 'app-table1',
   templateUrl: './table1.component.html',
@@ -46,7 +54,7 @@ export class Table1Component
   public openModal: boolean = false;
   public row: TypePersonnel | null = null;
 
-  public propagation: 'UPDATE' | 'REMOVE' | null = null;
+  public propagation: PropagationTable1 = null;
 
   private _paginator!: MatPaginator;
 
@@ -59,7 +67,7 @@ export class Table1Component
   public iconAdd!: string;
 
   @Output()
-  public toAdd: EventEmitter<TitleModalForm> = new EventEmitter();
+  public handleActionEmit: EventEmitter<HandleActionTable1> = new EventEmitter();
 
   private destroy$!: Subject<boolean>;
 
@@ -151,6 +159,7 @@ export class Table1Component
       console.log('suppression de ', row);
     } else if (this.propagation == 'UPDATE') {
       console.log('modification de ', row);
+      this.handleAction({titre:"PERSONNEL", action:"UPDATE", row:row})
     } else if (this.propagation == null) {
       this.row = row;
       this.openModal = true;
@@ -167,11 +176,11 @@ export class Table1Component
     return Object.values(item).includes(filterValue);
   }
 
-  public handleAdd(titre: TitleModalForm) {
-    this.toAdd.emit(titre);
+  public handleAction(attr:HandleActionTable1) {
+    this.handleActionEmit.emit(attr);
   }
 
-  actionIcon(event: Event | null, propagation: typeof this.propagation) {
+  actionIcon(event: Event | null, propagation: PropagationTable1) {
     this.propagation = propagation;
   }
 }
