@@ -307,6 +307,7 @@ export class ModalPlanificationComponent implements OnInit {
   }
 
   completePersonnel(group:IGroupe, value:boolean){
+    this.loader.loader_modal$.next(true)
     if(value==true){
       let idPersonnels:number[] = []
       this.groupes.forEach((oneGroup)=>{
@@ -316,7 +317,14 @@ export class ModalPlanificationComponent implements OnInit {
           }
         }
       })
-
+      let datasPersonnel = this.api.data.personnels;
+      for(let person of datasPersonnel){
+        if(person.id && !idPersonnels.includes(person.id)){
+          group.personnels.add(person);
+        }
+      }
     }
+    this.loader.loader_modal$.next(false)
+
   }
 }

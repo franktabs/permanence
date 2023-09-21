@@ -14,7 +14,7 @@ import { ApiService } from '../../services/api.service';
 export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
 
   @Input()
-  public groupe:IGroupe= {nom:"group", criteres:[], personnels:[]};
+  public groupe:IGroupe= {nom:"group", criteres:[], personnels:new Set()};
 
   public destroy$:Subject<boolean> = new Subject();
 
@@ -45,7 +45,7 @@ export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
         if(!(!subs || typeof subs == "string")){
 
           let personnel:IApiPersonnel = subs;
-          this.groupe.personnels.unshift(personnel);
+          this.groupe.personnels.add(personnel);
         }else if(typeof subs=="boolean" && subs==false){
           
         }
@@ -66,8 +66,8 @@ export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
     })
   }
 
-  deletePerson(index:number){
-    this.groupe.personnels.splice(index,1);
+  deletePerson(index:number, personnel:IApiPersonnel){
+    this.groupe.personnels.delete(personnel);
   }
 
   deleteCritere(index:number){

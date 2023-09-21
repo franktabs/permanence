@@ -14,13 +14,13 @@
       </div>
       <div class="p-2">
         <ol
-          *ngIf="groupe.personnels && groupe.personnels.length; else noPersonnel"
+          *ngIf="groupe.personnels && groupe.personnels.size; else noPersonnel"
           class="d-flex flex-wrap  gap-1"
         >
           <ng-container *ngFor="let personnel of groupe.personnels; let i=index">
             <li class="li-person py-1 px-2" [title]="personnel.firstname">
               {{ personnel.firstname | limitString : 7 }}
-              <span class="li-person-close" (click)="deletePerson(i)" >
+              <span class="li-person-close" (click)="deletePerson(i, personnel)" >
                 <i class="bi bi-x-circle-fill"></i>
               </span>
             </li>

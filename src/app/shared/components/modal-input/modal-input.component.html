@@ -1,5 +1,5 @@
 <h1 mat-dialog-title *ngIf="data.title">{{ data.title }}</h1>
-<div mat-dialog-content class="my-border-bottom">
+<div mat-dialog-content class="pb-2">
   <ng-container *ngIf="data.type == 'PERSONNEL'">
     <app-personnel-autocomplete
       (dataPerson)="receivePersonnel($event)"
@@ -23,7 +23,7 @@
     </mat-slide-toggle>
   </div>
 </div>
-<div mat-dialog-actions class="d-flex justify-content-end gap-2">
+<div mat-dialog-actions class="d-flex justify-content-end gap-2 my-border-top">
   <button mat-raised-button (click)="onNoClick()">Cancel</button>
   <button
     *ngIf="data.type == 'PERSONNEL'"
