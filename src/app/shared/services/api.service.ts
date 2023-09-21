@@ -82,6 +82,9 @@ export class ApiService {
   public URL_PARAMETERS = this.IP + '/parameter';
   public URL_DEPARTEMENTS = this.IP + '/departement';
 
+
+  public blockInitGuard:boolean = false;
+
   // public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
   // public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
   // public readonly URL_ABSENCES = 'api/apiAbsences.json';

@@ -308,6 +308,7 @@ export class ModalPlanificationComponent implements OnInit {
 
   completePersonnel(group:IGroupe, value:boolean){
     this.loader.loader_modal$.next(true)
+    console.log("execution de complete reste personnel")
     if(value==true){
       let idPersonnels:number[] = []
       this.groupes.forEach((oneGroup)=>{

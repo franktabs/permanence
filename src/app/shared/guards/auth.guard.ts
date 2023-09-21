@@ -41,68 +41,75 @@ export class AuthGuard implements CanActivate {
 
   async initDB() {
     console.log('execution de initDB');
-    try {
-      let response = await axios.get(this.api.URL_ROLES);
-      console.log('data initDB', response.data);
-      if (response.data == false) {
-        console.log('creation de la db de initDB');
-        this.alert.alertMaterial(
-          { message: 'Initialisation des informations', title: 'information' },
-          10
-        );
-        this.loader.loader_modal$.next(false);
-        response = await axios.post(this.api.URL_ROLES + '/many', dataRole);
-        console.log(response.data);
-        response = await axios.post(
-          this.api.URL_PARAMETERS + '/many',
-          dataParameter
-        );
-        console.log(response.data);
-        response = await axios.post(
-          this.api.URL_DIRECTIONS + '/config-actualise',
-          dataOrganisation
-        );
-        console.log(response.data);
 
-        response = await axios.post(
-          this.api.URL_PERSONNELS + '/config-actualise',
-          dataPersonne
-        );
-        console.log(response.data);
-
-        response = await axios.put(this.api.URL_ROLES + '/giveAll/0');
-        console.log(response.data);
-
-        location.reload();
-      } else {
-        console.log('Non creation des datas DB');
-        if(this.auth.isAuthenticated==false){
-
-          response = await axios.get(this.api.URL_PERSONNELS + '/userId/' + this.auth.DEFAULT_PERSON);
-          if(response.data){
-            this.auth.login(response.data);
-            this.router.navigateByUrl("gestion/collecte")
+    if(this.api.blockInitGuard==false){
+      this.api.blockInitGuard = true;
+      try {
+        let response = await axios.get(this.api.URL_ROLES);
+        console.log('data initDB', response.data);
+        if (response.data == false) {
+          console.log('creation de la db de initDB');
+          this.alert.alertMaterial(
+            { message: 'Initialisation des informations', title: 'information' },
+            10
+          );
+          this.loader.loader_modal$.next(false);
+          response = await axios.post(this.api.URL_ROLES + '/many', dataRole);
+          console.log(response.data);
+          response = await axios.post(
+            this.api.URL_PARAMETERS + '/many',
+            dataParameter
+          );
+          console.log(response.data);
+          response = await axios.post(
+            this.api.URL_DIRECTIONS + '/config-actualise',
+            dataOrganisation
+          );
+          console.log(response.data);
+  
+          response = await axios.post(
+            this.api.URL_PERSONNELS + '/config-actualise',
+            dataPersonne
+          );
+          console.log(response.data);
+  
+          response = await axios.put(this.api.URL_ROLES + '/giveAll/0');
+          console.log(response.data);
+          debugger;
+  
+          location.reload();
+        } else {
+          console.log('Non creation des datas DB');
+          if(this.auth.isAuthenticated==false){
+  
+            response = await axios.get(this.api.URL_PERSONNELS + '/userId/' + this.auth.DEFAULT_PERSON);
+            if(response.data){
+              this.auth.login(response.data);
+              this.router.navigateByUrl("gestion/collecte")
+            }
           }
         }
-      }
-    } catch (e) {
-      console.error("voici l'erreur de initDB => ", e);
-
-      this.alert.alertMaterial(
-        { message: 'Impossible de Joindre le Backend', title: 'error' },
-        10
-      );
-      try {
-        let response = await axios.get('api/admin.json');
-        if (response.data && this.auth.isAuthenticated == false) {
-          this.auth.login(response.data);
-          this.router.navigateByUrl('gestion/collecte');
-        }
       } catch (e) {
-        console.error("Voici l'erreur ", e);
-        this.alert.alertError();
+        console.error("voici l'erreur de initDB => ", e);
+  
+        this.alert.alertMaterial(
+          { message: 'Impossible de Joindre le Backend', title: 'error' },
+          10
+        );
+        try {
+          let response = await axios.get('api/admin.json');
+          if (response.data && this.auth.isAuthenticated == false) {
+            this.auth.login(response.data);
+            this.router.navigateByUrl('gestion/collecte');
+          }
+        } catch (e) {
+          console.error("Voici l'erreur ", e);
+          this.alert.alertError();
+        }
       }
+      this.api.blockInitGuard = false;
     }
+
   }
 
   continueInUrl(): boolean {

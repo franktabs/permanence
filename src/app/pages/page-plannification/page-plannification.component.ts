@@ -1042,7 +1042,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
     let nbrPersonDay:DataPlanning["repartition"]  = {semaine:4, samediJour:4, samediNuit:2, dimancheJour:4, dimancheNuit:2}
     if(this.dataPlanning && this.dataPlanning.repartition){
-      
+
       nbrPersonDay= this.dataPlanning.repartition;
     }
 
@@ -1112,7 +1112,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           );
 
           let datasPersonDay: GroupsPeople['data'][number][] = [];
-          for (let c = 0; c < nbrPersonDay.semaine; c++) {
+          for (let c = 0; c < nbrPersonDay.semaine-1; c++) {
             let lastPosition =
               groupsPeople.parcours++ % groupsPeople.data.length;
             let dataPerson2: GroupsPeople['data'][number] | null =
