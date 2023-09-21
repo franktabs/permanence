@@ -206,7 +206,7 @@
   <button
     mat-raised-button
     color="btn-bordeau"
-    [disabled]="myFormGroup && myFormGroup.invalid"
+    [disabled]="disabledForm()"
     (click)="enregistrer()"
   >
     Confirmer <i class="bi bi-save"></i>

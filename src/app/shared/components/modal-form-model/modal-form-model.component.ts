@@ -25,6 +25,7 @@ import { LoaderService } from '../../services/loader.service';
 import { AlertService } from '../../services/alert.service';
 import { ValidationService } from '../../services/validation.service';
 import { Subject, takeUntil } from 'rxjs';
+import { HandleActionTable1 } from '../table1/table1.component';
 
 export type DataDialogModalFormModelComponent = {
   titre: TitleModalForm;
@@ -32,6 +33,7 @@ export type DataDialogModalFormModelComponent = {
   icon: string;
   departementRequest?: DepartementRequest<IApiDepartement[]>;
   directionRequest?: DirectionRequest<IApiDirection[]>;
+  action: HandleActionTable1['action'];
 };
 
 export type TitleModalForm = 'DIRECTION' | 'DEPARTEMENT' | 'PERSONNEL';
@@ -75,7 +77,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
 
   public emailList!: (string | null)[];
 
-  public destroy$:Subject<boolean> = new Subject()
+  public destroy$: Subject<boolean> = new Subject();
 
   constructor(
     public dialogRef: MatDialogRef<ModalFormModelComponent>,
@@ -102,12 +104,12 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
     this.emailList = personnels.map((personnel) => {
       return personnel.emailaddress;
     });
-    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs)=>{
+    this.api.personnels$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
       let personnels = subs;
       this.emailList = personnels.map((personnel) => {
         return personnel.emailaddress;
       });
-    })
+    });
     for (let key in this.dataForm) {
       let cle: keyof typeof this.dataForm = key as any;
       if (cle == 'emailaddress') {
@@ -124,7 +126,9 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
       }
     }
     this.myFormGroup = this.formBuilder.group(elemntGroup);
+
     this.dataViewHtml = JSON.parse(JSON.stringify(this.dataForm));
+
     if (
       (<(keyof OptionalKeyString<IApiPersonnel>)[]>(
         Object.keys(this.dataForm)
@@ -189,9 +193,16 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
         );
         if (response.data != false && response.data[0]) {
           let oldDataPersonnels = this.api.data.personnels;
-          oldDataPersonnels.push(response.data[0]);
-          this.api.personnels$.next(oldDataPersonnels);
           this.alert.alertSave();
+          if(this.data.action=="ADD"){
+            oldDataPersonnels.unshift(response.data[0]);
+            this.api.personnels$.next(oldDataPersonnels);
+          }else if( this.data.action=="UPDATE"){
+            response = await axios.get(this.api.URL_PERSONNELS);
+            if(response.data){
+             this.api.personnels$.next(response.data);
+            }
+          }
           this.dialogRef.close();
         }
       } catch (e) {
@@ -255,12 +266,6 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
     }
   }
 
-  testEmail(): boolean {
-    let result = this.myFormGroup.controls['emailaddress'];
-    console.log('le champs email est ', result);
-    return !!result;
-  }
-
   async addOtherFor(titre: TitleModalForm) {
     if (titre == 'PERSONNEL') {
       this.loader.loader_modal$.next(true);
@@ -292,6 +297,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
               dataForm: newDepartement,
               icon: "<i class='bi bi-building-add'></i>",
               departementRequest: this.departementRequest,
+              action: 'ADD',
             },
           });
         }
@@ -333,6 +339,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
               dataForm: newDirection,
               icon: "<i class='bi bi-building-add'></i>",
               directionRequest: this.directionRequest,
+              action: 'ADD',
             },
           });
         }
@@ -343,6 +350,30 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
 
       this.loader.loader_modal$.next(false);
     }
+  }
+
+  disabledForm(): boolean {
+    if (this.data.action == 'UPDATE' && this.data.titre == 'PERSONNEL') {
+      let disabled = true;
+      for (let key of this.keyDataForm) {
+        let valeur:any = null;
+        if(this.myFormGroup.controls[key] && (typeof  this.myFormGroup.controls[key].value=="string")){
+          valeur = this.myFormGroup.controls[key].value.trim();
+        }else {
+          valeur = this.myFormGroup.controls[key]?.value
+        }
+
+
+        if ( valeur != this.data.dataForm[key]) {
+          disabled = false;
+          break;
+        }
+      }
+      if (disabled) {
+        return true;
+      }
+    }
+    return this.myFormGroup && this.myFormGroup.invalid;
   }
 
   getError(cle: string): boolean {
@@ -359,7 +390,14 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
       const value = control.value;
 
       if (this.emailList.includes(value)) {
-        return { emailUnique: true };
+        if (this.data.action == 'ADD') {
+          return { emailUnique: true };
+        } else if (
+          this.data.action == 'UPDATE' &&
+          value != this.data.dataForm.emailaddress
+        ) {
+          return { emailUnique: true };
+        }
       }
 
       return null;

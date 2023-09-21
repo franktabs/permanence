@@ -63,6 +63,7 @@ import { ModalFormModelComponent } from './shared/components/modal-form-model/mo
 import { ValidationService } from './shared/services/validation.service';
 import { CardGroupPersonnelComponent } from './shared/components/card-group-personnel/card-group-personnel.component';
 import { ModalInputComponent } from './shared/components/modal-input/modal-input.component';
+import { ModalConfirmComponent } from './shared/components/modal-confirm/modal-confirm.component';
 
 
 registerLocaleData(localeFr)
@@ -114,7 +115,8 @@ registerLocaleData(localeFr)
     ModalDaysPermanenceComponent,
     ModalFormModelComponent,
     CardGroupPersonnelComponent,
-    ModalInputComponent
+    ModalInputComponent,
+    ModalConfirmComponent
   ],
   imports: [
     BrowserModule,

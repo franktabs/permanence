@@ -343,6 +343,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
               titre: attr.titre,
               dataForm: newPerson,
               icon: "<i class='bi bi-person-fill-add'></i>",
+              action:"ADD"
             },
           });
         }
@@ -357,14 +358,26 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       this.loader.loader_modal$.next(false);
     }
     else if(attr.titre=="PERSONNEL" && attr.action=="UPDATE" && attr.row){
+
+      let person: OptionalKeyString<IApiPersonnel> = {
+        firstname: attr.row.firstname,
+        sexe: attr.row.sexe,
+        emailaddress: attr.row.emailaddress,
+        organizationId: attr.row.organizationId,
+        userId: attr.row.userId
+      };
+
       this.dialog.open<
       ModalFormModelComponent,
       DataDialogModalFormModelComponent
     >(ModalFormModelComponent, {
+
+
       data: {
         titre: attr.titre,
-        dataForm: attr.row,
+        dataForm: person,
         icon: "<i class='bi bi-person-fill-add'></i>",
+        action:"UPDATE"
       },
     });
     }
