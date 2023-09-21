@@ -37,3 +37,11 @@
 th.mat-sort-header-sorted {
     color: $bordeau-color;
 }
+
+.action-icon .pen:hover{
+    color: $for-blue-color;
+}
+
+.action-icon .trash:hover{
+    color: $for-red-color;
+}

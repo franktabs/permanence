@@ -479,7 +479,7 @@ export class AdminGuard implements CanActivate {
       }
     } catch (e) {
       console.error("voici l'erreur de initDB => ", e);
-
+      
       this.alert.alertMaterial(
         { message: 'Impossible de Joindre le Backend', title: 'error' },
         10

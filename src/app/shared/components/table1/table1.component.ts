@@ -32,9 +32,8 @@ import { TitleModalForm } from '../modal-form-model/modal-form-model.component';
 export class Table1Component
   implements AfterViewInit, OnDestroy, OnChanges, OnInit
 {
-
-
-  public displayedColumns: Array<keyof TypePersonnel> = [
+  public displayedColumns: Array<keyof TypePersonnel | 'action'> = [
+    'action',
     'firstname',
     'sexe',
     'emailaddress',
@@ -47,20 +46,20 @@ export class Table1Component
   public openModal: boolean = false;
   public row: TypePersonnel | null = null;
 
-  private _paginator!:MatPaginator;
+  public propagation: 'UPDATE' | 'REMOVE' | null = null;
+
+  private _paginator!: MatPaginator;
 
   @Input() icon!: string;
   @Input() title!: TitleCard1;
   @Input() personnels: TypePersonnel[] | null = null;
   @Input() search: string = '';
 
-
   @Input()
-  public iconAdd!:string;
+  public iconAdd!: string;
 
   @Output()
-  public toAdd:EventEmitter<TitleModalForm> = new EventEmitter();
-
+  public toAdd: EventEmitter<TitleModalForm> = new EventEmitter();
 
   private destroy$!: Subject<boolean>;
 
@@ -74,14 +73,12 @@ export class Table1Component
     }
   }
 
-  get paginator(){
+  get paginator() {
     return this._paginator;
   }
 
-
   @ViewChild(MatSort) sort!: MatSort;
 
-  
   // set sort(value: MatSort) {
   //   // if(!value){
   //     console.log("valeur de sort", value, )
@@ -106,16 +103,13 @@ export class Table1Component
   }
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['personnels']) {
-      let newData:TypePersonnel[] =  changes['personnels'].currentValue
-      this.dataSource = new MatTableDataSource<TypePersonnel>(
-        newData
-        );
-        console.log('changement données du personnels');
-        // this.paginator.length = (newData || []).length;
-        // this.paginator.firstPage();
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
-      
+      let newData: TypePersonnel[] = changes['personnels'].currentValue;
+      this.dataSource = new MatTableDataSource<TypePersonnel>(newData);
+      console.log('changement données du personnels');
+      // this.paginator.length = (newData || []).length;
+      // this.paginator.firstPage();
+      this.dataSource.paginator = this.paginator;
+      this.dataSource.sort = this.sort;
     }
     if (changes['search']) {
       this.dataSource.filter = this.search.trim();
@@ -153,8 +147,15 @@ export class Table1Component
   public handleClick(row: TypePersonnel) {
     console.log('handle click row data ', row);
 
-    this.row = row;
-    this.openModal = true;
+    if (this.propagation == 'REMOVE') {
+      console.log('suppression de ', row);
+    } else if (this.propagation == 'UPDATE') {
+      console.log('modification de ', row);
+    } else if (this.propagation == null) {
+      this.row = row;
+      this.openModal = true;
+    }
+    this.propagation = null;
 
     // this.dialog.open(UserInfoModalComponent, {
     //   data: row
@@ -166,9 +167,11 @@ export class Table1Component
     return Object.values(item).includes(filterValue);
   }
 
-
-  public handleAdd(titre:TitleModalForm){
+  public handleAdd(titre: TitleModalForm) {
     this.toAdd.emit(titre);
   }
 
+  actionIcon(event: Event | null, propagation: typeof this.propagation) {
+    this.propagation = propagation;
+  }
 }

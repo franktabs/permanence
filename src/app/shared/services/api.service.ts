@@ -62,7 +62,7 @@ export class ApiService {
   public url: URL = new URL(window.location.href);
 
   //http://localhost:18000/schedule
-  public IP = 'http://' + this.url.hostname + ':1800/schedule';
+  public IP = 'http://' + this.url.hostname + ':18000/schedule';
   // public readonly IP = 'http://'+this.url.hostname+':18100/permanences-service/rest/api/v1';
   // public readonly IP = 'http://192.168.11.75:18100/permanences-service/rest/api/v1';
 
