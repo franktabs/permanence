@@ -1,9 +1,10 @@
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import IGroupe from '../../interfaces/igroupe';
 import { MatDialog } from '@angular/material/dialog';
 import { CRITERE_OBJECT, DataModalInput, ModalInputComponent } from '../modal-input/modal-input.component';
 import { Subject, takeUntil } from 'rxjs';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
+import { ApiService } from '../../services/api.service';
 
 @Component({
   selector: 'app-card-group-personnel',
@@ -18,10 +19,13 @@ export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
   public destroy$:Subject<boolean> = new Subject();
 
   public criteres_object:typeof CRITERE_OBJECT = CRITERE_OBJECT;
+
+  @Output() public completePersonnelEmit:EventEmitter<boolean> = new EventEmitter();
   
 
   constructor(
-    private diallog:MatDialog
+    private diallog:MatDialog,
+    private api:ApiService
 
   ) { }
 
@@ -37,9 +41,14 @@ export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
   ajout(type:"PERSONNEL"|"CRITERE"){
     let diallogRef = this.diallog.open<ModalInputComponent, DataModalInput>(ModalInputComponent, {data:{title:type=="PERSONNEL"?"Ajout Personnel":"Choix Critères", model:undefined, type:type, critere_object:this.criteres_object}});
     diallogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((subs)=>{
-      if( type == "PERSONNEL" && (!(!subs || typeof subs == "string"))){
-        let personnel:IApiPersonnel = subs;
-        this.groupe.personnels.unshift(personnel);
+      if( type == "PERSONNEL" ){
+        if(!(!subs || typeof subs == "string")){
+
+          let personnel:IApiPersonnel = subs;
+          this.groupe.personnels.unshift(personnel);
+        }else if(typeof subs=="boolean" && subs==false){
+          
+        }
       }else if (type=="CRITERE" && subs){
        
         console.log("voici le subs de retour", subs);

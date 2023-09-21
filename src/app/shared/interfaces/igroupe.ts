@@ -5,6 +5,6 @@ import { IModel } from "./imodel";
 
 export default interface IGroupe extends IModel {
     nom?:string;
-    personnels:IApiPersonnel[]
+    personnels:Set<IApiPersonnel>;
     criteres:ICritere[]
 }

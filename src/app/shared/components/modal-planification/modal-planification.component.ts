@@ -33,6 +33,7 @@ export type DataPlanning = {
   feriers: Ferier[];
   superviseur: string[] | TypePersonnel[] | null[];
   group1: Array<string | TypePersonnel>;
+  repartition:RepartitionSemaine;
 };
 
 @Component({
@@ -49,6 +50,7 @@ export class ModalPlanificationComponent implements OnInit {
   public arrayNumPeriode: number[] = [1, 2, 3];
   public feriers: Ferier[] = [];
   public groupes: IGroupe[] = [];
+
 
   public repartitionSemaine:RepartitionSemaine = {semaine:4, samediJour:4, samediNuit:2, dimancheJour:4, dimancheNuit:2}
 
@@ -174,17 +176,17 @@ export class ModalPlanificationComponent implements OnInit {
     let criteresGroupes:Set<keyof typeof CRITERE_OBJECT> = new Set();
     
     for(let group of this.api.data.groupes){
-      if(!group.personnels.length || !group.criteres.length){
+      if(!group.personnels.size || !group.criteres.length){
         console.log("problème vide personnel ou critere")
         return true;
       }
       for(let critere of group.criteres){
         criteresGroupes.add(critere.nom);
-        if(critere.nom=="RESPONSABLE TFG" && group.personnels.length<5){
+        if(critere.nom=="RESPONSABLE TFG" && group.personnels.size<5){
           console.log("problème tfg < 5")
           return true;
         }
-        else if(critere.nom=="SUPERVISEUR" && (+this.periode)>group.personnels.length ){
+        else if(critere.nom=="SUPERVISEUR" && (+this.periode)>group.personnels.size ){
           console.log("problème superviseur < a la periode")
           return true;
         }
@@ -250,6 +252,7 @@ export class ModalPlanificationComponent implements OnInit {
       feriers: this.feriers,
       superviseur: this.superviseur,
       group1: this.responsableTFJ,
+      repartition:this.repartitionSemaine
     };
     // let errors = false;
     // for (let i = 0; i < +this.periode; i++) {
@@ -295,11 +298,25 @@ export class ModalPlanificationComponent implements OnInit {
   }
 
   public ajouterGroupe() {
-    let newGroup: IGroupe = { nom: 'Groupe', criteres: [], personnels: [] };
+    let newGroup: IGroupe = { nom: 'Groupe', criteres: [], personnels: new Set() };
     this.groupes.push(newGroup);
   }
 
   suprGroupe(index: number) {
     this.groupes.splice(index, 1);
+  }
+
+  completePersonnel(group:IGroupe, value:boolean){
+    if(value==true){
+      let idPersonnels:number[] = []
+      this.groupes.forEach((oneGroup)=>{
+        for(let person of oneGroup.personnels){
+          if(person.id){
+            idPersonnels.push(person.id);
+          }
+        }
+      })
+
+    }
   }
 }

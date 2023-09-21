@@ -29,6 +29,7 @@ export class ModalInputComponent implements OnInit {
   public initial_critere_object!:typeof CRITERE_OBJECT;
   public criteres: (keyof typeof CRITERE_OBJECT)[] = CRITERES;
   public optionsPersonnel:IApiPersonnel[] = [];
+  public addAllOtherPersonnel:boolean = false;
 
   constructor(
     public dialogRef:MatDialogRef<ModalInputComponent>,
@@ -61,7 +62,7 @@ export class ModalInputComponent implements OnInit {
 
   isDisabled():boolean{
 
-    if(this.data.type=="PERSONNEL" && (!this.personnel || typeof this.personnel == "string") ){
+    if(this.data.type=="PERSONNEL" && (!this.personnel || typeof this.personnel == "string") && this.addAllOtherPersonnel==false ){
       return true;
     }
     if(this.data.type=="CRITERE"){
@@ -79,5 +80,12 @@ export class ModalInputComponent implements OnInit {
     }
 
     return false
+  }
+
+  envoiePersonnel(){
+    if(this.data.type=="PERSONNEL" && this.addAllOtherPersonnel==true){
+      return true;
+    }
+    return this.personnel;
   }
 }

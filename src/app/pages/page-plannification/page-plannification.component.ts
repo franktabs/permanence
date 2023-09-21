@@ -1039,13 +1039,12 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
     let groupsPeople: GroupsPeople = { data: [], parcours: 0 };
     let groupTfg: GroupsPeople = { data: [], parcours: 0 };
-    let nbrPersonDay = {
-      semaine: 4,
-      samediJour: 4,
-      samediNuit: 4,
-      dimancheJour: 4,
-      dimancheNuit: 4,
-    };
+
+    let nbrPersonDay:DataPlanning["repartition"]  = {semaine:4, samediJour:4, samediNuit:2, dimancheJour:4, dimancheNuit:2}
+    if(this.dataPlanning && this.dataPlanning.repartition){
+      
+      nbrPersonDay= this.dataPlanning.repartition;
+    }
 
     for (let group of this.api.data.groupes) {
       let criteresGroup = group.criteres.map((critere) => critere.nom);

@@ -225,7 +225,7 @@
             <span class="close-group text-danger" (click)="suprGroupe(i)">
               <i class="bi bi-x-circle-fill"></i>
             </span>
-            <app-card-group-personnel [groupe]="groupe">
+            <app-card-group-personnel [groupe]="groupe" (completePersonnelEmit)="completePersonnel(groupe, $event)" >
             </app-card-group-personnel>
           </div>
         </div>
