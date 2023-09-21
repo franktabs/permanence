@@ -31,7 +31,7 @@ export type Ferier = { jour: string; type: IPermanence['type'] };
 export type DataPlanning = {
   periode: number | string;
   feriers: Ferier[];
-  superviseur: string[] | TypePersonnel[] | null[];
+  superviseur: IApiPersonnel[]
   group1: Array<string | TypePersonnel>;
   repartition:RepartitionSemaine;
 };
@@ -247,10 +247,22 @@ export class ModalPlanificationComponent implements OnInit {
   //   this.loader.loader_modal$.next(false);
   // }
   public generer() {
+
+    let superviseur:DataPlanning["superviseur"]= [];
+    for(let group of this.groupes){
+      for(let critere of group.criteres){
+        if(critere.nom=="RESPONSABLE TFG"){
+          for(let person of group.personnels){
+            superviseur.push(person);
+          }
+        }
+      }
+    }
+
     let data: DataPlanning = {
       periode: this.periode,
       feriers: this.feriers,
-      superviseur: this.superviseur,
+      superviseur: superviseur,
       group1: this.responsableTFJ,
       repartition:this.repartitionSemaine
     };

@@ -42,12 +42,12 @@ import {
 import { TypePersonnel } from 'src/app/shared/utils/types-map';
 
 export type RepartitionSemaine = {
-  semaine: number,
-  samediJour: number,
-  samediNuit: number,
-  dimancheJour: number,
-  dimancheNuit: number,
-}
+  semaine: number;
+  samediJour: number;
+  samediNuit: number;
+  dimancheJour: number;
+  dimancheNuit: number;
+};
 
 type Remplissage = {
   month: number;
@@ -666,12 +666,16 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       //   console.log('changement de position de group après =>', [...group]);
       // }
       lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
+      console.log('finMan dataPerson before =>', lastDataPerson);
+
       if (initParcours == nbrParcours) {
-        console.log('dataPerson before =>', lastDataPerson);
+        console.log('___enf-Find-Man 1 dataPerson before =>', lastDataPerson);
+
         return lastDataPerson;
       } else {
-        console.log('dataPerson before =>', lastDataPerson);
         if (i != lastPosition) {
+          console.log('___In Find-Man envoie findPerson =>', lastDataPerson);
+
           return this.findPerson(
             lastDataPerson,
             group,
@@ -687,7 +691,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         }
       }
     }
-    console.log('dataPerson before =>', lastDataPerson);
+    console.log('___enf-Find-Man 2 dataPerson before =>', lastDataPerson);
     group = this.decalage(initialIndex, index, group);
     return lastDataPerson;
   }
@@ -857,7 +861,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             initialIndex
           );
 
-          if(indice==i){
+          if (indice == i) {
             continuer = false;
           }
         }
@@ -886,12 +890,15 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
     //   console.log('changement de position de group après =>', [...group]);
     // }
-    console.log('dataPerson before =>', lastDataPerson);
+    console.log('findPerson dataPerson before =>', lastDataPerson);
     if (temps == 'jour') {
       group = this.decalage(initialIndex, i, group);
+      console.log('_____fin find-person 1 _____', lastDataPerson);
+
       return lastDataPerson;
     }
-    if (i != lastPosition) {
+    if (i != lastPosition || nbrParcours==0) {
+      console.log('__In FindPerson  envoie find-Man _____', lastDataPerson);
       return this.findMan(
         lastDataPerson,
         group,
@@ -901,6 +908,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         initialIndex
       );
     } else {
+      console.log('_____fin find-person 2 _____', lastDataPerson);
       group = this.decalage(initialIndex, i, group);
       return lastDataPerson;
     }
@@ -1036,20 +1044,27 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let group1 = shuffleArray([...this.group1]);
     let group2 = shuffleArray([...this.group2]);
     let group3 = shuffleArray([...this.group3]);
-
     let groupsPeople: GroupsPeople = { data: [], parcours: 0 };
     let groupTfg: GroupsPeople = { data: [], parcours: 0 };
 
-    let nbrPersonDay:DataPlanning["repartition"]  = {semaine:4, samediJour:4, samediNuit:2, dimancheJour:4, dimancheNuit:2}
-    if(this.dataPlanning && this.dataPlanning.repartition){
-
-      nbrPersonDay= this.dataPlanning.repartition;
+    let nbrPersonDay: DataPlanning['repartition'] = {
+      semaine: 4,
+      samediJour: 4,
+      samediNuit: 2,
+      dimancheJour: 4,
+      dimancheNuit: 2,
+    };
+    if (this.dataPlanning && this.dataPlanning.repartition) {
+      nbrPersonDay = this.dataPlanning.repartition;
     }
 
     for (let group of this.api.data.groupes) {
       let criteresGroup = group.criteres.map((critere) => critere.nom);
       let oneGroupPersonnel = shuffleArray([...group.personnels]);
-      if (!criteresGroup.includes('SUPERVISEUR') && !criteresGroup.includes('RESPONSABLE TFG') ) {
+      if (
+        !criteresGroup.includes('SUPERVISEUR') &&
+        !criteresGroup.includes('RESPONSABLE TFG')
+      ) {
         for (let personnel of oneGroupPersonnel) {
           groupsPeople.data.push({
             personnel: personnel,
@@ -1104,6 +1119,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           let personDataTfj =
             groupTfg.data[(index - groupTfg.parcours) % groupTfg.data.length];
           let lastPosition = (index - groupTfg.parcours) % groupTfg.data.length;
+
           personDataTfj = this.findPerson(
             personDataTfj,
             groupTfg.data,
@@ -1112,13 +1128,22 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           );
 
           let datasPersonDay: GroupsPeople['data'][number][] = [];
-          for (let c = 0; c < nbrPersonDay.semaine-1; c++) {
+          for (let c = 0; c < nbrPersonDay.semaine - 1; c++) {
             let lastPosition =
               groupsPeople.parcours++ % groupsPeople.data.length;
             let dataPerson2: GroupsPeople['data'][number] | null =
               groupsPeople.data[
                 groupsPeople.parcours++ % groupsPeople.data.length
               ];
+
+            if (dataPerson2.personnel.sexe == 'F') {
+              console.log(
+                '----------------- fille selectionner => ',
+                dataPerson2.personnel,
+                '--- date => ',
+                date
+              );
+            }
             dataPerson2 = this.uniquePersonDay(
               dataPerson2,
               datasPersonDay,
@@ -1126,6 +1151,10 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
               lastPosition,
               date,
               'nuit'
+            );
+            console.log(
+              '_______________ après la recherche ------->',
+              dataPerson2
             );
             if (dataPerson2) {
               datasPersonDay.push(dataPerson2);
