@@ -1078,7 +1078,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       }
     }
 
-    console.log('voici les différents groupes creer', groupsPeople, groupTfg);
+    console.log('voici les différents groupes creer', JSON.parse(JSON.stringify(groupsPeople)), groupTfg);
 
     let nbrGroup1 = group1.length;
     let nbrGroup2 = group2.length;
@@ -1130,7 +1130,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           let datasPersonDay: GroupsPeople['data'][number][] = [];
           for (let c = 0; c < nbrPersonDay.semaine - 1; c++) {
             let lastPosition =
-              groupsPeople.parcours++ % groupsPeople.data.length;
+              groupsPeople.parcours % groupsPeople.data.length;
             let dataPerson2: GroupsPeople['data'][number] | null =
               groupsPeople.data[
                 groupsPeople.parcours++ % groupsPeople.data.length
@@ -1141,7 +1141,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                 '----------------- fille selectionner => ',
                 dataPerson2.personnel,
                 '--- date => ',
-                date
+                date,
+                '---position =>', lastPosition,
+                "---parcours =>", groupsPeople.parcours 
               );
             }
             dataPerson2 = this.uniquePersonDay(
@@ -1154,7 +1156,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             );
             console.log(
               '_______________ après la recherche ------->',
-              dataPerson2
+              dataPerson2,
+              "position =>", lastPosition,
+              "---parcours =>", groupsPeople.parcours
             );
             if (dataPerson2) {
               datasPersonDay.push(dataPerson2);
@@ -1295,7 +1299,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             let datasPersonDayJour: GroupsPeople['data'][number][] = [];
             for (let c = 0; c < nbrPersonDay.samediJour - 1; c++) {
               let lastPosition =
-                groupsPeople.parcours++ % groupsPeople.data.length;
+                groupsPeople.parcours % groupsPeople.data.length;
               let dataPerson2: GroupsPeople['data'][number] | null =
                 groupsPeople.data[
                   groupsPeople.parcours++ % groupsPeople.data.length
@@ -1405,7 +1409,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             let datasPersonDayNuit: GroupsPeople['data'][number][] = [];
             for (let c = 0; c < nbrPersonDay.samediNuit; c++) {
               let lastPosition =
-                groupsPeople.parcours++ % groupsPeople.data.length;
+                groupsPeople.parcours % groupsPeople.data.length;
               let dataPerson2: GroupsPeople['data'][number] | null =
                 groupsPeople.data[
                   groupsPeople.parcours++ % groupsPeople.data.length
@@ -1519,7 +1523,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           let datasPersonDayJour: GroupsPeople['data'][number][] = [];
           for (let c = 0; c < nbrPersonDay.dimancheJour; c++) {
             let lastPosition =
-              groupsPeople.parcours++ % groupsPeople.data.length;
+              groupsPeople.parcours % groupsPeople.data.length;
             let dataPerson2: GroupsPeople['data'][number] | null =
               groupsPeople.data[
                 groupsPeople.parcours++ % groupsPeople.data.length
@@ -1596,7 +1600,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           let datasPersonDayNuit: GroupsPeople['data'][number][] = [];
           for (let c = 0; c < nbrPersonDay.dimancheNuit; c++) {
             let lastPosition =
-              groupsPeople.parcours++ % groupsPeople.data.length;
+              groupsPeople.parcours % groupsPeople.data.length;
             let dataPerson2: GroupsPeople['data'][number] | null =
               groupsPeople.data[
                 groupsPeople.parcours++ % groupsPeople.data.length
@@ -1703,7 +1707,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       }
       tableau[indice1] = element;
     }
-    console.log('voici le tableau avec le decalage ', tableau);
+    console.log('voici le tableau avec le decalage ', JSON.parse(JSON.stringify(tableau)));
     return tableau;
   }
 

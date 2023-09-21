@@ -5007,7 +5007,22 @@ export class AdminGuard implements CanActivate {
 
     this.loader.loader_modal$.next(true);
 
+    let user:any = localStorage.getItem("user");
+    if(user!=null && this.auth.isAuthenticated==false){
+      user = JSON.parse(user);
+      this.auth.login(user);
+    }
+    let isRefresh:any = localStorage.getItem("isRefresh");
+    if(isRefresh!=null ){
+      isRefresh = JSON.parse(isRefresh);
+      if(isRefresh==true){
+        this.api.blockInitGuard=true;
+      }else{
+        this.api.blockInitGuard=false;
+      }
+    }
     this.initDB();
+
     
     return this.continueInUrl()
 
@@ -5015,7 +5030,8 @@ export class AdminGuard implements CanActivate {
 
   async initDB() {
     console.log('execution de initDB');
-    if(this.api.blockInitGuard==false){
+
+    if(this.api.blockInitGuard==false ){
       this.api.blockInitGuard=true;
       try {
         let response = await axios.get(this.api.URL_ROLES);
@@ -5053,11 +5069,15 @@ export class AdminGuard implements CanActivate {
         } else {
           console.log('Non creation des datas DB');
           if(this.auth.isAuthenticated==false){
-  
+            let isRefresh = 
             response = await axios.get(this.api.URL_PERSONNELS + '/userId/' + this.auth.DEFAULT_PERSON);
             if(response.data){
-              this.auth.login(response.data);
-              this.router.navigateByUrl("gestion/collecte")
+              localStorage.setItem("user", JSON.stringify(response.data));
+              localStorage.setItem("isRefresh", JSON.stringify(true));
+
+              location.reload();
+              // this.auth.login(response.data);
+              // this.router.navigateByUrl("gestion/collecte")
             }
           }
         }
@@ -5071,8 +5091,12 @@ export class AdminGuard implements CanActivate {
         try {
           let response = await axios.get('api/admin.json');
           if (response.data && this.auth.isAuthenticated == false) {
-            this.auth.login(response.data);
-            this.router.navigateByUrl('gestion/collecte');
+            // this.auth.login(response.data);
+            // this.router.navigateByUrl('gestion/collecte');
+            localStorage.setItem("user", JSON.stringify(response.data));
+            localStorage.setItem("isRefresh", JSON.stringify(true));
+
+            location.reload();
           }
         } catch (e) {
           console.error("Voici l'erreur ", e);
@@ -5088,7 +5112,7 @@ export class AdminGuard implements CanActivate {
       (!this.auth.isAuthenticated && !this.auth.user) ||
       !this.auth.rolesName.includes('SE CONNECTER')
     ) {
-      this.router.navigateByUrl('home');
+      // this.router.navigateByUrl('home');
       return false;
     } else {
       if (
@@ -5096,7 +5120,8 @@ export class AdminGuard implements CanActivate {
         this.auth.rolesName.includes('SE CONNECTER')
       ) {
         this.loader.loader_modal$.next(false);
-
+        this.api.blockInitGuard=false;
+        localStorage.setItem("isRefresh", JSON.stringify(false))
         return true;
       } else {
         this.loader.loader_modal$.next(false);

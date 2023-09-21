@@ -251,7 +251,7 @@ export class ModalPlanificationComponent implements OnInit {
     let superviseur:DataPlanning["superviseur"]= [];
     for(let group of this.groupes){
       for(let critere of group.criteres){
-        if(critere.nom=="RESPONSABLE TFG"){
+        if(critere.nom=="SUPERVISEUR"){
           for(let person of group.personnels){
             superviseur.push(person);
           }

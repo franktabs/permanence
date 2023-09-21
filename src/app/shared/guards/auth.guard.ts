@@ -32,6 +32,20 @@ export class AuthGuard implements CanActivate {
 
     this.loader.loader_modal$.next(true);
 
+    let user:any = localStorage.getItem("user");
+    if(user!=null){
+      user = JSON.parse(user);
+      this.auth.login(user);
+    }
+    let isRefresh:any = localStorage.getItem("isRefresh");
+    if(isRefresh!=null ){
+      isRefresh = JSON.parse(isRefresh);
+      if(isRefresh==true){
+        this.api.blockInitGuard=true;
+      }else{
+        this.api.blockInitGuard=false;
+      }
+    }
     this.initDB();
 
     return this.continueInUrl();
@@ -75,7 +89,6 @@ export class AuthGuard implements CanActivate {
   
           response = await axios.put(this.api.URL_ROLES + '/giveAll/0');
           console.log(response.data);
-          debugger;
   
           location.reload();
         } else {
@@ -84,8 +97,12 @@ export class AuthGuard implements CanActivate {
   
             response = await axios.get(this.api.URL_PERSONNELS + '/userId/' + this.auth.DEFAULT_PERSON);
             if(response.data){
-              this.auth.login(response.data);
+              // this.auth.login(response.data);
+              localStorage.setItem("user", JSON.stringify(response.data));
+              localStorage.setItem("isRefresh", JSON.stringify(true));
               this.router.navigateByUrl("gestion/collecte")
+
+              // location.reload();
             }
           }
         }
@@ -99,6 +116,8 @@ export class AuthGuard implements CanActivate {
         try {
           let response = await axios.get('api/admin.json');
           if (response.data && this.auth.isAuthenticated == false) {
+            localStorage.setItem("user", JSON.stringify(response.data));
+            localStorage.setItem("isRefresh", JSON.stringify(true));
             this.auth.login(response.data);
             this.router.navigateByUrl('gestion/collecte');
           }
