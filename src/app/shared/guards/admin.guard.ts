@@ -5064,7 +5064,6 @@ export class AdminGuard implements CanActivate {
   
           response = await axios.put(this.api.URL_ROLES + '/giveAll/0');
           console.log(response.data);
-            debugger;
           location.reload();
         } else {
           console.log('Non creation des datas DB');
@@ -5083,7 +5082,6 @@ export class AdminGuard implements CanActivate {
         }
       } catch (e) {
         console.error("voici l'erreur de initDB => ", e);
-        debugger
         this.alert.alertMaterial(
           { message: 'Impossible de Joindre le Backend', title: 'error' },
           10

@@ -49,9 +49,13 @@
 }
 
 .mat-row:active {
-    background-color: rgba(199, 199, 199, 0.973);
+    background-color: #c7c7c7f8;
 }
 
 th.mat-sort-header-sorted {
     color: $bordeau-color;
+}
+
+.bg-selected{
+    background-color: rgb(168, 119, 119);
 }
