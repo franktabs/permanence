@@ -66,6 +66,7 @@ export class DayComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['permanence']) {
       let thisPermanence: IPermanence = changes['permanence'].currentValue;
+      console.log("La permanence du ", thisPermanence.date, "est ->", thisPermanence.type)
       this.date = new Date(thisPermanence.date);
       this.typeFerier = thisPermanence.type;
       thisPermanence.personnels_jour?.sort((jour1, jour2) => {
