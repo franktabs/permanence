@@ -189,14 +189,14 @@ export class CardPlanningComponent implements OnInit, OnChanges {
           }
         if (idPlanning) {
           this.planning.id = idPlanning;
-          
+
           let annonce: IAnnonce = {
             type: 'VALIDATION PLANNING',
             message: 'planning enregistrer',
             submissionDate: new Date().toISOString(),
             emetteur: { id: this.auth.user?.id as number },
           };
-          
+
           let response = await axios.post(this.api.URL_ANNONCES, annonce);
           if (response.data.id) {
             annonce = response.data;
@@ -362,10 +362,37 @@ export class CardPlanningComponent implements OnInit, OnChanges {
         console.error("voici l'erreur =>", e);
         this.alert.alertError();
       }
-    }else{
-
+    } else {
       this.plannings.splice(this.indice, 1);
     }
     this.loader.loader_modal$.next(false);
+  }
+
+  async generatePDF() {
+    if (this.planning.id) {
+      try {
+        this.alert.alertMaterial({"message":"Telechargement ...", title:"information"}, 5)
+        let response = await axios.get(
+          this.api.URL_JASPERS + '/pdf/' + this.planning.id,
+          {responseType:"arraybuffer"}
+        );
+        if(response.data){
+          const blob = new Blob([response.data], { type: 'application/pdf' });
+          const url = window.URL.createObjectURL(blob);
+  
+          const link = document.createElement('a');
+          link.href = url;
+          link.target = '_blank';
+          link.download = 'planning-permanence';
+          link.click();
+  
+          window.URL.revokeObjectURL(url);
+          link.remove();
+        }
+      } catch (e) {
+        console.error("voici l'erreur", e);
+        this.alert.alertError();
+      }
+    } 
   }
 }

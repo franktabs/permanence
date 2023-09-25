@@ -81,6 +81,7 @@ export class ApiService {
   public URL_NOTIFICATIONS = this.IP + '/notification';
   public URL_PARAMETERS = this.IP + '/parameter';
   public URL_DEPARTEMENTS = this.IP + '/departement';
+  public URL_JASPERS = this.IP+"/jasper"
 
 
   public blockInitGuard:boolean = false;
@@ -120,6 +121,7 @@ export class ApiService {
     this.URL_NOTIFICATIONS = this.IP + '/notification';
     this.URL_PARAMETERS = this.IP + '/parameter';
     this.URL_DEPARTEMENTS = this.IP + '/departement';
+    this.URL_JASPERS = this.IP+"/jasper"
   }
 
   public postData<T>(url: string, data: T): Observable<T> {
