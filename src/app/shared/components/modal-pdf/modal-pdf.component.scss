@@ -1,0 +1,7 @@
+@import "colors";
+
+
+.form-control:focus, .form-select:focus{
+    border-color: black;
+    box-shadow: 2px 2px 1em black;
+}

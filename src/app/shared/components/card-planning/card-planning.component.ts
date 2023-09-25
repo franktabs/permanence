@@ -3,6 +3,7 @@ import {
   EventEmitter,
   Input,
   OnChanges,
+  OnDestroy,
   OnInit,
   Output,
   SimpleChanges,
@@ -10,7 +11,7 @@ import {
 import { IPlanning } from '../../interfaces/iplanning';
 import { IPermanence } from '../../interfaces/ipermanence';
 import { ApiService } from '../../services/api.service';
-import { concatMap, from, map, of } from 'rxjs';
+import { Subject, concatMap, from, map, of, takeUntil } from 'rxjs';
 import { IMonth } from '../../interfaces/imonth';
 import axios from 'axios';
 import { LoaderService } from '../../services/loader.service';
@@ -19,13 +20,16 @@ import { AuthService } from '../../services/auth.service';
 import { IRole, RoleType } from '../../interfaces/irole';
 import { IAnnonce } from '../../interfaces/iannonce';
 import { INotification } from '../../interfaces/inotification';
+import { MatDialog } from '@angular/material/dialog';
+import { ModalPdfComponent } from '../modal-pdf/modal-pdf.component';
+import IJasperModel from '../../interfaces/ijasperModel';
 
 @Component({
   selector: 'app-card-planning',
   templateUrl: './card-planning.component.html',
   styleUrls: ['./card-planning.component.scss'],
 })
-export class CardPlanningComponent implements OnInit, OnChanges {
+export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
   @Input() plannings: IPlanning[] = [];
   @Input() indice!: number;
 
@@ -37,14 +41,20 @@ export class CardPlanningComponent implements OnInit, OnChanges {
 
   public nbrAppartion: number = 0;
 
+  public destroy$: Subject<boolean> = new Subject();
+
   @Output() planningEmit: EventEmitter<IPlanning> = new EventEmitter();
 
   constructor(
     private api: ApiService,
     private loader: LoaderService,
     private alert: AlertService,
-    private auth: AuthService
+    private auth: AuthService,
+    private dialog: MatDialog
   ) {}
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+  }
 
   ngOnInit(): void {
     this.authRoles = this.auth.rolesName;
@@ -368,31 +378,59 @@ export class CardPlanningComponent implements OnInit, OnChanges {
     this.loader.loader_modal$.next(false);
   }
 
-  async generatePDF() {
+  generatePDF() {
     if (this.planning.id) {
-      try {
-        this.alert.alertMaterial({"message":"Telechargement ...", title:"information"}, 5)
-        let response = await axios.get(
-          this.api.URL_JASPERS + '/pdf/' + this.planning.id,
-          {responseType:"arraybuffer"}
+      let dialogRef = this.dialog.open(ModalPdfComponent);
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((subs: IJasperModel | null) => {
+          if (subs) {
+            let title = subs.title.trim();
+            if (title) {
+              let jasperModel: IJasperModel = { title: title };
+              this.axiosPostPdf(jasperModel);
+            }
+          }
+        });
+
+    }
+  }
+
+  async axiosPostPdf(jasperModel:IJasperModel){
+    try {
+      this.alert.alertMaterial(
+        {
+          message: 'Telechargement dans quelques secondes ...',
+          title: 'information',
+        },
+        5
+      );
+      let response = await axios.post(
+        this.api.URL_JASPERS + '/pdf/' + this.planning.id,
+        jasperModel,
+        { responseType: 'arraybuffer' }
+      );
+      if (response.data) {
+        const blob = new Blob([response.data], { type: 'application/pdf' });
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.download = 'planning-permanence';
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+        link.remove();
+        this.alert.alertMaterial(
+          { message: 'Telechargement Demarré', title: 'information' },
+          5
         );
-        if(response.data){
-          const blob = new Blob([response.data], { type: 'application/pdf' });
-          const url = window.URL.createObjectURL(blob);
-  
-          const link = document.createElement('a');
-          link.href = url;
-          link.target = '_blank';
-          link.download = 'planning-permanence';
-          link.click();
-  
-          window.URL.revokeObjectURL(url);
-          link.remove();
-        }
-      } catch (e) {
-        console.error("voici l'erreur", e);
-        this.alert.alertError();
       }
-    } 
+    } catch (e) {
+      console.error("voici l'erreur", e);
+      this.alert.alertError();
+    }
   }
 }

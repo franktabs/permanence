@@ -1,0 +1,18 @@
+<h1 mat-dialog-title>Generation du PDF</h1>
+<div mat-dialog-content class="pb-2">
+  <div>
+    <label for="title_pdf">Titre du pdf</label>
+    <input type="text" class="form-control" name="titre_pdf" id="title_pdf" [(ngModel)]="jasperModel.title" >
+  </div>
+</div>
+<div mat-dialog-actions class="d-flex justify-content-end gap-2 my-border-top">
+  <button mat-raised-button (click)="onNoClick()">Annuler</button>
+  <button
+    mat-raised-button
+    color="btn-bordeau"
+    [mat-dialog-close]="jasperModel"
+    [disabled]="!jasperModel.title"
+  >
+    Telecharger  <i class="bi bi-download"></i>
+  </button>
+</div>
