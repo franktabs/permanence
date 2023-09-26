@@ -695,6 +695,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         }
       }
     }
+
     console.log('___enf-Find-Man 2 dataPerson before =>', lastDataPerson);
 
     group = this.decalage(initialIndex, index, group);
@@ -812,12 +813,25 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       isIdentiqueGroup = false;
       for (let personnel of groupExist) {
         if (personnel?.group == dataPerson.group) {
-          i = (i + 1) % group.length;
-          dataPerson = group[i];
-          nbrParcours++;
-          isIdentiqueGroup = true;
-          break;
+          if (!dataPerson.group.includes('ensemble')) {
+            i = (i + 1) % group.length;
+            dataPerson = group[i];
+            nbrParcours++;
+            isIdentiqueGroup = true;
+            break;
+          }
         }
+      }
+      while (
+        ((dataPerson.criteres.includes('PRESENT JUSTE LA NUIT') &&
+          type == 'jour') ||
+          (dataPerson.criteres.includes('PRESENT JUSTE LE JOUR') &&
+            type == 'nuit')) &&
+        nbrParcours <= group.length
+      ) {
+        i = (i + 1) % group.length;
+        dataPerson = group[i];
+        nbrParcours++;
       }
     }
 
@@ -1104,11 +1118,16 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         !criteresGroup.includes('RESPONSABLE TFG')
       ) {
         for (let personnel of oneGroupPersonnel) {
-          groupsPeople.data.push({
+          let groupData = {
             personnel: personnel,
             criteres: criteresGroup,
             group: 'group' + iterGroup,
-          });
+          };
+          if (criteresGroup.includes('PEUT APPARAITRE ENSEMBLE')) {
+            groupData.group = 'group' + iterGroup + ' ensemble';
+          }
+
+          groupsPeople.data.push(groupData);
         }
       } else if (criteresGroup.includes('RESPONSABLE TFG')) {
         for (let personnel of oneGroupPersonnel) {
