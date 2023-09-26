@@ -2,9 +2,11 @@ import {
   Component,
   EventEmitter,
   Input,
+  OnChanges,
   OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import IGroupe from '../../interfaces/igroupe';
 import { MatDialog } from '@angular/material/dialog';
@@ -22,7 +24,7 @@ import { ApiService } from '../../services/api.service';
   templateUrl: './card-group-personnel.component.html',
   styleUrls: ['./card-group-personnel.component.scss'],
 })
-export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
+export class CardGroupPersonnelComponent implements OnInit, OnDestroy, OnChanges {
   @Input()
   public groupe: IGroupe = {
     nom: 'group',
@@ -32,7 +34,7 @@ export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
 
   public destroy$: Subject<boolean> = new Subject();
 
-  public criteres_object: typeof CRITERE_OBJECT = CRITERE_OBJECT;
+  public criteres_object: typeof CRITERE_OBJECT = JSON.parse(JSON.stringify(CRITERE_OBJECT));
 
   @Output() public completePersonnelEmit: EventEmitter<boolean> =
     new EventEmitter();
@@ -43,7 +45,9 @@ export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
     this.destroy$.next(true);
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    
+  }
 
   ajout(type: 'PERSONNEL' | 'CRITERE') {
     let diallogRef = this.diallog.open<ModalInputComponent, DataModalInput>(
@@ -92,5 +96,16 @@ export class CardGroupPersonnelComponent implements OnInit, OnDestroy {
   deleteCritere(index: number) {
     this.criteres_object[this.groupe.criteres[index].nom] = false;
     this.groupe.criteres.splice(index, 1);
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+      if(changes['groupe']){
+        let currentValue:IGroupe = changes['groupe'].currentValue;
+        console.log("group concerné", currentValue);
+        console.log("tous les groups ==>", this.api.data.groupes);
+        currentValue.criteres.forEach((critere)=>{
+          this.criteres_object[critere.nom] = true;
+        })
+      }
   }
 }
