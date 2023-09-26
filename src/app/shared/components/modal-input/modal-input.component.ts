@@ -4,6 +4,7 @@ import { IModel } from '../../interfaces/imodel';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { ApiService } from '../../services/api.service';
 import ICritere from '../../interfaces/icritere';
+import { filterOffAdmin } from '../../utils/function';
 
 
 export type DataModalInput = {
@@ -39,7 +40,7 @@ export class ModalInputComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.data.type=="PERSONNEL"){
-      this.optionsPersonnel = this.api.data.personnels;
+      this.optionsPersonnel = filterOffAdmin(this.api.data.personnels);
       this.optionsPersonnel.sort((pers1, pers2)=>{
         return pers1.firstname.localeCompare(pers2.firstname);
       })

@@ -277,3 +277,12 @@ export function filterPersonnelRessource(
   });
   return personnels;
 }
+
+export function filterOffAdmin(tab:IApiPersonnel[], tabInclude:IApiPersonnel[]=[]){
+  tab.forEach((person)=>{
+    if(!person.fonction.toLowerCase().includes('admin-0')){
+      tabInclude.push(person);
+    }
+  })
+  return tabInclude;
+}

@@ -13,6 +13,7 @@ import { TypePersonnel } from '../../utils/types-map';
 import { FormControl } from '@angular/forms';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import {
+  filterOffAdmin,
   mapJSON,
   separatePersonnel,
   separatePersonnelTFJ,
@@ -330,7 +331,7 @@ export class ModalPlanificationComponent implements OnInit {
           }
         }
       })
-      let datasPersonnel = this.api.data.personnels;
+      let datasPersonnel = filterOffAdmin(this.api.data.personnels);
       for(let person of datasPersonnel){
         if(person.id && !idPersonnels.includes(person.id)){
           group.personnels.add(person);
