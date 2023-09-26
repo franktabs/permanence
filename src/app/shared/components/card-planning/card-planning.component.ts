@@ -424,7 +424,7 @@ export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
         window.URL.revokeObjectURL(url);
         link.remove();
         this.alert.alertMaterial(
-          { message: 'Telechargement Demarré', title: 'information' },
+          { message: 'Demarrage du telechargement', title: 'information' },
           5
         );
       }
@@ -433,4 +433,61 @@ export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
       this.alert.alertError();
     }
   }
+
+  generateEXCEL(){
+    if (this.planning.id) {
+      let dialogRef = this.dialog.open(ModalPdfComponent);
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((subs: IJasperModel | null) => {
+          if (subs) {
+            let title = subs.title.trim();
+            if (title) {
+              let jasperModel: IJasperModel = { title: title };
+              this.axiosPostExcel(jasperModel);
+            }
+          }
+        });
+
+    }
+  }
+
+  async axiosPostExcel(jasperModel:IJasperModel){
+    try {
+      this.alert.alertMaterial(
+        {
+          message: 'Telechargement dans quelques secondes ...',
+          title: 'information',
+        },
+        5
+      );
+      let response = await axios.post(
+        this.api.URL_JASPERS + '/excel/' + this.planning.id,
+        jasperModel,
+        { responseType: "blob" }
+      );
+      if (response.data) {
+        const blob = new Blob([response.data]);
+        const url = window.URL.createObjectURL(blob);
+
+        const link = document.createElement('a');
+        link.href = url;
+        link.target = '_blank';
+        link.download = 'planning-permanence.xlsx';
+        link.click();
+
+        window.URL.revokeObjectURL(url);
+        link.remove();
+        this.alert.alertMaterial(
+          { message: 'Demarrage du telechargement', title: 'information' },
+          5
+        );
+      }
+    } catch (e) {
+      console.error("voici l'erreur", e);
+      this.alert.alertError();
+    }
+  }
+
 }

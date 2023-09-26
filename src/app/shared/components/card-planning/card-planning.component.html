@@ -12,16 +12,25 @@
       <ng-container
         [ngSwitch]="planning.isValid"
         *ngIf="typeDisplay == 'ALL'; else otherDisplay"
-        
       >
-        <button
-          mat-raised-button
-          color="btn-noir"
-          (click)="generatePDF()"
-          [disabled]="!planning.id"
-        >
-          PDF <i class="bi bi-file-pdf"></i>
-        </button>
+        <div class="d-flex gap-1" >
+          <button
+            mat-raised-button
+            color="btn-noir"
+            (click)="generatePDF()"
+            [disabled]="!planning.id"
+          >
+            PDF <i class="bi bi-file-pdf"></i>
+          </button>
+          <button
+            mat-raised-button
+            color="btn-green"
+            (click)="generateEXCEL()"
+            [disabled]="!planning.id"
+          >
+            EXCEL <i class="bi bi-file-excel"></i>
+          </button>
+        </div>
 
         <div class="flex-fill">
           <span *ngSwitchCase="null">
