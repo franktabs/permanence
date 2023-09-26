@@ -207,31 +207,31 @@ export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
             emetteur: { id: this.auth.user?.id as number },
           };
 
-          let response = await axios.post(this.api.URL_ANNONCES, annonce);
-          if (response.data.id) {
-            annonce = response.data;
-            response = await axios.get(this.api.URL_ROLES + '/' + 2);
-            if (response.data.id) {
-              let roleValidation: IRole = response.data;
-              let personnels = roleValidation.personnels;
-              if (personnels)
-                for (let personnel of personnels) {
-                  let notification: INotification = {
-                    annonce: { id: annonce.id as number },
-                    recepteur: { id: personnel.id as number },
-                    isViewed: null,
-                    isDeleted: false,
-                  };
-                  response = await axios.post(
-                    this.api.URL_NOTIFICATIONS,
-                    notification
-                  );
-                  if (response.data.id) {
-                    console.log('ajout de la notifications à ', personnel);
-                  }
-                }
-            }
-          }
+          // let response = await axios.post(this.api.URL_ANNONCES, annonce);
+          // if (response.data.id) {
+          //   annonce = response.data;
+          //   // response = await axios.get(this.api.URL_ROLES + '/' + 2);
+          //   if (response.data.id) {
+          //     let roleValidation: IRole = response.data;
+          //     let personnels = roleValidation.personnels;
+          //     if (personnels)
+          //       for (let personnel of personnels) {
+          //         let notification: INotification = {
+          //           annonce: { id: annonce.id as number },
+          //           recepteur: { id: personnel.id as number },
+          //           isViewed: null,
+          //           isDeleted: false,
+          //         };
+          //         response = await axios.post(
+          //           this.api.URL_NOTIFICATIONS,
+          //           notification
+          //         );
+          //         if (response.data.id) {
+          //           console.log('ajout de la notifications à ', personnel);
+          //         }
+          //       }
+          //   }
+          // }
         }
         this.alert.alertMaterial({
           title: 'success',

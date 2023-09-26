@@ -40,7 +40,7 @@ export class ModalInputComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.data.type=="PERSONNEL"){
-      this.optionsPersonnel = filterOffAdmin(this.api.data.personnels);
+      this.optionsPersonnel = this.api.data.personnels;
       this.optionsPersonnel.sort((pers1, pers2)=>{
         return pers1.firstname.localeCompare(pers2.firstname);
       })

@@ -59,6 +59,7 @@ type GroupsPeople = {
   data: {
     personnel: IApiPersonnel;
     criteres: (keyof typeof CRITERE_OBJECT)[];
+    group: string;
   }[];
   parcours: number;
 };
@@ -633,7 +634,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     index: number,
     date: Date,
     nbrParcours: number = 0,
-    initialIndex: number
+    initialIndex: number,
+    groupExist: Array<GroupsPeople['data'][number] | null>
   ): GroupsPeople['data'][number] {
     if (nbrParcours > group.length) return dataPerson;
     let lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
@@ -683,16 +685,20 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             date,
             nbrParcours,
             'nuit',
-            initialIndex
+            initialIndex,
+            groupExist
           );
         } else {
           group = this.decalage(initialIndex, i, group);
+
           return lastDataPerson;
         }
       }
     }
     console.log('___enf-Find-Man 2 dataPerson before =>', lastDataPerson);
+
     group = this.decalage(initialIndex, index, group);
+
     return lastDataPerson;
   }
   // findMan(
@@ -751,55 +757,70 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     date: Date,
     nbrParcours: number,
     type: 'jour' | 'nuit' = 'nuit',
-    initialIndex: number
+    initialIndex: number,
+    groupExist: Array<GroupsPeople['data'][number] | null>
   ): [GroupsPeople['data'][number], number, number] {
     if (nbrParcours > group.length) return [dataPerson, index, nbrParcours];
     let lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
     let lastPosition = initialIndex;
     let i = index;
-    if (date.getDay() != 0 && date.getDay() != 6) {
-      while (
-        !(
-          dataPerson.criteres.includes('REPARTI NORMALEMENT') ||
-          dataPerson.criteres.includes('APPARAIT LUNDI - VENDREDI ') ||
-          dataPerson.criteres.includes('RESPONSABLE TFG')
-        ) &&
-        nbrParcours <= group.length
-      ) {
-        i = (i + 1) % group.length;
-        dataPerson = group[i];
-        nbrParcours++;
+    let isIdentiqueGroup = true;
+    while (isIdentiqueGroup && nbrParcours <= group.length) {
+      if (date.getDay() != 0 && date.getDay() != 6) {
+        while (
+          !(
+            dataPerson.criteres.includes('REPARTI NORMALEMENT') ||
+            dataPerson.criteres.includes('APPARAIT LUNDI - VENDREDI ') ||
+            dataPerson.criteres.includes('RESPONSABLE TFG')
+          ) &&
+          nbrParcours <= group.length
+        ) {
+          i = (i + 1) % group.length;
+          dataPerson = group[i];
+          nbrParcours++;
+        }
+      }
+      if (date.getDay() == 6) {
+        while (
+          !(
+            dataPerson.criteres.includes('REPARTI NORMALEMENT') ||
+            dataPerson.criteres.includes('APPARAIT SAMEDI') ||
+            dataPerson.criteres.includes('APPARAIT WEEKEND') ||
+            dataPerson.criteres.includes('RESPONSABLE TFG')
+          ) &&
+          nbrParcours <= group.length
+        ) {
+          i = (i + 1) % group.length;
+          dataPerson = group[i];
+          nbrParcours++;
+        }
+      }
+      if (date.getDay() == 0) {
+        while (
+          !(
+            dataPerson.criteres.includes('REPARTI NORMALEMENT') ||
+            dataPerson.criteres.includes('APPARAIT DIMANCHE') ||
+            dataPerson.criteres.includes('APPARAIT WEEKEND')
+          ) &&
+          nbrParcours <= group.length
+        ) {
+          i = (i + 1) % group.length;
+          dataPerson = group[i];
+          nbrParcours++;
+        }
+      }
+      isIdentiqueGroup = false;
+      for (let personnel of groupExist) {
+        if (personnel?.group == dataPerson.group) {
+          i = (i + 1) % group.length;
+          dataPerson = group[i];
+          nbrParcours++;
+          isIdentiqueGroup = true;
+          break;
+        }
       }
     }
-    if (date.getDay() == 6) {
-      while (
-        !(
-          dataPerson.criteres.includes('REPARTI NORMALEMENT') ||
-          dataPerson.criteres.includes('APPARAIT SAMEDI') ||
-          dataPerson.criteres.includes('APPARAIT WEEKEND') ||
-          dataPerson.criteres.includes('RESPONSABLE TFG')
-        ) &&
-        nbrParcours <= group.length
-      ) {
-        i = (i + 1) % group.length;
-        dataPerson = group[i];
-        nbrParcours++;
-      }
-    }
-    if (date.getDay() == 0) {
-      while (
-        !(
-          dataPerson.criteres.includes('REPARTI NORMALEMENT') ||
-          dataPerson.criteres.includes('APPARAIT DIMANCHE') ||
-          dataPerson.criteres.includes('APPARAIT WEEKEND')
-        ) &&
-        nbrParcours <= group.length
-      ) {
-        i = (i + 1) % group.length;
-        dataPerson = group[i];
-        nbrParcours++;
-      }
-    }
+
     lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
     return [lastDataPerson, i, nbrParcours];
   }
@@ -811,7 +832,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     date: Date,
     nbrParcours: number = 0,
     temps: 'jour' | 'nuit' = 'nuit',
-    initialIndex: number = index
+    initialIndex: number = index,
+    groupExist: Array<GroupsPeople['data'][number] | null>
   ): GroupsPeople['data'][number] {
     if (nbrParcours > group.length) {
       return dataPerson;
@@ -831,11 +853,11 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         date,
         nbrParcours,
         temps,
-        initialIndex
+        initialIndex,
+        groupExist
       );
       i = indice;
       let holidays = dataPerson.personnel.vacancies;
-
 
       if (holidays && holidays.length) {
         let isHoliday = false;
@@ -859,7 +881,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             date,
             nbrParcours,
             temps,
-            initialIndex
+            initialIndex,
+            groupExist
           );
 
           if (indice == i) {
@@ -894,6 +917,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     console.log('findPerson dataPerson before =>', lastDataPerson);
     if (temps == 'jour') {
       group = this.decalage(initialIndex, i, group);
+
       console.log('_____fin find-person 1 _____', lastDataPerson);
 
       return lastDataPerson;
@@ -906,11 +930,23 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         i,
         date,
         nbrParcours,
-        initialIndex
+        initialIndex,
+        groupExist
       );
     } else {
-      console.log('_____fin find-person 2 _____', lastDataPerson, "___ indice i=", i, "__indice lastPosition=", lastPosition, "___nbrParcours=", nbrParcours);
+      console.log(
+        '_____fin find-person 2 _____',
+        lastDataPerson,
+        '___ indice i=',
+        i,
+        '__indice lastPosition=',
+        lastPosition,
+        '___nbrParcours=',
+        nbrParcours
+      );
+
       group = this.decalage(initialIndex, i, group);
+
       return lastDataPerson;
     }
   }
@@ -1058,8 +1094,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     if (this.dataPlanning && this.dataPlanning.repartition) {
       nbrPersonDay = this.dataPlanning.repartition;
     }
-
+    let iterGroup = 0;
     for (let group of this.api.data.groupes) {
+      iterGroup++;
       let criteresGroup = group.criteres.map((critere) => critere.nom);
       let oneGroupPersonnel = shuffleArray([...group.personnels]);
       if (
@@ -1070,11 +1107,16 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           groupsPeople.data.push({
             personnel: personnel,
             criteres: criteresGroup,
+            group: 'group' + iterGroup,
           });
         }
       } else if (criteresGroup.includes('RESPONSABLE TFG')) {
         for (let personnel of oneGroupPersonnel) {
-          groupTfg.data.push({ personnel: personnel, criteres: criteresGroup });
+          groupTfg.data.push({
+            personnel: personnel,
+            criteres: criteresGroup,
+            group: 'tfj',
+          });
         }
       }
     }
@@ -1129,7 +1171,11 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             personDataTfj,
             groupTfg.data,
             lastPosition,
-            date
+            date,
+            0,
+            'nuit',
+            lastPosition,
+            []
           );
 
           let datasPersonDay: GroupsPeople['data'][number][] = [];
@@ -1267,7 +1313,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                 lastPosition,
                 date,
                 0,
-                'jour'
+                'jour',
+                lastPosition,
+                []
               );
               let person0Jour: IPersonnelJour = {
                 personnel: person0.personnel,
@@ -2166,6 +2214,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     let triPeople: GroupsPeople['data'] = <GroupsPeople['data']>(
       people.filter((p) => p != null)
     );
+    let initialIndex = lastPosition;
     do {
       person = this.findPerson(
         person,
@@ -2173,7 +2222,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         lastPosition,
         date,
         nbrIdentique,
-        type
+        type,
+        initialIndex,
+        triPeople
       );
       let trouve = false;
       for (let onePerson of triPeople) {
@@ -2183,6 +2234,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           break;
         }
       }
+
       if (!trouve) {
         isIdentique = false;
       }

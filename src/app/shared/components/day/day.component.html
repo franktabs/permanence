@@ -58,7 +58,7 @@
                                 [ngClass]="{'bg-red':colorDay(person.personnel)=='rouge', 'bg-green':colorDay(person.personnel)=='vert'}">
                                 <i class="bi bi-person-fill"
                                     *ngIf="personnel && (person.personnel.id==personnel.id)"></i>
-                                {{person.personnel.firstname | limitString:15 }} <i class="bi bi-shield-fill"
+                                {{person.personnel.firstname | limitString:15 | uppercase }} <i class="bi bi-shield-fill"
                                     *ngIf="person.responsable"></i> </span>
                         </div>
                     </td>
@@ -70,7 +70,7 @@
                                 [ngClass]="{'bg-red':colorDay(person.personnel)=='rouge', 'bg-green':colorDay(person.personnel)=='vert'}">
                                 <i class="bi bi-person-fill"
                                     *ngIf="personnel && (person.personnel.id==personnel.id)"></i>
-                                {{person.personnel.firstname | limitString:15 }} <i class="bi bi-shield-fill"
+                                {{person.personnel.firstname | limitString:15 | uppercase }} <i class="bi bi-shield-fill"
                                     *ngIf="person.responsable"></i></span>
                         </div>
                     </td>
@@ -84,7 +84,7 @@
                                 [ngClass]="{'bg-red':colorDay(person.personnel)=='rouge', 'bg-green':colorDay(person.personnel)=='vert'}">
                                 <i class="bi bi-person-fill"
                                     *ngIf="personnel && (person.personnel.id==personnel.id)"></i>
-                                {{person.personnel.firstname | limitString:23 }} <i class="bi bi-shield-fill"
+                                {{person.personnel.firstname | limitString:23 | uppercase }} <i class="bi bi-shield-fill"
                                     *ngIf="person.responsable"></i></span>
                         </div>
                     </td>

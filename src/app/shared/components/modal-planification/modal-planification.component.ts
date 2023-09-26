@@ -331,7 +331,7 @@ export class ModalPlanificationComponent implements OnInit {
           }
         }
       })
-      let datasPersonnel = filterOffAdmin(this.api.data.personnels);
+      let datasPersonnel = this.api.data.personnels;
       for(let person of datasPersonnel){
         if(person.id && !idPersonnels.includes(person.id)){
           group.personnels.add(person);
