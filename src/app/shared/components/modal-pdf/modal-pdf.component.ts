@@ -1,6 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import IJasperModel from '../../interfaces/ijasperModel';
-import { MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+
+
+export type DataModalPdf = {
+  title:string;
+}
 
 @Component({
   selector: 'app-modal-pdf',
@@ -13,9 +18,11 @@ export class ModalPdfComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<ModalPdfComponent>,
+    @Inject(MAT_DIALOG_DATA) public data:DataModalPdf ,
   ) { }
 
   ngOnInit(): void {
+    
   }
 
   onNoClick(){

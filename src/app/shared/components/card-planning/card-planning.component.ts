@@ -21,7 +21,10 @@ import { IRole, RoleType } from '../../interfaces/irole';
 import { IAnnonce } from '../../interfaces/iannonce';
 import { INotification } from '../../interfaces/inotification';
 import { MatDialog } from '@angular/material/dialog';
-import { ModalPdfComponent } from '../modal-pdf/modal-pdf.component';
+import {
+  DataModalPdf,
+  ModalPdfComponent,
+} from '../modal-pdf/modal-pdf.component';
 import IJasperModel from '../../interfaces/ijasperModel';
 
 @Component({
@@ -380,7 +383,10 @@ export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
 
   generatePDF() {
     if (this.planning.id) {
-      let dialogRef = this.dialog.open(ModalPdfComponent);
+      let dialogRef = this.dialog.open<ModalPdfComponent, DataModalPdf>(
+        ModalPdfComponent,
+        { data: { title: 'GENERATION PDF' } }
+      );;
       dialogRef
         .afterClosed()
         .pipe(takeUntil(this.destroy$))
@@ -393,11 +399,10 @@ export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
         });
-
     }
   }
 
-  async axiosPostPdf(jasperModel:IJasperModel){
+  async axiosPostPdf(jasperModel: IJasperModel) {
     try {
       this.alert.alertMaterial(
         {
@@ -434,9 +439,12 @@ export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
     }
   }
 
-  generateEXCEL(){
+  generateEXCEL() {
     if (this.planning.id) {
-      let dialogRef = this.dialog.open(ModalPdfComponent);
+      let dialogRef = this.dialog.open<ModalPdfComponent, DataModalPdf>(
+        ModalPdfComponent,
+        { data: { title: 'GENERATION EXCEL' } }
+      );
       dialogRef
         .afterClosed()
         .pipe(takeUntil(this.destroy$))
@@ -449,11 +457,10 @@ export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
             }
           }
         });
-
     }
   }
 
-  async axiosPostExcel(jasperModel:IJasperModel){
+  async axiosPostExcel(jasperModel: IJasperModel) {
     try {
       this.alert.alertMaterial(
         {
@@ -465,7 +472,7 @@ export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
       let response = await axios.post(
         this.api.URL_JASPERS + '/excel/' + this.planning.id,
         jasperModel,
-        { responseType: "blob" }
+        { responseType: 'blob' }
       );
       if (response.data) {
         const blob = new Blob([response.data]);
@@ -489,5 +496,4 @@ export class CardPlanningComponent implements OnInit, OnChanges, OnDestroy {
       this.alert.alertError();
     }
   }
-
 }

@@ -1,8 +1,25 @@
-<h1 mat-dialog-title class="head-4 color-bordeau" > <i class="bi bi-file-pdf-fill" ></i> Generation du PDF</h1>
+<h1 mat-dialog-title class="head-3 color-bordeau">
+  <i
+    class="bi"
+    [ngClass]="{
+      'bi-file-earmark-pdf-fill': data.title.toLowerCase().includes('pdf'),
+      'bi-file-earmark-spreadsheet-fill': data.title.toLowerCase().includes('excel')
+    }"
+  ></i>
+  {{ data.title }}
+</h1>
 <div mat-dialog-content class="pb-2">
   <div class="p-1">
-    <label for="title_pdf" class="fs-3 fw-bold" >Titre du pdf</label>
-    <input type="text" class="form-control" name="titre_pdf" id="title_pdf" [(ngModel)]="jasperModel.title" >
+    <label for="title_pdf" class="fs-3 fw-bold">Titre Document</label>
+    <div class="p-1">
+      <input
+        type="text"
+        class="form-control"
+        name="titre_pdf"
+        id="title_pdf"
+        [(ngModel)]="jasperModel.title"
+      />
+    </div>
   </div>
 </div>
 <div mat-dialog-actions class="d-flex justify-content-end gap-2 my-border-top">
@@ -13,6 +30,6 @@
     [mat-dialog-close]="jasperModel"
     [disabled]="!jasperModel.title"
   >
-    Telecharger  <i class="bi bi-download"></i>
+    Telecharger <i class="bi bi-download"></i>
   </button>
 </div>

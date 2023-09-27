@@ -129,7 +129,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
   public row: ApparitionPerson | null = null;
 
   public displayedColumns: (keyof ApparitionPerson)[] = [
-    'departements',
+    // 'departements',
     'firstname',
     'sexe',
     'apparitions',
