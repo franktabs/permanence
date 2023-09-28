@@ -1252,7 +1252,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             }
           }
 
+          let personDataTfj2 = this.findPersonResponsability(groupsPeople, date, "nuit");
+
           let datasPersonDay: GroupsPeople['data'][number][] = [];
+          if(personDataTfj2){
+            datasPersonDay.push(personDataTfj2);
+            nbrPersonResponsable++;
+          }
           for (
             let c = 0;
             c < nbrPersonDay.semaine - nbrPersonResponsable;
@@ -1446,8 +1452,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             //   0,
             //   'jour'
             // );
-
+            let personDataTfj2 = this.findPersonResponsability(groupsPeople, date, "jour");
             let datasPersonDayJour: GroupsPeople['data'][number][] = [];
+            if(personDataTfj2){
+              datasPersonDayJour.push(personDataTfj2);
+              nbrPersonResponsable++;
+            }
+            
             for (
               let c = 0;
               c < nbrPersonDay.samediJour - nbrPersonResponsable;
@@ -1562,15 +1573,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             // );
 
             nbrPersonResponsable = 0;
-            let personDataTfj2: GroupsPeople['data'][number] | null =
+            personDataTfj2=
               this.findPersonResponsability(groupsPeople, date, 'nuit');
 
-            if (personDataTfj2) {
-              nbrPersonResponsable++;
-            }
             let datasPersonDayNuit: GroupsPeople['data'][number][] = [];
             if (personDataTfj2) {
               datasPersonDayNuit.push(personDataTfj2);
+              nbrPersonResponsable++;
             }
 
             for (
