@@ -11,7 +11,10 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import axios from 'axios';
 import { Subject, takeUntil } from 'rxjs';
-import { CRITERE_OBJECT } from 'src/app/shared/components/modal-input/modal-input.component';
+import {
+  CRITERES,
+  CRITERE_OBJECT,
+} from 'src/app/shared/components/modal-input/modal-input.component';
 import { DataPlanning } from 'src/app/shared/components/modal-planification/modal-planification.component';
 import { IApiPersonnel } from 'src/app/shared/interfaces/iapipersonnel';
 import { IMonth } from 'src/app/shared/interfaces/imonth';
@@ -635,8 +638,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     date: Date,
     nbrParcours: number = 0,
     initialIndex: number,
-    groupExist: Array<GroupsPeople['data'][number] | null>
-  ): GroupsPeople['data'][number] {
+    groupExist: Array<GroupsPeople['data'][number] | null>,
+    criteres?: typeof CRITERES
+  ): GroupsPeople['data'][number] | null {
     if (nbrParcours > group.length) return dataPerson;
     let lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
 
@@ -672,7 +676,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
       if (initParcours == nbrParcours) {
         console.log('___enf-Find-Man 1 dataPerson before =>', lastDataPerson);
-
+        if (nbrParcours > group.length) return null;
         return lastDataPerson;
       } else {
         if (i != lastPosition) {
@@ -686,11 +690,12 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             nbrParcours,
             'nuit',
             initialIndex,
-            groupExist
+            groupExist,
+            criteres
           );
         } else {
           group = this.decalage(initialIndex, i, group);
-
+          if (nbrParcours > group.length) return null;
           return lastDataPerson;
         }
       }
@@ -759,14 +764,32 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     nbrParcours: number,
     type: 'jour' | 'nuit' = 'nuit',
     initialIndex: number,
-    groupExist: Array<GroupsPeople['data'][number] | null>
+    groupExist: Array<GroupsPeople['data'][number] | null>,
+    criteres?: typeof CRITERES
   ): [GroupsPeople['data'][number], number, number] {
     if (nbrParcours > group.length) return [dataPerson, index, nbrParcours];
     let lastDataPerson = JSON.parse(JSON.stringify(dataPerson));
     let lastPosition = initialIndex;
     let i = index;
     let isIdentiqueGroup = true;
+
     while (isIdentiqueGroup && nbrParcours <= group.length) {
+      if (criteres && criteres.length) {
+        let isSatisfiedCritere = true;
+
+        do {
+          isSatisfiedCritere = true;
+          for (let critere of criteres) {
+            if (!dataPerson.criteres.includes(critere)) {
+              isSatisfiedCritere = false;
+              i = (i + 1) % group.length;
+              dataPerson = group[i];
+              nbrParcours++;
+              break;
+            }
+          }
+        } while (!isSatisfiedCritere && nbrParcours <= group.length);
+      }
       if (date.getDay() != 0 && date.getDay() != 6) {
         while (
           !(
@@ -786,6 +809,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           !(
             dataPerson.criteres.includes('REPARTI NORMALEMENT') ||
             dataPerson.criteres.includes('APPARAIT SAMEDI') ||
+            dataPerson.criteres.includes('SAMEDI JOUR') ||
+            dataPerson.criteres.includes('SAMEDI NUIT') ||
             dataPerson.criteres.includes('APPARAIT WEEKEND') ||
             dataPerson.criteres.includes('RESPONSABLE TFG')
           ) &&
@@ -801,6 +826,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           !(
             dataPerson.criteres.includes('REPARTI NORMALEMENT') ||
             dataPerson.criteres.includes('APPARAIT DIMANCHE') ||
+            dataPerson.criteres.includes('DIMANCHE JOUR') ||
+            dataPerson.criteres.includes('DIMANCHE NUIT') ||
             dataPerson.criteres.includes('APPARAIT WEEKEND')
           ) &&
           nbrParcours <= group.length
@@ -823,11 +850,23 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         }
       }
       while (
-        ((dataPerson.criteres.includes('PRESENT JUSTE LA NUIT') &&
+        ((dataPerson.criteres.includes('PRESENT JUSTE LA NUIT') ||
+          (dataPerson.criteres.includes('SAMEDI NUIT') &&
+            !dataPerson.criteres.includes('SAMEDI JOUR') &&
+            date.getDay() == 6) ||
+          (dataPerson.criteres.includes('DIMANCHE NUIT') &&
+            !dataPerson.criteres.includes('DIMANCHE JOUR') &&
+            date.getDay() == 0)) &&
           type == 'jour') ||
-          (dataPerson.criteres.includes('PRESENT JUSTE LE JOUR') &&
-            type == 'nuit')) &&
-        nbrParcours <= group.length
+        ((dataPerson.criteres.includes('PRESENT JUSTE LE JOUR') ||
+          (dataPerson.criteres.includes('SAMEDI JOUR') &&
+            !dataPerson.criteres.includes('SAMEDI NUIT') &&
+            date.getDay() == 6) ||
+          (dataPerson.criteres.includes('DIMANCHE JOUR') &&
+            !dataPerson.criteres.includes('DIMANCHE NUIT') &&
+            date.getDay() == 0)) &&
+          type == 'nuit' &&
+          nbrParcours <= group.length)
       ) {
         i = (i + 1) % group.length;
         dataPerson = group[i];
@@ -847,8 +886,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     nbrParcours: number = 0,
     temps: 'jour' | 'nuit' = 'nuit',
     initialIndex: number = index,
-    groupExist: Array<GroupsPeople['data'][number] | null>
-  ): GroupsPeople['data'][number] {
+    groupExist: Array<GroupsPeople['data'][number] | null>,
+    critere?: typeof CRITERES
+  ): GroupsPeople['data'][number] | null {
     if (nbrParcours > group.length) {
       return dataPerson;
     }
@@ -868,7 +908,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         nbrParcours,
         temps,
         initialIndex,
-        groupExist
+        groupExist,
+        critere
       );
       i = indice;
       let holidays = dataPerson.personnel.vacancies;
@@ -945,7 +986,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         date,
         nbrParcours,
         initialIndex,
-        groupExist
+        groupExist,
+        critere
       );
     } else {
       console.log(
@@ -960,7 +1002,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       );
 
       group = this.decalage(initialIndex, i, group);
-
+      if (nbrParcours > group.length) return null;
       return lastDataPerson;
     }
   }
@@ -1182,12 +1224,12 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           //   stringDate(date)
           // );
 
-          let personDataTfj =
+          let personDataTfjGroup: GroupsPeople['data'][number] =
             groupTfg.data[(index - groupTfg.parcours) % groupTfg.data.length];
           let lastPosition = (index - groupTfg.parcours) % groupTfg.data.length;
 
-          personDataTfj = this.findPerson(
-            personDataTfj,
+          let personDataTfj = this.findPerson(
+            personDataTfjGroup,
             groupTfg.data,
             lastPosition,
             date,
@@ -1196,9 +1238,26 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             lastPosition,
             []
           );
+          let nbrPersonResponsable = 0;
+          if (personDataTfj) {
+            nbrPersonResponsable++;
+          } else {
+            personDataTfj = this.findPersonResponsability(
+              groupsPeople,
+              date,
+              'nuit'
+            );
+            if (personDataTfj) {
+              nbrPersonResponsable++;
+            }
+          }
 
           let datasPersonDay: GroupsPeople['data'][number][] = [];
-          for (let c = 0; c < nbrPersonDay.semaine - 1; c++) {
+          for (
+            let c = 0;
+            c < nbrPersonDay.semaine - nbrPersonResponsable;
+            c++
+          ) {
             let lastPosition = groupsPeople.parcours % groupsPeople.data.length;
             let dataPerson2: GroupsPeople['data'][number] | null =
               groupsPeople.data[
@@ -1262,7 +1321,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           //   group1[i] = temps;
           // }
 
-          if (personDataTfj.personnel.sexe == 'M') {
+          if (personDataTfj && personDataTfj.personnel.sexe == 'M') {
             let personNuitTfj: IPersonnelNuit = {
               permanence: personnel_permanence,
               personnel: personDataTfj.personnel,
@@ -1305,6 +1364,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         }
       } else if (date.getDay() == 6) {
         if (permanence.type == 'ouvrable') {
+          let nbrPersonResponsable = 0;
           let permanenceLundi = this.permanences[index - 5];
           if (
             permanence.personnels_jour != null &&
@@ -1314,6 +1374,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             let person0: GroupsPeople['data'][number] | null = null;
             if (personNuit) {
               permanence.personnels_jour[0] = personNuit;
+              nbrPersonResponsable++;
             } else {
               console.log('problème rencontré le Lundi, anticipation ...');
               person0 =
@@ -1336,13 +1397,31 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                 lastPosition,
                 []
               );
-              let person0Jour: IPersonnelJour = {
-                personnel: person0.personnel,
-                permanence: personnel_permanence,
-                responsable: true,
-              };
+              if (person0) {
+                let person0Jour: IPersonnelJour = {
+                  personnel: person0.personnel,
+                  permanence: personnel_permanence,
+                  responsable: true,
+                };
+                permanence.personnels_jour.push(person0Jour);
+                nbrPersonResponsable++;
+              } else {
+                person0 = this.findPersonResponsability(
+                  groupsPeople,
+                  date,
+                  'jour'
+                );
 
-              permanence.personnels_jour.push(person0Jour);
+                if (person0) {
+                  let person0Jour: IPersonnelJour = {
+                    personnel: person0.personnel,
+                    permanence: personnel_permanence,
+                    responsable: true,
+                  };
+                  permanence.personnels_jour.push(person0Jour);
+                  nbrPersonResponsable++;
+                }
+              }
             }
 
             // let person1 = group2[repartiGroup2++ % nbrGroup2];
@@ -1369,7 +1448,11 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             // );
 
             let datasPersonDayJour: GroupsPeople['data'][number][] = [];
-            for (let c = 0; c < nbrPersonDay.samediJour - 1; c++) {
+            for (
+              let c = 0;
+              c < nbrPersonDay.samediJour - nbrPersonResponsable;
+              c++
+            ) {
               let lastPosition =
                 groupsPeople.parcours % groupsPeople.data.length;
               let dataPerson2: GroupsPeople['data'][number] | null =
@@ -1478,8 +1561,23 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             //   'nuit'
             // );
 
+            nbrPersonResponsable = 0;
+            let personDataTfj2: GroupsPeople['data'][number] | null =
+              this.findPersonResponsability(groupsPeople, date, 'nuit');
+
+            if (personDataTfj2) {
+              nbrPersonResponsable++;
+            }
             let datasPersonDayNuit: GroupsPeople['data'][number][] = [];
-            for (let c = 0; c < nbrPersonDay.samediNuit; c++) {
+            if (personDataTfj2) {
+              datasPersonDayNuit.push(personDataTfj2);
+            }
+
+            for (
+              let c = 0;
+              c < nbrPersonDay.samediNuit - nbrPersonResponsable;
+              c++
+            ) {
               let lastPosition =
                 groupsPeople.parcours % groupsPeople.data.length;
               let dataPerson2: GroupsPeople['data'][number] | null =
@@ -1499,10 +1597,12 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
               }
             }
 
-            datasPersonDayNuit = this.trierPersonChief(
-              datasPersonDayNuit,
-              idCountChief
-            );
+            if (personDataTfj2 == null) {
+              datasPersonDayNuit = this.trierPersonChief(
+                datasPersonDayNuit,
+                idCountChief
+              );
+            }
 
             datasPersonDayNuit.forEach((pers, i) => {
               if (pers) {
@@ -1591,9 +1691,17 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           //   0,
           //   'jour'
           // );
-
+          let nbrPersonResponsable = 0;
+          let personDataTfj2 = this.findPersonResponsability(groupsPeople, date, "jour");
+          if(personDataTfj2){
+            nbrPersonResponsable++
+          }
           let datasPersonDayJour: GroupsPeople['data'][number][] = [];
-          for (let c = 0; c < nbrPersonDay.dimancheJour; c++) {
+          if(personDataTfj2){
+            datasPersonDayJour.push(personDataTfj2);
+          }
+
+          for (let c = 0; c < nbrPersonDay.dimancheJour-nbrPersonResponsable; c++) {
             let lastPosition = groupsPeople.parcours % groupsPeople.data.length;
             let dataPerson2: GroupsPeople['data'][number] | null =
               groupsPeople.data[
@@ -1612,10 +1720,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             }
           }
 
-          datasPersonDayJour = this.trierPersonChief(
-            datasPersonDayJour,
-            idCountChief
-          );
+          if(personDataTfj2==null){
+
+            datasPersonDayJour = this.trierPersonChief(
+              datasPersonDayJour,
+              idCountChief
+            );
+          }
 
           datasPersonDayJour.forEach((pers, i) => {
             if (pers != null) {
@@ -1668,8 +1779,14 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
           //   }
           // });
 
+          nbrPersonResponsable = 0;
+          personDataTfj2 = this.findPersonResponsability(groupsPeople, date, "nuit");
           let datasPersonDayNuit: GroupsPeople['data'][number][] = [];
-          for (let c = 0; c < nbrPersonDay.dimancheNuit; c++) {
+        if(personDataTfj2){
+          datasPersonDayNuit.push(personDataTfj2);
+          nbrPersonResponsable++
+        }
+          for (let c = 0; c < nbrPersonDay.dimancheNuit-nbrPersonResponsable; c++) {
             let lastPosition = groupsPeople.parcours % groupsPeople.data.length;
             let dataPerson2: GroupsPeople['data'][number] | null =
               groupsPeople.data[
@@ -1688,10 +1805,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             }
           }
 
-          datasPersonDayNuit = this.trierPersonChief(
-            datasPersonDayNuit,
-            idCountChief
-          );
+          if(personDataTfj2==null){
+
+            datasPersonDayNuit = this.trierPersonChief(
+              datasPersonDayNuit,
+              idCountChief
+            );
+          }
 
           datasPersonDayNuit.forEach((pers, i) => {
             if (pers != null) {
@@ -2234,8 +2354,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
       people.filter((p) => p != null)
     );
     let initialIndex = lastPosition;
+    let personFind: GroupsPeople['data'][number] | null = null;
     do {
-      person = this.findPerson(
+      personFind = this.findPerson(
         person,
         group,
         lastPosition,
@@ -2263,7 +2384,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     if (isIdentique) {
       return null;
     } else {
-      return person;
+      return personFind;
     }
   }
 
@@ -2295,6 +2416,45 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     } else {
       this._liveAnnouncer.announce('Sorting cleared');
     }
+  }
+
+  findPersonResponsability(
+    group: GroupsPeople,
+    date: Date,
+    type: 'jour' | 'nuit'
+  ): GroupsPeople['data'][number] | null {
+    let personDataTfj2: GroupsPeople['data'][number] | null = null;
+
+    let lastPosition = group.parcours % group.data.length;
+    personDataTfj2 = group.data[group.parcours++ % group.data.length];
+    personDataTfj2 = this.findPerson(
+      personDataTfj2,
+      group.data,
+      lastPosition,
+      date,
+      0,
+      type,
+      lastPosition,
+      [],
+      ['RESPONSABILITE 1']
+    );
+
+    if (personDataTfj2 == null) {
+      let lastPosition = group.parcours % group.data.length;
+      personDataTfj2 = group.data[group.parcours++ % group.data.length];
+      personDataTfj2 = this.findPerson(
+        personDataTfj2,
+        group.data,
+        lastPosition,
+        date,
+        0,
+        type,
+        lastPosition,
+        [],
+        ['RESPONSABILITE 2']
+      );
+    }
+    return personDataTfj2;
   }
 
   public handleClick(row: ApparitionPerson) {
