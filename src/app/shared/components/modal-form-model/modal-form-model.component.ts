@@ -30,6 +30,7 @@ import { HandleActionTable1 } from '../table1/table1.component';
 export type DataDialogModalFormModelComponent = {
   titre: TitleModalForm;
   dataForm: OptionalKeyString<IApiDepartement | IApiDirection | IApiPersonnel>;
+  dataModelInput: OptionalKeyString<IApiDepartement | IApiDirection | IApiPersonnel>;
   icon: string;
   departementRequest?: DepartementRequest<IApiDepartement[]>;
   directionRequest?: DirectionRequest<IApiDirection[]>;
@@ -56,6 +57,8 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
   public iconTitle!: string;
 
   public dataForm: DataDialogModalFormModelComponent['dataForm'];
+
+  public dataModelInput!:DataDialogModalFormModelComponent['dataForm'];
 
   public dataViewHtml!: any;
 
@@ -90,6 +93,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
     private validation: ValidationService
   ) {
     this.dataForm = data.dataForm;
+    this.dataModelInput = data.dataModelInput;
     this.iconTitle = data.icon;
     this.titre = data.titre;
   }
@@ -98,7 +102,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.keyDataForm = Object.keys(this.dataForm) as any;
+    this.keyDataForm = Object.keys(this.dataModelInput) as any;
     let elemntGroup: { [key in keyof typeof this.dataForm]: any } = {};
     let personnels = this.api.data.personnels;
     this.emailList = personnels.map((personnel) => {
@@ -110,8 +114,8 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
         return personnel.emailaddress;
       });
     });
-    for (let key in this.dataForm) {
-      let cle: keyof typeof this.dataForm = key as any;
+    for (let key in this.dataModelInput) {
+      let cle: keyof typeof this.dataModelInput = key as any;
       if (cle == 'emailaddress') {
         elemntGroup.emailaddress = [
           this.dataForm.emailaddress,
@@ -185,6 +189,13 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
   async enregistrer() {
     if (this.titre == 'PERSONNEL') {
       let datas: IApiPersonnel = this.myFormGroup.value;
+      for(let key of this.keyDataForm){
+        let key2  = key as any
+        //@ts-ignore
+        this.dataForm[key] = datas[key2]
+      }
+      datas = this.dataForm as any ;
+
       this.loader.loader_modal$.next(true);
       try {
         let response = await axios.post(
@@ -194,13 +205,15 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
         if (response.data != false && response.data[0]) {
           let oldDataPersonnels = this.api.data.personnels;
           this.alert.alertSave();
-          if(this.data.action=="ADD"){
+          if (this.data.action == 'ADD') {
             oldDataPersonnels.unshift(response.data[0]);
-            this.api.personnels$.next(JSON.parse(JSON.stringify(oldDataPersonnels)));
-          }else if( this.data.action=="UPDATE"){
+            this.api.personnels$.next(
+              JSON.parse(JSON.stringify(oldDataPersonnels))
+            );
+          } else if (this.data.action == 'UPDATE') {
             response = await axios.get(this.api.URL_PERSONNELS);
-            if(response.data){
-             this.api.personnels$.next(response.data);
+            if (response.data) {
+              this.api.personnels$.next(response.data);
             }
           }
           this.dialogRef.close();
@@ -213,6 +226,13 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
       this.loader.loader_modal$.next(false);
     } else if (this.titre == 'DEPARTEMENT') {
       let datas: IApiDepartement = this.myFormGroup.value;
+      for(let key of this.keyDataForm){
+        let key2  = key as any
+        //@ts-ignore
+        this.dataForm[key] = datas[key2]
+      }
+      datas = this.dataForm as any ;
+
       this.loader.loader_modal$.next(true);
       try {
         let directionForm = this.directionRequest.data.find((direction1) => {
@@ -232,8 +252,17 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
         datas.direction = directionForm;
         let response = await axios.post(this.api.URL_DEPARTEMENTS, datas);
 
-        if (response.data && this.data.departementRequest) {
-          this.data.departementRequest.data.push(response.data);
+        if (response.data) {
+          if (this.data.departementRequest) {
+            this.data.departementRequest.data.push(response.data);
+          }
+
+          if (this.data.action == 'UPDATE' || this.data.action == 'ADD') {
+            response = await axios.get(this.api.URL_DIRECTIONS);
+            if (response.data) {
+              this.api.directions$.next(response.data);
+            }
+          }
           this.dialogRef.close();
           this.alert.alertSave();
           console.log('voici le departement sauvegarder ', response.data);
@@ -248,6 +277,12 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
 
       let datas: IApiDirection = this.myFormGroup.value;
       console.log('données direction ', datas);
+      for(let key of this.keyDataForm){
+        let key2  = key as any
+        //@ts-ignore
+        this.dataForm[key] = datas[key2]
+      }
+      datas = this.dataForm as any ;
 
       try {
         let response = await axios.post(this.api.URL_DIRECTIONS, datas);
@@ -288,6 +323,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
             parentorganizationId: undefined,
             organizationId: minOrganizationId,
           };
+
           this.dialog.open<
             ModalFormModelComponent,
             DataDialogModalFormModelComponent
@@ -295,6 +331,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
             data: {
               titre: 'DEPARTEMENT',
               dataForm: newDepartement,
+              dataModelInput:newDepartement,
               icon: "<i class='bi bi-building-add'></i>",
               departementRequest: this.departementRequest,
               action: 'ADD',
@@ -337,6 +374,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
             data: {
               titre: 'DIRECTION',
               dataForm: newDirection,
+              dataModelInput:newDirection,
               icon: "<i class='bi bi-building-add'></i>",
               directionRequest: this.directionRequest,
               action: 'ADD',
@@ -356,15 +394,17 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
     if (this.data.action == 'UPDATE' && this.data.titre == 'PERSONNEL') {
       let disabled = true;
       for (let key of this.keyDataForm) {
-        let valeur:any = null;
-        if(this.myFormGroup.controls[key] && (typeof  this.myFormGroup.controls[key].value=="string")){
+        let valeur: any = null;
+        if (
+          this.myFormGroup.controls[key] &&
+          typeof this.myFormGroup.controls[key].value == 'string'
+        ) {
           valeur = this.myFormGroup.controls[key].value.trim();
-        }else {
-          valeur = this.myFormGroup.controls[key]?.value
+        } else {
+          valeur = this.myFormGroup.controls[key]?.value;
         }
 
-
-        if ( valeur != this.data.dataForm[key]) {
+        if (valeur != this.data.dataForm[key]) {
           disabled = false;
           break;
         }

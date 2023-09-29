@@ -46,6 +46,8 @@ export class Modal1Component implements OnInit, OnChanges, OnDestroy {
 
   @Input() rows!: TypePersonnel | any;
 
+  @Input() type:"DEPARTEMENT"|"DIRECTION"|"PERSONNEL" = "PERSONNEL"
+
   public permanences: IPermanence[] = [];
 
   public nbrPermanences: number = 0;

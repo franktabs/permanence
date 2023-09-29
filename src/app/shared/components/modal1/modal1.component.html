@@ -4,18 +4,19 @@
   <div class="my-body shadow-lg anim-scaleIn see-modal1">
     <button class="btn btn-close my-close" (click)="closeModal()"></button>
     <div>
-      <div class="my-title fw-bold p-2">
-        <i class="bi bi-person-fill"></i>
+      <div class="head-3 fw-bold p-2">
+        <i class="bi bi-person-fill" *ngIf="type=='PERSONNEL'"></i>
+        <i class="bi bi-building" *ngIf="type=='DEPARTEMENT'|| type=='DIRECTION'"></i>
         Informations
       </div>
       <div class="ligne"></div>
-      <div class="d-flex contenu">
-        <div class="m-3 p-3 part1">
+      <div class="contenu" [ngClass]="{'d-flex':type=='PERSONNEL'}">
+        <div class="m-3 p-3 " [ngClass]="{'part1':type=='PERSONNEL'}" >
           <div>
             <h1 class="pb-2"><i class="bi bi-card-text"></i> A propos
               <button mat-raised-button
                       class="text-uppercase" color="primary" (click)="openDialog()"
-                      *ngIf="userRoles.includes('ATTRIBUER LES ROLES')"> Changer ses roles <i
+                      *ngIf="userRoles.includes('ATTRIBUER LES ROLES') && type=='PERSONNEL'"> Changer ses roles <i
                 class="bt bi-toggles2"></i></button>
             </h1>
             <table class="table table-hover ">
@@ -34,86 +35,88 @@
             </table>
           </div>
         </div>
-        <div class="p-3 part2 d-flex flex-column gap-3">
-          <div>
-            <h1>
-              <i class="bi bi-calendar2-week"> </i> Sur les Abscences
-            </h1>
-            <table *ngIf="keyRowHoliday.length; else emptyHoliday " class="table table-hover">
-
-              <tbody>
-              <ng-container *ngFor="let elmt1 of keyRowHoliday">
-                <tr *ngIf=" rows.vacancies[0][elmt1] " class="p-2">
-                  <th class="text-capitalize">
-                    <div class="w-max-content"> {{elmt1 | displayKey }} </div>
-                  </th>
-                  <td> {{rows.vacancies[0][elmt1] }} </td>
-                </tr>
-              </ng-container>
-              </tbody>
-            </table>
-            <ng-template #emptyHoliday>
-              <p class="fst-italic">Aucune données trouvées</p>
-            </ng-template>
-
-          </div>
-          <div class="ligne2"></div>
-          <div>
-            <h1>
-              <i class="bi bi-motherboard"></i> Sur les Remplacements
-            </h1>
-
-            <table *ngIf="infoAbsence.value ; else emptyAbsence " class="table table-hover m-0">
-
-              <tbody>
-              <ng-container *ngFor="let elmt2 of infoAbsence.keys">
-                <tr *ngIf=" infoAbsence.value[elmt2] as ifDone" class="p-2">
-                  <th class="text-capitalize">
-                    <div class="w-max-content"> {{elmt2 | displayKey:"remplacement" }} </div>
-                  </th>
-                  <td> {{ifDone }} </td>
-                </tr>
-              </ng-container>
-              </tbody>
-            </table>
-            <div class="text-end">
-              <button mat-button color="accent" (click)="openModalRemplacement()"
-                      *ngIf="!!rows.absentList && rows.absentList.length>0">
-                Voir tout
-              </button>
-            </div>
-            <ng-template #emptyAbsence>
-              <p class="fst-italic">Aucune données trouvées</p>
-            </ng-template>
-
-          </div>
-        </div>
-        <div class="p-3 part3 d-flex flex-column gap-3">
-          <div>
-            <h1>
-              <i class="bi bi-calendar2-day"> </i> Sur le Planning
-            </h1>
+        <ng-container *ngIf="type=='PERSONNEL'" >
+          <div class="p-3 part2 d-flex flex-column gap-3">
             <div>
-              <!--<h1 class="m-0">Nombre d'appritions: {{nbrPermanences}} </h1>
-              <div class=" d-flex flex-row overflow-x-auto pt-2 ">
-                  <ng-container *ngFor="let permanence of permanences">
-                      <app-day [permanence]="permanence" [personnel]="rows"></app-day>
-                  </ng-container>
-              </div>-->
-              <h1 class="m-0">Planning d'apparition </h1>
-              <div class=" d-flex flex-row overflow-x-auto p-3 gap-2  ">
-                <div *ngFor="let planning of planningList, let i = index"  >
-
-                  <app-card-planning  [plannings]="planningList" [indice]="i" typeDisplay="PERSON"
-                                     (planningEmit)="voirPlanning($event)">
-                  </app-card-planning>
+              <h1>
+                <i class="bi bi-calendar2-week"> </i> Sur les Abscences
+              </h1>
+              <table *ngIf="keyRowHoliday.length; else emptyHoliday " class="table table-hover">
+  
+                <tbody>
+                <ng-container *ngFor="let elmt1 of keyRowHoliday">
+                  <tr *ngIf=" rows.vacancies[0][elmt1] " class="p-2">
+                    <th class="text-capitalize">
+                      <div class="w-max-content"> {{elmt1 | displayKey }} </div>
+                    </th>
+                    <td> {{rows.vacancies[0][elmt1] }} </td>
+                  </tr>
+                </ng-container>
+                </tbody>
+              </table>
+              <ng-template #emptyHoliday>
+                <p class="fst-italic">Aucune données trouvées</p>
+              </ng-template>
+  
+            </div>
+            <div class="ligne2"></div>
+            <div>
+              <h1>
+                <i class="bi bi-motherboard"></i> Sur les Remplacements
+              </h1>
+  
+              <table *ngIf="infoAbsence.value ; else emptyAbsence " class="table table-hover m-0">
+  
+                <tbody>
+                <ng-container *ngFor="let elmt2 of infoAbsence.keys">
+                  <tr *ngIf=" infoAbsence.value[elmt2] as ifDone" class="p-2">
+                    <th class="text-capitalize">
+                      <div class="w-max-content"> {{elmt2 | displayKey:"remplacement" }} </div>
+                    </th>
+                    <td> {{ifDone }} </td>
+                  </tr>
+                </ng-container>
+                </tbody>
+              </table>
+              <div class="text-end">
+                <button mat-button color="accent" (click)="openModalRemplacement()"
+                        *ngIf="!!rows.absentList && rows.absentList.length>0">
+                  Voir tout
+                </button>
+              </div>
+              <ng-template #emptyAbsence>
+                <p class="fst-italic">Aucune données trouvées</p>
+              </ng-template>
+  
+            </div>
+          </div>
+          <div class="p-3 part3 d-flex flex-column gap-3">
+            <div>
+              <h1>
+                <i class="bi bi-calendar2-day"> </i> Sur le Planning
+              </h1>
+              <div>
+                <!--<h1 class="m-0">Nombre d'appritions: {{nbrPermanences}} </h1>
+                <div class=" d-flex flex-row overflow-x-auto pt-2 ">
+                    <ng-container *ngFor="let permanence of permanences">
+                        <app-day [permanence]="permanence" [personnel]="rows"></app-day>
+                    </ng-container>
+                </div>-->
+                <h1 class="m-0">Planning d'apparition </h1>
+                <div class=" d-flex flex-row overflow-x-auto p-3 gap-2  ">
+                  <div *ngFor="let planning of planningList, let i = index"  >
+  
+                    <app-card-planning  [plannings]="planningList" [indice]="i" typeDisplay="PERSON"
+                                       (planningEmit)="voirPlanning($event)">
+                    </app-card-planning>
+                  </div>
                 </div>
               </div>
+              
             </div>
-            
+            <!-- <div class="ligne2"></div> -->
           </div>
-          <!-- <div class="ligne2"></div> -->
-        </div>
+        </ng-container>
       </div>
     </div>
   </div>

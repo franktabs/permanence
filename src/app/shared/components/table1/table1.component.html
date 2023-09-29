@@ -1,6 +1,6 @@
 <div class="table1 shadow-by-material2 anim-slide-e">
     <div>
-        <app-modal1 [(isOpen)]="openModal" *ngIf="openModal" [rows]="row"></app-modal1>
+        <app-modal1 [(isOpen)]="openModal" *ngIf="openModal" [rows]="row" [type]="type" ></app-modal1>
         <div class="ms-4">
             <div class="icon-title" [innerHTML]="icon"></div>
             <h1>{{title}}</h1>

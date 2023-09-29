@@ -318,6 +318,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
           }
         }
       }
+      this.api.data.departements = this.data_apiDepartements;
     }
   }
 
@@ -375,6 +376,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
             data: {
               titre: attr.titre,
               dataForm: newPerson,
+              dataModelInput:newPerson,
               icon: "<i class='bi bi-person-fill-add'></i>",
               action: 'ADD',
             },
@@ -410,7 +412,8 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       >(ModalFormModelComponent, {
         data: {
           titre: attr.titre,
-          dataForm: person,
+          dataForm: attr2.row,
+          dataModelInput:person,
           icon: "<i class='bi bi-person-fill-add'></i>",
           action: 'UPDATE',
         },
@@ -466,6 +469,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
             data: {
               titre: 'DEPARTEMENT',
               dataForm: newDepartement,
+              dataModelInput:newDepartement,
               icon: "<i class='bi bi-building-add'></i>",
               departementRequest: new DepartementRequest([]),
               action: 'ADD',
@@ -489,11 +493,14 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
         row: IApiDepartement;
       } = attr as any;
 
-      let departement: OptionalKeyString<IApiDepartement> = {
+      let departementModel: OptionalKeyString<IApiDepartement> = {
+        id:attr2.row.id,
         name: attr2.row.name,
         parentorganizationId:attr2.row.parentorganizationId,
         organizationId:attr2.row.organizationId
       };
+      let departement = {...attr2.row}
+      delete departement.direction;
       this.dialog.open<
         ModalFormModelComponent,
         DataDialogModalFormModelComponent
@@ -501,6 +508,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
         data: {
           titre: attr.titre,
           dataForm: departement,
+          dataModelInput:departementModel,
           icon: "<i class='bi bi-person-fill-add'></i>",
           action: 'UPDATE',
         },
