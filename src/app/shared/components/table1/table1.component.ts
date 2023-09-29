@@ -85,7 +85,7 @@ export class Table1Component
     return this._paginator;
   }
 
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatSort, {static:false}) sort!: MatSort;
 
   // set sort(value: MatSort) {
   //   // if(!value){
@@ -137,6 +137,8 @@ export class Table1Component
     //   },
     //   error:(err)=>{this.errorMessage = err}
     // })
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
   }
 
   /** Announce the change in sort state for assistive technology. */

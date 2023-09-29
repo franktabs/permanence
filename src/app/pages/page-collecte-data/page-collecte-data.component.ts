@@ -95,6 +95,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   public isTableFilter: boolean = false;
   public userAuth!: TypePersonnel | null;
   public destroy$!: Subject<boolean>;
+  
   public dataSource: MatTableDataSource<TypePersonnel> =
     new MatTableDataSource<TypePersonnel>([]);
   public search: string = '';
