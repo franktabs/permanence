@@ -11,7 +11,8 @@ import { IApiDepartement } from "../interfaces/iapidepartement";
 
 export type TypePersonnel = IApiPersonnel;
 // export type TypePersonnel = ReturnFormatJSON<IApiPersonnel, IPersonnel>
-export type TypeDirection = ReturnFormatJSON<IApiDirection, IDirection>
+// export type TypeDirection = ReturnFormatJSON<IApiDirection, IDirection>
+export type TypeDirection = IApiDirection;
 export type TypeAbsence = ReturnFormatJSON<IApiRemplacement, IAbsence>
 export type TypeHoliday = ReturnFormatJSON<IApiHoliday, IHolidays>
 export type TypeDepartement = IApiDepartement

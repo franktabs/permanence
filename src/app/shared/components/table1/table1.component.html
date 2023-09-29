@@ -6,10 +6,12 @@
             <h1>{{title}}</h1>
         </div>
         <div class="d-flex justify-content-end align-items-center p-2" *ngIf="iconAdd">
-            <button mat-raised-button color="btn-noir" (click)="handleAction({'titre':'PERSONNEL', 'action':'ADD'})">
+            <button mat-raised-button color="btn-noir" (click)="handleAction({'titre':type, 'action':'ADD'})">
                 <div class="d-flex justify-content-end align-items-center gap-2">
                     <span [innerHTML]="iconAdd" class="fs-3 actionIcon"> </span>
-                    <span>Ajouter un personnel</span>
+                    <span *ngIf="type=='PERSONNEL'" >Ajouter un personnel</span>
+                    <span *ngIf="type=='DEPARTEMENT'" >Ajouter un Departement</span>
+                    <span *ngIf="type=='DIRECTION'" >Ajouter une Direction</span>
                 </div>
             </button>
         </div>
@@ -17,7 +19,6 @@
         <div>
             <div class="table-responsive">
                 <table mat-table [dataSource]="dataSource" matSort (matSortChange)="announceSortChange($event)">
-
 
 
                     <ng-container matColumnDef="action">
@@ -30,28 +31,42 @@
                             </div>
                         </td>
                     </ng-container>
-                    <ng-container matColumnDef="firstname">
+                    <ng-container matColumnDef="firstname" *ngIf="type=='PERSONNEL'"  >
                         <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by firstname"
                             class="px-4">Nom</th>
                         <td mat-cell *matCellDef="let element" class="px-4">
                             <div class="w-max-content ">{{element.firstname}}</div>
                         </td>
                     </ng-container>
+                    <ng-container matColumnDef="name" *ngIf="type=='DEPARTEMENT' || type=='DIRECTION' "  >
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by name"
+                            class="px-4">Nom</th>
+                        <td mat-cell *matCellDef="let element" class="px-4">
+                            <div class="w-max-content ">{{element.name}}</div>
+                        </td>
+                    </ng-container>
+                    <ng-container matColumnDef="direction" *ngIf="type=='DEPARTEMENT'"  >
+                        <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by direction"
+                            class="px-4">Direction</th>
+                        <td mat-cell *matCellDef="let element" class="px-4">
+                            <div class="w-max-content ">{{element.direction.name}}</div>
+                        </td>
+                    </ng-container>
 
-                    <ng-container matColumnDef="sexe">
+                    <ng-container matColumnDef="sexe" *ngIf="type=='PERSONNEL'"  >
                         <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by sexe"
                             class="px-4">Sexe
                         </th>
                         <td mat-cell *matCellDef="let element" class="px-4"> {{element.sexe}} </td>
                     </ng-container>
 
-                    <ng-container matColumnDef="emailaddress">
+                    <ng-container matColumnDef="emailaddress" *ngIf="type=='PERSONNEL'" >
                         <th mat-header-cell *matHeaderCellDef mat-sort-header
                             sortActionDescription="Sort by emailaddress" class="px-4">Email</th>
                         <td mat-cell *matCellDef="let element" class="px-4"> {{element.emailaddress}} </td>
                     </ng-container>
 
-                    <ng-container matColumnDef="fonction">
+                    <ng-container matColumnDef="fonction" *ngIf="type=='PERSONNEL'" >
                         <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by fonction"
                             class="px-4">Fonction</th>
                         <td mat-cell *matCellDef="let element" class="px-4">
@@ -59,7 +74,7 @@
                         </td>
                     </ng-container>
 
-                    <ng-container matColumnDef="service">
+                    <ng-container matColumnDef="service" *ngIf="type=='PERSONNEL'" >
                         <th mat-header-cell *matHeaderCellDef mat-sort-header sortActionDescription="Sort by service"
                             class="px-4">
                             Service

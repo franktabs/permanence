@@ -16,20 +16,23 @@ import { IPermanence } from '../interfaces/ipermanence';
 import axios from 'axios';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import IGroupe from '../interfaces/igroupe';
+import { IApiDepartement } from '../interfaces/iapidepartement';
 
 type DataApi = {
   personnels: IApiPersonnel[];
   absences: IApiHoliday[];
   plannings: IPlanning[];
   directions: IApiDirection[];
+  departements: IApiDepartement[];
   permanences: IPermanence[];
-  groupes:IGroupe[]
+  groupes: IGroupe[];
 };
 
 export interface TypeApi {
   for:
     | 'holidays'
     | 'directions'
+    | 'departements'
     | 'personnels'
     | 'absences'
     | 'plannings'
@@ -49,12 +52,14 @@ export class ApiService {
     absences: [],
     plannings: [],
     directions: [],
+    departements: [],
     permanences: [],
-    groupes:[]
+    groupes: [],
   };
   public personnels$: Subject<IApiPersonnel[]> = new Subject();
   public absences$: Subject<IApiHoliday[]> = new Subject();
   public directions$: Subject<IApiDirection[]> = new Subject();
+  public departements$: Subject<IApiDepartement[]> = new Subject();
   public permanence$: Subject<IPermanence[]> = new Subject();
   public plannings$: Subject<IPlanning[]> = new Subject();
   public groupe$: Subject<IGroupe[]> = new Subject();
@@ -81,10 +86,9 @@ export class ApiService {
   public URL_NOTIFICATIONS = this.IP + '/notification';
   public URL_PARAMETERS = this.IP + '/parameter';
   public URL_DEPARTEMENTS = this.IP + '/departement';
-  public URL_JASPERS = this.IP+"/jasper"
+  public URL_JASPERS = this.IP + '/jasper';
 
-
-  public blockInitGuard:boolean = false;
+  public blockInitGuard: boolean = false;
 
   // public readonly URL_HOLIDAYS = 'api/apiHolidays.json';
   // public readonly URL_PERSONNELS = 'api/apiPersonnels.json';
@@ -98,7 +102,6 @@ export class ApiService {
 
   constructor(private http: HttpClient) {
     this.initIP();
-
   }
 
   initIP() {
@@ -121,7 +124,7 @@ export class ApiService {
     this.URL_NOTIFICATIONS = this.IP + '/notification';
     this.URL_PARAMETERS = this.IP + '/parameter';
     this.URL_DEPARTEMENTS = this.IP + '/departement';
-    this.URL_JASPERS = this.IP+"/jasper"
+    this.URL_JASPERS = this.IP + '/jasper';
   }
 
   public postData<T>(url: string, data: T): Observable<T> {
@@ -140,6 +143,8 @@ export class ApiService {
       lien = this.URL_ABSENCES;
     } else if (props.for === 'directions') {
       lien = this.URL_DIRECTIONS;
+    } else if (props.for === 'departements') {
+      lien = this.URL_DEPARTEMENTS;
     } else if (props.for === 'holidays') {
       lien = this.URL_HOLIDAYS;
     } else if (props.for === 'personnels') {
@@ -206,6 +211,4 @@ export class ApiService {
       () => new Error('Erreur produit au chargement de données')
     );
   }
-
-
 }

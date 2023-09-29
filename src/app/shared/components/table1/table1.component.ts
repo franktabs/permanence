@@ -25,12 +25,14 @@ import { TypePersonnel } from '../../utils/types-map';
 import { TitleCard1 } from '../card1/card1.component';
 import { TitleModalForm } from '../modal-form-model/modal-form-model.component';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
+import { IApiDirection } from '../../interfaces/iapidirection';
+import { IApiDepartement } from '../../interfaces/iapidepartement';
 
 
 type PropagationTable1 = "ADD"|'UPDATE' | 'REMOVE' | null;
 
-export type HandleActionTable1 = {titre: TitleModalForm, action:PropagationTable1, row?:IApiPersonnel};
-
+export type HandleActionTable1 = {titre: TitleModalForm, action:PropagationTable1, row?:unknown};
+export type TypeTable1 = "PERSONNEL"|"DIRECTION"|"DEPARTEMENT";
  
 @Component({
   selector: 'app-table1',
@@ -40,7 +42,7 @@ export type HandleActionTable1 = {titre: TitleModalForm, action:PropagationTable
 export class Table1Component
   implements AfterViewInit, OnDestroy, OnChanges, OnInit
 {
-  public displayedColumns: Array<keyof TypePersonnel | 'action'> = [
+  public displayedColumns: Array<keyof TypePersonnel | 'action' | keyof IApiDirection | keyof IApiDepartement > = [
     'action',
     'firstname',
     'sexe',
@@ -60,11 +62,10 @@ export class Table1Component
 
   @Input() icon!: string;
   @Input() title!: TitleCard1;
-  @Input() personnels: TypePersonnel[] | null = null;
+  @Input() datas_table: TypePersonnel[] | null | IApiDepartement[] | IApiDirection[] = null;
   @Input() search: string = '';
-
-  @Input()
-  public iconAdd!: string;
+  @Input() type!:TypeTable1;
+  @Input() iconAdd!: string;
 
   @Output()
   public handleActionEmit: EventEmitter<HandleActionTable1> = new EventEmitter();
@@ -110,10 +111,10 @@ export class Table1Component
     this.dataSource.sort = this.sort;
   }
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['personnels']) {
-      let newData: TypePersonnel[] = changes['personnels'].currentValue;
+    if (changes['datas_table']) {
+      let newData: TypePersonnel[] = changes['datas_table'].currentValue;
       this.dataSource = new MatTableDataSource<TypePersonnel>(newData);
-      console.log('changement données du personnels', newData);
+      console.log('changement données du datas_table', newData);
       // this.paginator.length = (newData || []).length;
       // this.paginator.firstPage();
       this.dataSource.paginator = this.paginator;
@@ -122,6 +123,21 @@ export class Table1Component
     if (changes['search']) {
       this.dataSource.filter = this.search.trim();
     }
+    if(changes['type']){
+      let currentValue:TypeTable1 = changes['type'].currentValue;
+      if(currentValue=="PERSONNEL"){
+        this.displayedColumns = [
+          'action',
+          'firstname',
+          'sexe',
+          'emailaddress',
+          'fonction',
+          'service',
+        ];
+      }else if(currentValue=="DEPARTEMENT"){
+        this.displayedColumns = ["action", "name", "direction"]
+      }
+    }
   }
   ngOnDestroy(): void {
     this.destroy$.next(true);
@@ -129,10 +145,10 @@ export class Table1Component
 
   ngAfterViewInit(): void {
     this.destroy$ = new Subject();
-    // this.api.getAllData<TypePersonnel[]>({for:"personnels"}).pipe(takeUntil(this.destroy$)).subscribe({
-    //   next:(personnels)=>{
-    //     this.api.personnels$.next(personnels);
-    //     this.dataSource = new MatTableDataSource<TypePersonnel>(personnels);
+    // this.api.getAllData<TypePersonnel[]>({for:"datas_table"}).pipe(takeUntil(this.destroy$)).subscribe({
+    //   next:(datas_table)=>{
+    //     this.api.datas_table$.next(datas_table);
+    //     this.dataSource = new MatTableDataSource<TypePersonnel>(datas_table);
     //     this.dataSource.sort = this.sort;
     //   },
     //   error:(err)=>{this.errorMessage = err}
@@ -159,10 +175,10 @@ export class Table1Component
 
     if (this.propagation == 'REMOVE') {
       console.log('suppression de ', row);
-      this.handleAction({titre:"PERSONNEL", action:"REMOVE", row:row})
+      this.handleAction({titre:this.type, action:"REMOVE", row:row})
     } else if (this.propagation == 'UPDATE') {
-      console.log('modification de ', row);
-      this.handleAction({titre:"PERSONNEL", action:"UPDATE", row:row})
+      console.log('modification de ', row, "du type ", this.type);
+      this.handleAction({titre:this.type, action:"UPDATE", row:row})
     } else if (this.propagation == null) {
       this.row = row;
       this.openModal = true;

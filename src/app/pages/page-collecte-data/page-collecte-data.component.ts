@@ -39,11 +39,16 @@ import {
   TitleModalForm,
 } from 'src/app/shared/components/modal-form-model/modal-form-model.component';
 import { OptionalKey, OptionalKeyString } from 'src/app/shared/utils/type';
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 import { LoaderService } from 'src/app/shared/services/loader.service';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { HandleActionTable1 } from 'src/app/shared/components/table1/table1.component';
-import { DataModalConfirm, ModalConfirmComponent } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
+import {
+  DataModalConfirm,
+  ModalConfirmComponent,
+} from 'src/app/shared/components/modal-confirm/modal-confirm.component';
+import { IApiDepartement } from 'src/app/shared/interfaces/iapidepartement';
+import DepartementRequest from 'src/app/shared/models/model-request/DepartementRequest';
 
 interface IApiPerson {
   name: string;
@@ -90,15 +95,19 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   private _directionSelected: string | null = null;
   private _data_apiDirections: TypeDirection[] | null = null;
   public _data_apiPersonnels: TypePersonnel[] | null = null;
+  public data_apiDepartements: IApiDepartement[] = [];
   public allPersonnels: TypePersonnel[] | null = null;
   public allUsers: TypePersonnel[] | null = null;
   public isTableFilter: boolean = false;
   public userAuth!: TypePersonnel | null;
   public destroy$!: Subject<boolean>;
-  
+
   public dataSource: MatTableDataSource<TypePersonnel> =
     new MatTableDataSource<TypePersonnel>([]);
+
   public search: string = '';
+  public searchDepartement: string = '';
+  public searchDirection: string = '';
 
   private _paginator!: MatPaginator;
 
@@ -117,8 +126,8 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     private api: ApiService,
     private auth: AuthService,
     private dialog: MatDialog,
-    private loader:LoaderService,
-    private alert:AlertService
+    private loader: LoaderService,
+    private alert: AlertService
   ) {}
 
   public set data_apiPersonnels(value: TypePersonnel[] | null) {
@@ -265,23 +274,50 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       this.allUsers = allUserPersonnel;
     });
 
-    this.api
-      .getAllData<IApiDirection[]>({ for: 'directions' })
-      .subscribe((obs) => {
-        this.data_apiDirections = mapJSON<IApiDirection, IDirection>(
-          obs || [],
-          mapDirection
-        );
-      });
+    if (this.api.data.directions && this.api.data.directions.length) {
+      this.data_apiDirections = this.api.data.directions;
+      this.buildDepartement();
+    }
+
+    this.api.directions$.pipe(takeUntil(this.destroy$)).subscribe((subs) => {
+      this.data_apiDirections = subs;
+      this.buildDepartement();
+    });
+
+    if (!(this.api.data.directions && this.api.data.directions.length)) {
+      this.api
+        .getAllData<IApiDirection[]>({ for: 'directions' })
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((obs) => {
+          this.data_apiDirections = obs || [];
+          this.api.data.directions = this.data_apiDirections;
+          this.buildDepartement();
+        });
+    }
 
     if (!existPersonnel) {
       this.api
         .getAllData<IApiPersonnel[]>({ for: 'personnels' })
+        .pipe(takeUntil(this.destroy$))
         .subscribe((subs) => {
           // let dataMap = mapJSON<IApiPersonnel, IPersonnel>(obs, mapPersonnel)
           this.api.data.personnels = subs || [];
           this.api.personnels$.next(subs || []);
         });
+    }
+  }
+
+  buildDepartement() {
+    if (this.data_apiDirections && this.data_apiDirections.length) {
+      this.data_apiDepartements = [];
+      for (let direction of this.data_apiDirections) {
+        if (direction.departements != null) {
+          for (let departement of direction.departements) {
+            departement.direction = direction;
+            this.data_apiDepartements.push(departement);
+          }
+        }
+      }
     }
   }
 
@@ -310,30 +346,28 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     );
   }
 
-  async handleModel(attr:HandleActionTable1) {
-    if (attr.titre == "PERSONNEL" && attr.action=="ADD") {
-      this.loader.loader_modal$.next(true)
-      try{
-        
-        let response = await axios.get(this.api.URL_PERSONNELS+"/min-userId")
-        if(response.data){
-
-          let personnelMinUserId : IApiPersonnel = response.data;
+  async handleModel(attr: HandleActionTable1) {
+    if (attr.titre == 'PERSONNEL' && attr.action == 'ADD') {
+      this.loader.loader_modal$.next(true);
+      try {
+        let response = await axios.get(this.api.URL_PERSONNELS + '/min-userId');
+        if (response.data) {
+          let personnelMinUserId: IApiPersonnel = response.data;
           let minUserId = personnelMinUserId.userId;
-          if(minUserId>=0){
+          if (minUserId >= 0) {
             minUserId = -1;
-          }else{
+          } else {
             minUserId -= 1;
           }
-  
+
           let newPerson: OptionalKeyString<IApiPersonnel> = {
             firstname: '',
             sexe: 'M',
             emailaddress: '',
             organizationId: undefined,
-            userId: minUserId
+            userId: minUserId,
           };
-          console.log("nouvelle personne ", newPerson);
+          console.log('nouvelle personne ', newPerson);
           this.dialog.open<
             ModalFormModelComponent,
             DataDialogModalFormModelComponent
@@ -342,78 +376,213 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
               titre: attr.titre,
               dataForm: newPerson,
               icon: "<i class='bi bi-person-fill-add'></i>",
-              action:"ADD"
+              action: 'ADD',
             },
           });
         }
-        
-      }catch(e){
+      } catch (e) {
         console.error("voici l'erreur ", e);
         this.alert.alertError();
       }
 
-      
-
       this.loader.loader_modal$.next(false);
-    }
-    else if(attr.titre=="PERSONNEL" && attr.action=="UPDATE" && attr.row){
-
+    } else if (
+      attr.titre == 'PERSONNEL' &&
+      attr.action == 'UPDATE' &&
+      attr.row
+    ) {
+      let attr2: {
+        titre: string | null;
+        action: string | null;
+        row: IApiPersonnel;
+      } = attr as any;
       let person: OptionalKeyString<IApiPersonnel> = {
-        firstname: attr.row.firstname,
-        sexe: attr.row.sexe,
-        emailaddress: attr.row.emailaddress,
-        organizationId: attr.row.organizationId,
-        userId: attr.row.userId
+        firstname: attr2.row.firstname,
+        sexe: attr2.row.sexe,
+        emailaddress: attr2.row.emailaddress,
+        organizationId: attr2.row.organizationId,
+        userId: attr2.row.userId,
       };
 
       this.dialog.open<
-      ModalFormModelComponent,
-      DataDialogModalFormModelComponent
-    >(ModalFormModelComponent, {
-
-
-      data: {
-        titre: attr.titre,
-        dataForm: person,
-        icon: "<i class='bi bi-person-fill-add'></i>",
-        action:"UPDATE"
-      },
-    });
-    }else if(attr.titre=="PERSONNEL" && attr.action=="REMOVE"&& attr.row){
-      let dialogRef =  this.dialog.open<ModalConfirmComponent, DataModalConfirm>(ModalConfirmComponent, {data:{title:"Confirmation de Suppression", content:"Etes-vous sûre ?"}})
-      dialogRef.afterClosed().pipe(takeUntil(this.destroy$)).subscribe((subs)=>{
-        if(subs==true){
-          this.suppression(attr);
+        ModalFormModelComponent,
+        DataDialogModalFormModelComponent
+      >(ModalFormModelComponent, {
+        data: {
+          titre: attr.titre,
+          dataForm: person,
+          icon: "<i class='bi bi-person-fill-add'></i>",
+          action: 'UPDATE',
+        },
+      });
+    } else if (
+      attr.titre == 'PERSONNEL' &&
+      attr.action == 'REMOVE' &&
+      attr.row
+    ) {
+      let dialogRef = this.dialog.open<ModalConfirmComponent, DataModalConfirm>(
+        ModalConfirmComponent,
+        {
+          data: {
+            title: 'Confirmation de Suppression',
+            content: 'Etes-vous sûre ?',
+          },
         }
-      })
+      );
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((subs) => {
+          if (subs == true) {
+            this.suppression(attr);
+          }
+        });
+    }
+    if (attr.titre == 'DEPARTEMENT' && attr.action == 'ADD') {
+      this.loader.loader_modal$.next(true);
 
+      try {
+        let response = await axios.get(
+          this.api.URL_DEPARTEMENTS + '/min-organizationId'
+        );
+        if (response.data) {
+          let departement: IApiDepartement = response.data;
+          let minOrganizationId: number = departement.organizationId as any;
+
+          if (minOrganizationId >= 0) {
+            minOrganizationId = -1;
+          } else {
+            minOrganizationId -= 1;
+          }
+          let newDepartement: OptionalKeyString<IApiDepartement> = {
+            name: '',
+            parentorganizationId: undefined,
+            organizationId: minOrganizationId,
+          };
+          this.dialog.open<
+            ModalFormModelComponent,
+            DataDialogModalFormModelComponent
+          >(ModalFormModelComponent, {
+            data: {
+              titre: 'DEPARTEMENT',
+              dataForm: newDepartement,
+              icon: "<i class='bi bi-building-add'></i>",
+              departementRequest: new DepartementRequest([]),
+              action: 'ADD',
+            },
+          });
+        }
+      } catch (e) {
+        console.error("voici l'erreur ", e);
+        this.alert.alertError();
+      }
+
+      this.loader.loader_modal$.next(false);
+    } else if (
+      attr.titre == 'DEPARTEMENT' &&
+      attr.action == 'UPDATE' &&
+      attr.row
+    ) {
+      let attr2: {
+        titre: string | null;
+        action: string | null;
+        row: IApiDepartement;
+      } = attr as any;
+
+      let departement: OptionalKeyString<IApiDepartement> = {
+        name: attr2.row.name,
+        parentorganizationId:attr2.row.parentorganizationId,
+        organizationId:attr2.row.organizationId
+      };
+      this.dialog.open<
+        ModalFormModelComponent,
+        DataDialogModalFormModelComponent
+      >(ModalFormModelComponent, {
+        data: {
+          titre: attr.titre,
+          dataForm: departement,
+          icon: "<i class='bi bi-person-fill-add'></i>",
+          action: 'UPDATE',
+        },
+      });
+    } else if (
+      attr.titre == 'DEPARTEMENT' &&
+      attr.action == 'REMOVE' &&
+      attr.row
+    ) {
+      let dialogRef = this.dialog.open<ModalConfirmComponent, DataModalConfirm>(
+        ModalConfirmComponent,
+        {
+          data: {
+            title: 'Confirmation de Suppression',
+            content: 'Etes-vous sûre ?',
+          },
+        }
+      );
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((subs) => {
+          if (subs == true) {
+            this.suppression(attr);
+          }
+        });
     }
   }
 
-  async suppression(attr:HandleActionTable1){
-    this.loader.loader_modal$.next(true)
-    try{
-      if(attr.row?.id!=0){
-        let response = await axios.delete(this.api.URL_PERSONNELS+"/"+attr.row?.id);
-        if(response.status<=299 && response.status>=200){
-          this.alert.alertMaterial({"message":"Suppression Réussi", "title":"success"})
-          response = await axios.get(this.api.URL_PERSONNELS);
-          if(response.data){
-            this.api.personnels$.next(response.data);
+  async suppression(attr: HandleActionTable1) {
+    this.loader.loader_modal$.next(true);
+    let attr2: {
+      titre: string | null;
+      action: string | null;
+      row: { id: number };
+    } = attr as any;
+
+    try {
+      if (attr2.row?.id != 0) {
+        let response: AxiosResponse<any, any> | null = null;
+        if (attr.titre == 'PERSONNEL') {
+          response = await axios.delete(
+            this.api.URL_PERSONNELS + '/' + attr2.row?.id
+          );
+        } else if (attr.titre == 'DEPARTEMENT') {
+          response = await axios.delete(
+            this.api.URL_DEPARTEMENTS + '/' + attr2.row?.id
+          );
+        } else if (attr.titre == 'DIRECTION') {
+          response = await axios.delete(
+            this.api.URL_DIRECTIONS + '/' + attr2.row?.id
+          );
+        }
+        if (response && response.status <= 299 && response.status >= 200) {
+          this.alert.alertMaterial({
+            message: 'Suppression Réussi',
+            title: 'success',
+          });
+          if(attr.titre == "PERSONNEL"){
+
+            response = await axios.get(this.api.URL_PERSONNELS);
+            if (response && response.data) {
+              this.api.personnels$.next(response.data);
+            }
+          }else if(attr.titre=="DEPARTEMENT" || attr.titre=="DIRECTION"){
+            response = await axios.get(this.api.URL_DIRECTIONS);
+            if (response && response.data) {
+              this.api.directions$.next(response.data);
+            }
           }
         }
-        
-      }else{
-        this.alert.alertMaterial({"message":"Impossible de supprimer cet utilisateur", "title":"error"})
-
+      } else {
+        this.alert.alertMaterial({
+          message: 'Impossible de supprimer cet utilisateur',
+          title: 'error',
+        });
       }
-
-    }catch(e){
+    } catch (e) {
       console.log("Voici l'erreur", e);
       this.alert.alertError();
     }
-    this.loader.loader_modal$.next(false)
-
+    this.loader.loader_modal$.next(false);
   }
 }
 

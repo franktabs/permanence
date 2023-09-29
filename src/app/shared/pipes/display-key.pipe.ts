@@ -8,7 +8,7 @@ export class DisplayKeyPipe implements PipeTransform {
 
   transform(value: string, type:"remplacement"|"absence"|"personnel"|"any"="any"): string {
     let val : KeyOfAllType = value as any;
-    if(val==="nom" && type ==="remplacement"){
+    if(val==="name" && type ==="remplacement"){
       return "Remplaceur"
     }
     else if(val ==="telephoneCisco"){
