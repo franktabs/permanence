@@ -40,7 +40,8 @@
             <app-card1 title="Remplacement" (click)="getPersonnelsAbsence()" [date1]="date1Conge" [date2]="date2Conge"
                 icon="<i class='bi bi-calendar-day' ></i>" (theIcon)="putInActiveIcon($event)"></app-card1>
         </div>
-        <div class="mt-3 shadow-by-stripe w-max-content pb-3">
+        <div class="mt-3 shadow-by-material2 w-max-content pb-3 bg-white">
+            <h1 class="color-bordeau head-1 my-border-bottom p-3" >GESTION DU PERSONNEL</h1>
             <div class="d-flex p-3">
                 <div class="sh-search anim-slide-s rounded-2 shadow-by-material2">
                     <mat-form-field class="example-form-field" appearance="fill">
@@ -59,7 +60,8 @@
                 </div> -->
             </div>
         </div>
-        <div class="mt-3 shadow-by-stripe w-max-content pb-3" >
+        <div class="mt-3 shadow-by-material2 w-max-content pb-3 bg-white" >
+            <h1 class="color-bordeau head-1 my-border-bottom p-3">GESTION DES DEPARTEMENTS</h1>
             <div class="d-flex p-3">
                 <div class="sh-search anim-slide-s rounded-2 shadow-by-material2">
                     <mat-form-field class="example-form-field" appearance="fill">
@@ -72,6 +74,23 @@
             <div class="d-flex" >
                 <app-table1 icon="<i class='bi bi-building'></i>" type="DEPARTEMENT" title="Departement" class="app-table1 mx-3"
                     [datas_table]="data_apiDepartements" [search]="searchDepartement" iconAdd="<i class='bi bi-building-fill-add'></i>" (handleActionEmit)="handleModel($event)" >
+                </app-table1>
+            </div>
+        </div>
+        <div class="mt-3 shadow-by-material2 w-max-content pb-3 bg-white" >
+            <h1 class="color-bordeau head-1 my-border-bottom p-3">GESTION DES DIRECTIONS</h1>
+            <div class="d-flex p-3">
+                <div class="sh-search anim-slide-s rounded-2 shadow-by-material2">
+                    <mat-form-field class="example-form-field" appearance="fill">
+                        <mat-label>Rechercher une Direction</mat-label>
+                        <span matPrefix class="fs-3"> <i class="bi bi-search"></i> &nbsp;</span>
+                        <input matInput type="text" [(ngModel)]="searchDirection">
+                    </mat-form-field>
+                </div>
+            </div>
+            <div class="d-flex" >
+                <app-table1 icon="<i class='bi bi-building'></i>" type="DIRECTION" title="Departement" class="app-table1 mx-3"
+                    [datas_table]="data_apiDirections" [search]="searchDirection" iconAdd="<i class='bi bi-building-fill-add'></i>" (handleActionEmit)="handleModel($event)" >
                 </app-table1>
             </div>
         </div>

@@ -30,7 +30,9 @@ import { HandleActionTable1 } from '../table1/table1.component';
 export type DataDialogModalFormModelComponent = {
   titre: TitleModalForm;
   dataForm: OptionalKeyString<IApiDepartement | IApiDirection | IApiPersonnel>;
-  dataModelInput: OptionalKeyString<IApiDepartement | IApiDirection | IApiPersonnel>;
+  dataModelInput: OptionalKeyString<
+    IApiDepartement | IApiDirection | IApiPersonnel
+  >;
   icon: string;
   departementRequest?: DepartementRequest<IApiDepartement[]>;
   directionRequest?: DirectionRequest<IApiDirection[]>;
@@ -58,7 +60,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
 
   public dataForm: DataDialogModalFormModelComponent['dataForm'];
 
-  public dataModelInput!:DataDialogModalFormModelComponent['dataForm'];
+  public dataModelInput!: DataDialogModalFormModelComponent['dataForm'];
 
   public dataViewHtml!: any;
 
@@ -189,12 +191,12 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
   async enregistrer() {
     if (this.titre == 'PERSONNEL') {
       let datas: IApiPersonnel = this.myFormGroup.value;
-      for(let key of this.keyDataForm){
-        let key2  = key as any
+      for (let key of this.keyDataForm) {
+        let key2 = key as any;
         //@ts-ignore
-        this.dataForm[key] = datas[key2]
+        this.dataForm[key] = datas[key2];
       }
-      datas = this.dataForm as any ;
+      datas = this.dataForm as any;
 
       this.loader.loader_modal$.next(true);
       try {
@@ -226,12 +228,12 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
       this.loader.loader_modal$.next(false);
     } else if (this.titre == 'DEPARTEMENT') {
       let datas: IApiDepartement = this.myFormGroup.value;
-      for(let key of this.keyDataForm){
-        let key2  = key as any
+      for (let key of this.keyDataForm) {
+        let key2 = key as any;
         //@ts-ignore
-        this.dataForm[key] = datas[key2]
+        this.dataForm[key] = datas[key2];
       }
-      datas = this.dataForm as any ;
+      datas = this.dataForm as any;
 
       this.loader.loader_modal$.next(true);
       try {
@@ -277,17 +279,27 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
 
       let datas: IApiDirection = this.myFormGroup.value;
       console.log('données direction ', datas);
-      for(let key of this.keyDataForm){
-        let key2  = key as any
+      for (let key of this.keyDataForm) {
+        let key2 = key as any;
         //@ts-ignore
-        this.dataForm[key] = datas[key2]
+        this.dataForm[key] = datas[key2];
       }
-      datas = this.dataForm as any ;
+      datas = this.dataForm as any;
 
       try {
         let response = await axios.post(this.api.URL_DIRECTIONS, datas);
-        if (response.data && this.data.directionRequest) {
-          this.data.directionRequest.data.push(response.data);
+        if (response.data) {
+          if (this.data.directionRequest) {
+            this.data.directionRequest.data.push(response.data);
+          }
+
+          if (this.data.action == 'UPDATE' || this.data.action == 'ADD') {
+            response = await axios.get(this.api.URL_DIRECTIONS);
+            if (response.data) {
+              this.api.directions$.next(response.data);
+            }
+          }
+
           this.dialogRef.close();
           this.alert.alertSave();
         }
@@ -331,7 +343,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
             data: {
               titre: 'DEPARTEMENT',
               dataForm: newDepartement,
-              dataModelInput:newDepartement,
+              dataModelInput: newDepartement,
               icon: "<i class='bi bi-building-add'></i>",
               departementRequest: this.departementRequest,
               action: 'ADD',
@@ -374,7 +386,7 @@ export class ModalFormModelComponent implements OnInit, OnDestroy {
             data: {
               titre: 'DIRECTION',
               dataForm: newDirection,
-              dataModelInput:newDirection,
+              dataModelInput: newDirection,
               icon: "<i class='bi bi-building-add'></i>",
               directionRequest: this.directionRequest,
               action: 'ADD',

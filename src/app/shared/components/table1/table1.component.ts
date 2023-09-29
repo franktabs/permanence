@@ -136,6 +136,9 @@ export class Table1Component
         ];
       }else if(currentValue=="DEPARTEMENT"){
         this.displayedColumns = ["action", "name", "direction"]
+      }else if(currentValue=="DIRECTION"){
+        this.displayedColumns = ["action", "name"]
+
       }
     }
   }

@@ -49,6 +49,7 @@ import {
 } from 'src/app/shared/components/modal-confirm/modal-confirm.component';
 import { IApiDepartement } from 'src/app/shared/interfaces/iapidepartement';
 import DepartementRequest from 'src/app/shared/models/model-request/DepartementRequest';
+import DirectionRequest from 'src/app/shared/models/model-request/DirectionRequest';
 
 interface IApiPerson {
   name: string;
@@ -509,7 +510,7 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
           titre: attr.titre,
           dataForm: departement,
           dataModelInput:departementModel,
-          icon: "<i class='bi bi-person-fill-add'></i>",
+          icon: "<i class='bi bi-building-fill-add'></i>",
           action: 'UPDATE',
         },
       });
@@ -518,6 +519,105 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
       attr.action == 'REMOVE' &&
       attr.row
     ) {
+      let dialogRef = this.dialog.open<ModalConfirmComponent, DataModalConfirm>(
+        ModalConfirmComponent,
+        {
+          data: {
+            title: 'Confirmation de Suppression',
+            content: 'Etes-vous sûre ?',
+          },
+        }
+      );
+      dialogRef
+        .afterClosed()
+        .pipe(takeUntil(this.destroy$))
+        .subscribe((subs) => {
+          if (subs == true) {
+            this.suppression(attr);
+          }
+        });
+    }
+
+    if(attr.titre =="DIRECTION" && attr.action =="ADD"){
+      
+        this.loader.loader_modal$.next(true);
+  
+        try {
+          let response = await axios.get(
+            this.api.URL_DIRECTIONS + '/min-organizationId'
+          );
+          if (response.data) {
+            let direction: IApiDirection = response.data;
+            let minOrganizationId: number = direction.organizationId as any;
+  
+            if (minOrganizationId >= 0) {
+              minOrganizationId = -1;
+            } else {
+              minOrganizationId -= 1;
+            }
+  
+            let newDirection: OptionalKeyString<IApiDirection> = {
+              name: '',
+              organizationId: minOrganizationId,
+            };
+  
+            this.dialog.open<
+              ModalFormModelComponent,
+              DataDialogModalFormModelComponent
+            >(ModalFormModelComponent, {
+              data: {
+                titre: 'DIRECTION',
+                dataForm: newDirection,
+                dataModelInput:newDirection,
+                icon: "<i class='bi bi-building-add'></i>",
+                directionRequest: new DirectionRequest([]),
+                action: 'ADD',
+              },
+            });
+          }
+        } catch (e) {
+          console.error("voici l'erreur ", e);
+          this.alert.alertError();
+        }
+  
+        this.loader.loader_modal$.next(false);
+      
+    }
+    else if(
+      attr.titre == 'DIRECTION' &&
+      attr.action == 'UPDATE' &&
+      attr.row
+    ){
+      let attr2: {
+        titre: string | null;
+        action: string | null;
+        row: IApiDirection;
+      } = attr as any;
+
+      let newDirection: OptionalKeyString<IApiDirection> = {
+        name: attr2.row.name,
+        organizationId: attr2.row.organizationId,
+      };
+      let direction = {...attr2.row}
+      delete direction.departements;
+      this.dialog.open<
+        ModalFormModelComponent,
+        DataDialogModalFormModelComponent
+      >(ModalFormModelComponent, {
+        data: {
+          titre: attr.titre,
+          dataForm: direction,
+          dataModelInput:newDirection,
+          icon: "<i class='bi bi-building-fill-add'></i>",
+          action: 'UPDATE',
+        },
+      });
+    }
+    else if(
+      attr.titre == 'DIRECTION' &&
+      attr.action == 'REMOVE' &&
+      attr.row
+    ){
       let dialogRef = this.dialog.open<ModalConfirmComponent, DataModalConfirm>(
         ModalConfirmComponent,
         {
