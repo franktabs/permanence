@@ -1,53 +1,27 @@
-import { Component, Input, OnInit } from '@angular/core';
-import { AlertService } from 'src/app/shared/services/alert.service';
+import { Injectable } from '@angular/core';
 
-@Component({
-    selector: 'app-import-file',
-    templateUrl: './import-file.component.html',
-    styleUrls: ['./import-file.component.scss'],
+@Injectable({
+    providedIn: 'root',
 })
-export class ImportFileComponent implements OnInit {
-    @Input() public accept: 'text/csv' = 'text/csv';
-
-    constructor(public alert:AlertService) {}
-
-    ngOnInit(): void {}
-
-    async importerFichier(event: any) {
-        // Récupère le contenu du fichier
-        console.log("voici l'event du fichier =>", event);
-        const fichier: File = event.target.files[0];
-
-        if (fichier) {
-            try{
-                let textFileCsv = await this.readFileContent(fichier);
-                this.parseCSV(textFileCsv);
-            }catch(err){
-                console.log("voici l'erreur", err);
-                this.alert.alertError();
-            }
-        }
-    }
+export class FichierService {
+    constructor() {}
 
     readFileContent(file: File): Promise<string> {
         const reader = new FileReader();
         return new Promise((resolve, reject) => {
-
             reader.onload = () => {
                 const csvData = reader.result as string;
-                resolve(csvData)
+                resolve(csvData);
                 // Faites quelque chose avec les données CSV, par exemple, parsez-les
                 // this.parseCSV(csvData);
             };
 
-            reader.onerror = () =>{
+            reader.onerror = () => {
                 const error = reader.error;
                 reject(error);
-            }
-
+            };
 
             reader.readAsText(file, 'UTF-8');
-
         });
     }
 

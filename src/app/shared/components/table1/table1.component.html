@@ -14,6 +14,7 @@
                     <span *ngIf="type=='DIRECTION'" >Ajouter une Direction</span>
                 </div>
             </button>
+            <app-import-file></app-import-file>
         </div>
         <div class="ligne"></div>
         <div>
@@ -22,10 +23,10 @@
 
 
                     <ng-container matColumnDef="action">
-                        <th mat-header-cell *matHeaderCellDef 
+                        <th mat-header-cell *matHeaderCellDef
                             class="px-4">Action</th>
                         <td mat-cell *matCellDef="let element" class="px-4">
-                            <div class="w-max-content d-flex gap-4 action-icon"> 
+                            <div class="w-max-content d-flex gap-4 action-icon">
                                 <span title="Modifier" class="pen" (click)="actionIcon($event, 'UPDATE')" > <i class="bi bi-pen-fill"></i> </span>
                                 <span title="Supprimer" class="trash" (click)="actionIcon($event, 'REMOVE')"> <i class="bi bi-trash-fill"></i> </span>
                             </div>

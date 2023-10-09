@@ -1,5 +1,5 @@
 <div>
   <label for="file-csv" class="form-label" ><span ><i class="bi bi-file-earmark-arrow-down" ></i></span></label>
-  <input type="file"  id="file-csv" class="form-control form-control-sm" (change)="importerFichier($event)">
+  <input type="file" [accept]="accept" id="file-csv" class="form-control form-control-sm" (change)="importerFichier($event)">
 </div>
 

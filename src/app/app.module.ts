@@ -65,6 +65,8 @@ import { CardGroupPersonnelComponent } from './shared/components/card-group-pers
 import { ModalInputComponent } from './shared/components/modal-input/modal-input.component';
 import { ModalConfirmComponent } from './shared/components/modal-confirm/modal-confirm.component';
 import { ModalPdfComponent } from './shared/components/modal-pdf/modal-pdf.component';
+import { FichierModule } from './fichier/fichier.module';
+import { ImportFileComponent } from './fichier/import-file/import-file.component';
 
 
 registerLocaleData(localeFr)
@@ -118,9 +120,11 @@ registerLocaleData(localeFr)
     CardGroupPersonnelComponent,
     ModalInputComponent,
     ModalConfirmComponent,
-    ModalPdfComponent
+    ModalPdfComponent,
+
   ],
   imports: [
+    FichierModule,
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
@@ -128,7 +132,7 @@ registerLocaleData(localeFr)
     HttpClientModule,
     FormsModule,
     ReactiveFormsModule,
-    
+
   ],
   providers: [ApiService, AuthService, AuthGuard, LoadDataGuard, LoaderService,AlertService,ValidationService, {provide: LOCALE_ID, useValue:"fr-FR"}],
   bootstrap: [AppComponent]

@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ImportFileComponent } from './import-file/import-file.component';
+import { FichierService } from './services/fichier/fichier.service';
 
 
 
@@ -10,6 +11,10 @@ import { ImportFileComponent } from './import-file/import-file.component';
   ],
   imports: [
     CommonModule
-  ]
+  ],
+  providers:[
+    FichierService
+  ],
+  exports:[ImportFileComponent]
 })
 export class FichierModule { }
