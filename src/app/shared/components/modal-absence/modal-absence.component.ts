@@ -53,12 +53,12 @@ export class ModalAbsenceComponent implements OnInit {
     let existPersonnel = false;
     let dataPersonnel = this.api.data.personnels;
     if(dataPersonnel && dataPersonnel.length){
-      this.options = filterPersonnelRessource(dataPersonnel);
+      this.options = (dataPersonnel);
       existPersonnel = true
     }
 
     this.api.personnels$.subscribe((subs)=>{
-      this.options = filterPersonnelRessource(subs);
+      this.options = (subs);
     })
 
     if(!existPersonnel){
