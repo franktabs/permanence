@@ -12,9 +12,10 @@ import { FileParseLineCSVService } from '../services/file-parse-line-csv/file-pa
 })
 export class ImportFileComponent implements OnInit {
     @Input() public accept: 'text/csv' = 'text/csv';
+    @Input() public alert:AlertService|undefined;
+    @Input() public title:string = "Importer un fichier"
 
     constructor(
-        public alert: AlertService,
         public fichierService: FichierService,
         public parseCol: FileParseColCSVService,
         public parseLine: FileParseLineCSVService
@@ -40,7 +41,9 @@ export class ImportFileComponent implements OnInit {
                 console.log('resultat resultCol=>', resultCol);
             } catch (err) {
                 console.log("voici l'erreur", err);
-                this.alert.alertError();
+                if(this.alert instanceof AlertService){
+                    this.alert.alertError();
+                }
             }
         }
     }

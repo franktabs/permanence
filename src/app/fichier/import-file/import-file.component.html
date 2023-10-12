@@ -1,5 +1,5 @@
-<div>
-  <label for="file-csv" class="form-label" ><span ><i class="bi bi-file-earmark-arrow-down" ></i></span></label>
-  <input type="file" [accept]="accept" id="file-csv" class="form-control form-control-sm" (change)="importerFichier($event)">
+<div class="d-flex align-items-center">
+  <label for="file-csv" class="form-label cursor-pointer l-file m-0" [title]="title" ><span  class="fs-2"><i class="bi bi-file-earmark-arrow-down" ></i></span></label>
+  <input type="file" [accept]="accept" id="file-csv" class="form-control form-control-sm d-none" (change)="importerFichier($event)">
 </div>
 

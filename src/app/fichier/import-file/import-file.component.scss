@@ -1,0 +1,10 @@
+.l-file{
+    span{
+        transition: .5s;
+    }
+    &:hover span{
+        color: blue;
+        scale: 1.06;
+        display: flex;
+    }
+}
