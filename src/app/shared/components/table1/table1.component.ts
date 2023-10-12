@@ -214,8 +214,11 @@ export class Table1Component
     }
 
     importFile(event: any) {
+        console.log("arrivé de du tableau", event);
+        this.validFileData(event);
         let data = { table: event, action: false };
         if (event instanceof Array) {
+            console.log("ouverture du tableau");
             const dialogRef = this.dialog.open(TableImportComponent, {
                 data: data,
             });
@@ -223,6 +226,40 @@ export class Table1Component
             dialogRef.afterClosed().subscribe((result) => {
                 console.log('after choose', data);
             });
+        }
+    }
+
+    validFileData(table:Array<any>){
+
+        if(this.type="PERSONNEL"){
+            let personnels = this.api.data.personnels;
+            let tabEmails = [];
+            if(personnels instanceof Array && personnels.length)
+            for(let personnel of personnels){
+                tabEmails.push(personnel.emailaddress);
+            }
+            if(table instanceof Array && table.length ) {
+                let keys = Object.keys(table[0]);
+                for(let line of table){
+                    line._errors = []
+
+                    if(keys.includes("email")){
+                        let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                        let error_email = false;
+                        if(!regex.test(line["email"])){
+                            line._errors.push("email");
+                            error_email = true;
+                        }
+                        if(error_email==false){
+                            if(tabEmails.includes(line["email"])){
+                                line._errors.push("email")
+                            }
+
+                        }
+                    }
+                }
+
+            }
         }
     }
 }

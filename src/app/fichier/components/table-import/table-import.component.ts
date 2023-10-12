@@ -13,6 +13,9 @@ export type DataTableImport = {
     styleUrls: ['./table-import.component.scss'],
 })
 export class TableImportComponent implements OnInit {
+
+    public errors:boolean = false;
+    public erreur:boolean=false;
     constructor(
         public dialogRef: MatDialogRef<TableImportComponent>,
         @Inject(MAT_DIALOG_DATA) public data: DataTableImport
@@ -26,5 +29,18 @@ export class TableImportComponent implements OnInit {
     onClick():void{
         this.data.action = true;
         this.dialogRef.close();
+    }
+
+    isErrors(line:any, key:any):boolean{
+        let erreur = line._errors.includes(key);
+        this.errors = erreur==true?true:this.errors;
+        return erreur;
+    }
+
+    getErrors(){
+        return this.errors;
+    }
+    ngAfterViewInit(){
+        this.errors = this.erreur;
     }
 }

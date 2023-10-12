@@ -10,6 +10,7 @@ export class FichierService implements IFile {
     readFileContent(file: File): Promise<string> {
         const reader = new FileReader();
         return new Promise((resolve, reject) => {
+
             reader.onload = () => {
                 const csvData = reader.result as string;
                 resolve(csvData);
@@ -22,7 +23,8 @@ export class FichierService implements IFile {
                 reject(error);
             };
 
-            reader.readAsText(file, 'UTF-8');
+            reader.readAsText(file);
+
         });
     }
 
