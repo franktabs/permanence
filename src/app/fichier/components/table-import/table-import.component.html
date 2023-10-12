@@ -1,0 +1,28 @@
+<h1 mat-dialog-title class="head-2 color-bordeau">IMPORTATION DE DONNEES</h1>
+<div mat-dialog-content class="p-2">
+    <div class="table-responsive">
+        <table class="table table-hover table-striped" *ngIf="data.table && data.table.length">
+            <thead >
+                <tr>
+                    <th *ngFor="let item of data.table[0] | keyvalue" class="text-capitalize">
+                        {{ item.key }}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let line of data.table" >
+                    <td *ngFor="let item2 of line | keyvalue">
+                        {{ item2.value }}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</div>
+<div mat-dialog-actions>
+    <div class="d-flex justify-content-end align-items-center gap-2" >
+        <button (click)="onNoClick()" class="btn btn-light" >Annuler</button>
+        <button class="btn-bordeau btn" (click)="onClick()">Confirmer <i class="bi bi-check2-circle" ></i> </button>
+    </div>
+</div>

@@ -1,14 +1,14 @@
 import {
-  AfterViewInit,
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnDestroy,
-  OnInit,
-  Output,
-  SimpleChanges,
-  ViewChild,
+    AfterViewInit,
+    Component,
+    EventEmitter,
+    Input,
+    OnChanges,
+    OnDestroy,
+    OnInit,
+    Output,
+    SimpleChanges,
+    ViewChild,
 } from '@angular/core';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { IPersonnel } from '../../interfaces/ipersonnel';
@@ -28,187 +28,201 @@ import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { IApiDirection } from '../../interfaces/iapidirection';
 import { IApiDepartement } from '../../interfaces/iapidepartement';
 import { flush } from '@angular/core/testing';
+import { TableImportComponent } from 'src/app/fichier/components/table-import/table-import.component';
 
+type PropagationTable1 = 'ADD' | 'UPDATE' | 'REMOVE' | null;
 
-type PropagationTable1 = "ADD"|'UPDATE' | 'REMOVE' | null;
-
-export type HandleActionTable1 = {titre: TitleModalForm, action:PropagationTable1, row?:unknown};
-export type TypeTable1 = "PERSONNEL"|"DIRECTION"|"DEPARTEMENT";
+export type HandleActionTable1 = {
+    titre: TitleModalForm;
+    action: PropagationTable1;
+    row?: unknown;
+};
+export type TypeTable1 = 'PERSONNEL' | 'DIRECTION' | 'DEPARTEMENT';
 
 @Component({
-  selector: 'app-table1',
-  templateUrl: './table1.component.html',
-  styleUrls: ['./table1.component.scss'],
+    selector: 'app-table1',
+    templateUrl: './table1.component.html',
+    styleUrls: ['./table1.component.scss'],
 })
 export class Table1Component
-  implements AfterViewInit, OnDestroy, OnChanges, OnInit
+    implements AfterViewInit, OnDestroy, OnChanges, OnInit
 {
-  public displayedColumns: Array<keyof TypePersonnel | 'action' | keyof IApiDirection | keyof IApiDepartement > = [
-    'action',
-    'firstname',
-    'sexe',
-    'emailaddress',
-    'fonction',
-    'service',
-  ];
-  public dataSource: MatTableDataSource<TypePersonnel> =
-    new MatTableDataSource<TypePersonnel>([]);
-  public errorMessage: string = '';
-  public openModal: boolean = false;
-  public row: TypePersonnel | null = null;
+    public displayedColumns: Array<
+        | keyof TypePersonnel
+        | 'action'
+        | keyof IApiDirection
+        | keyof IApiDepartement
+    > = ['action', 'firstname', 'sexe', 'emailaddress', 'fonction', 'service'];
+    public dataSource: MatTableDataSource<TypePersonnel> =
+        new MatTableDataSource<TypePersonnel>([]);
+    public errorMessage: string = '';
+    public openModal: boolean = false;
+    public row: TypePersonnel | null = null;
 
-  public propagation: PropagationTable1 = null;
+    public propagation: PropagationTable1 = null;
 
-  private _paginator!: MatPaginator;
+    private _paginator!: MatPaginator;
 
-  @Input() icon!: string;
-  @Input() title!: TitleCard1;
-  @Input() datas_table: TypePersonnel[] | null | IApiDepartement[] | IApiDirection[] = null;
-  @Input() search: string = '';
-  @Input() type!:TypeTable1;
-  @Input() iconAdd!: string;
+    @Input() icon!: string;
+    @Input() title!: TitleCard1;
+    @Input() datas_table:
+        | TypePersonnel[]
+        | null
+        | IApiDepartement[]
+        | IApiDirection[] = null;
+    @Input() search: string = '';
+    @Input() type!: TypeTable1;
+    @Input() iconAdd!: string;
 
-  @Output()
-  public handleActionEmit: EventEmitter<HandleActionTable1> = new EventEmitter();
+    @Output()
+    public handleActionEmit: EventEmitter<HandleActionTable1> =
+        new EventEmitter();
 
-  private destroy$!: Subject<boolean>;
+    private destroy$!: Subject<boolean>;
 
-  public refreshData: boolean = false;
+    public refreshData: boolean = false;
 
-  @ViewChild(MatPaginator, { static: false })
-  set paginator(value: MatPaginator) {
-    this._paginator = value;
-    if (this.dataSource) {
-      this.dataSource.paginator = value;
+    @ViewChild(MatPaginator, { static: false })
+    set paginator(value: MatPaginator) {
+        this._paginator = value;
+        if (this.dataSource) {
+            this.dataSource.paginator = value;
+        }
     }
-  }
 
-  get paginator() {
-    return this._paginator;
-  }
-
-  @ViewChild(MatSort, {static:false}) sort!: MatSort;
-
-  // set sort(value: MatSort) {
-  //   // if(!value){
-  //     console.log("valeur de sort", value, )
-  //     if (this.dataSource && !this.dataSource.sort) {
-  //       this.dataSource.sort = value;
-  //     }
-  //   // }
-  // }
-
-  // @ViewChild(MatSort) sort!: MatSort;
-
-  constructor(
-    private http: HttpClient,
-    private dialog: MatDialog,
-    private api: ApiService,
-    private _liveAnnouncer: LiveAnnouncer
-  ) {}
-
-  ngOnInit(): void {
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['datas_table']) {
-      let newData: TypePersonnel[] = changes['datas_table'].currentValue;
-      this.dataSource = new MatTableDataSource<TypePersonnel>(newData);
-      console.log('changement données du datas_table', newData);
-      // this.paginator.length = (newData || []).length;
-      // this.paginator.firstPage();
-      this.dataSource.paginator = this.paginator;
-      this.dataSource.sort = this.sort;
+    get paginator() {
+        return this._paginator;
     }
-    if (changes['search']) {
-      this.dataSource.filter = this.search.trim();
+
+    @ViewChild(MatSort, { static: false }) sort!: MatSort;
+
+    // set sort(value: MatSort) {
+    //   // if(!value){
+    //     console.log("valeur de sort", value, )
+    //     if (this.dataSource && !this.dataSource.sort) {
+    //       this.dataSource.sort = value;
+    //     }
+    //   // }
+    // }
+
+    // @ViewChild(MatSort) sort!: MatSort;
+
+    constructor(
+        private http: HttpClient,
+        private dialog: MatDialog,
+        private api: ApiService,
+        private _liveAnnouncer: LiveAnnouncer
+    ) {}
+
+    ngOnInit(): void {
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
     }
-    if(changes['type']){
-      let currentValue:TypeTable1 = changes['type'].currentValue;
-      if(currentValue=="PERSONNEL"){
-        this.displayedColumns = [
-          'action',
-          'firstname',
-          'sexe',
-          'emailaddress',
-          'fonction',
-          'service',
-        ];
-      }else if(currentValue=="DEPARTEMENT"){
-        this.displayedColumns = ["action", "name", "direction"]
-      }else if(currentValue=="DIRECTION"){
-        this.displayedColumns = ["action", "name"]
-
-      }
+    ngOnChanges(changes: SimpleChanges): void {
+        if (changes['datas_table']) {
+            let newData: TypePersonnel[] = changes['datas_table'].currentValue;
+            this.dataSource = new MatTableDataSource<TypePersonnel>(newData);
+            console.log('changement données du datas_table', newData);
+            // this.paginator.length = (newData || []).length;
+            // this.paginator.firstPage();
+            this.dataSource.paginator = this.paginator;
+            this.dataSource.sort = this.sort;
+        }
+        if (changes['search']) {
+            this.dataSource.filter = this.search.trim();
+        }
+        if (changes['type']) {
+            let currentValue: TypeTable1 = changes['type'].currentValue;
+            if (currentValue == 'PERSONNEL') {
+                this.displayedColumns = [
+                    'action',
+                    'firstname',
+                    'sexe',
+                    'emailaddress',
+                    'fonction',
+                    'service',
+                ];
+            } else if (currentValue == 'DEPARTEMENT') {
+                this.displayedColumns = ['action', 'name', 'direction'];
+            } else if (currentValue == 'DIRECTION') {
+                this.displayedColumns = ['action', 'name'];
+            }
+        }
     }
-  }
-  ngOnDestroy(): void {
-    this.destroy$.next(true);
-  }
-
-  ngAfterViewInit(): void {
-    this.destroy$ = new Subject();
-    // this.api.getAllData<TypePersonnel[]>({for:"datas_table"}).pipe(takeUntil(this.destroy$)).subscribe({
-    //   next:(datas_table)=>{
-    //     this.api.datas_table$.next(datas_table);
-    //     this.dataSource = new MatTableDataSource<TypePersonnel>(datas_table);
-    //     this.dataSource.sort = this.sort;
-    //   },
-    //   error:(err)=>{this.errorMessage = err}
-    // })
-    this.dataSource.paginator = this.paginator;
-    this.dataSource.sort = this.sort;
-  }
-
-  /** Announce the change in sort state for assistive technology. */
-  announceSortChange(sortState: Sort) {
-    // This example uses English messages. If your application supports
-    // multiple language, you would internationalize these strings.
-    // Furthermore, you can customize the message to add additional
-    // details about the values being sorted.
-    if (sortState.direction) {
-      this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
-    } else {
-      this._liveAnnouncer.announce('Sorting cleared');
+    ngOnDestroy(): void {
+        this.destroy$.next(true);
     }
-  }
 
-  public handleClick(row: TypePersonnel) {
-    console.log('handle click row data ', row);
-
-    if (this.propagation == 'REMOVE') {
-      console.log('suppression de ', row);
-      this.handleAction({titre:this.type, action:"REMOVE", row:row})
-    } else if (this.propagation == 'UPDATE') {
-      console.log('modification de ', row, "du type ", this.type);
-      this.handleAction({titre:this.type, action:"UPDATE", row:row})
-    } else if (this.propagation == null) {
-      this.row = row;
-      this.openModal = true;
+    ngAfterViewInit(): void {
+        this.destroy$ = new Subject();
+        // this.api.getAllData<TypePersonnel[]>({for:"datas_table"}).pipe(takeUntil(this.destroy$)).subscribe({
+        //   next:(datas_table)=>{
+        //     this.api.datas_table$.next(datas_table);
+        //     this.dataSource = new MatTableDataSource<TypePersonnel>(datas_table);
+        //     this.dataSource.sort = this.sort;
+        //   },
+        //   error:(err)=>{this.errorMessage = err}
+        // })
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
     }
-    this.propagation = null;
 
-    // this.dialog.open(UserInfoModalComponent, {
-    //   data: row
-    // })
-  }
+    /** Announce the change in sort state for assistive technology. */
+    announceSortChange(sortState: Sort) {
+        // This example uses English messages. If your application supports
+        // multiple language, you would internationalize these strings.
+        // Furthermore, you can customize the message to add additional
+        // details about the values being sorted.
+        if (sortState.direction) {
+            this._liveAnnouncer.announce(`Sorted ${sortState.direction}ending`);
+        } else {
+            this._liveAnnouncer.announce('Sorting cleared');
+        }
+    }
 
-  customFilter(filterValue: string, item: TypePersonnel): boolean {
-    console.log('element à filtrer', item, 'avec la chaine', filterValue);
-    return Object.values(item).includes(filterValue);
-  }
+    public handleClick(row: TypePersonnel) {
+        console.log('handle click row data ', row);
 
-  public handleAction(attr:HandleActionTable1) {
-    this.handleActionEmit.emit(attr);
-  }
+        if (this.propagation == 'REMOVE') {
+            console.log('suppression de ', row);
+            this.handleAction({ titre: this.type, action: 'REMOVE', row: row });
+        } else if (this.propagation == 'UPDATE') {
+            console.log('modification de ', row, 'du type ', this.type);
+            this.handleAction({ titre: this.type, action: 'UPDATE', row: row });
+        } else if (this.propagation == null) {
+            this.row = row;
+            this.openModal = true;
+        }
+        this.propagation = null;
 
-  actionIcon(event: Event | null, propagation: PropagationTable1) {
-    this.propagation = propagation;
-  }
+        // this.dialog.open(UserInfoModalComponent, {
+        //   data: row
+        // })
+    }
 
-  importFile(event:any){
+    customFilter(filterValue: string, item: TypePersonnel): boolean {
+        console.log('element à filtrer', item, 'avec la chaine', filterValue);
+        return Object.values(item).includes(filterValue);
+    }
 
+    public handleAction(attr: HandleActionTable1) {
+        this.handleActionEmit.emit(attr);
+    }
 
-  }
+    actionIcon(event: Event | null, propagation: PropagationTable1) {
+        this.propagation = propagation;
+    }
+
+    importFile(event: any) {
+        let data = { table: event, action: false };
+        if (event instanceof Array) {
+            const dialogRef = this.dialog.open(TableImportComponent, {
+                data: data,
+            });
+
+            dialogRef.afterClosed().subscribe((result) => {
+                console.log('after choose', data);
+            });
+        }
+    }
 }

@@ -140,10 +140,20 @@ body {
   color: white;
 }
 
+.btn-bordeau{
+    @extend .mat-btn-bordeau;
+    &:hover{
+        @extend .mat-btn-bordeau;
+    }
+    &:active{
+        @extend .mat-btn-bordeau;
+    }
+}
 .mat-btn-green{
   background-color: green;
   color: white;
 }
+
 
 
 
