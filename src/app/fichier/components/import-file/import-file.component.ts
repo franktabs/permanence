@@ -1,9 +1,9 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertService } from 'src/app/shared/services/alert.service';
-import { FichierService } from '../services/fichier/fichier.service';
-import { IFileParse } from '../interfaces/IFileParse';
-import { FileParseColCSVService } from '../services/file-parse-col-csv/file-parse-col-csv.service';
-import { FileParseLineCSVService } from '../services/file-parse-line-csv/file-parse-line-csv.service';
+import { FichierService } from '../../services/fichier/fichier.service';
+import { IFileParse } from '../../interfaces/IFileParse';
+import { FileParseColCSVService } from '../../services/file-parse-col-csv/file-parse-col-csv.service';
+import { FileParseLineCSVService } from '../../services/file-parse-line-csv/file-parse-line-csv.service';
 
 @Component({
     selector: 'app-import-file',
@@ -27,7 +27,6 @@ export class ImportFileComponent implements OnInit {
 
     async importerFichier(event: any) {
         // Récupère le contenu du fichier
-        console.log("voici l'event du fichier =>", event);
         const fichier: File = event.target.files[0];
 
         if (fichier) {
@@ -46,10 +45,10 @@ export class ImportFileComponent implements OnInit {
 
             if(this.read_per=="LINES" && textFileCsv){
 
-                result = this.parseLine.parseCSV(textFileCsv);
+                result = this.parseLine.clearStringEmpty(this.parseLine.parseCSV(textFileCsv));
             }
             else if ( this.read_per=="COLUMNS" && textFileCsv ){
-                result = this.parseCol.parseCSV(textFileCsv);
+                result = this.parseCol.clearStringEmpty(this.parseCol.parseCSV(textFileCsv));
 
             }else{
                 if(textFileCsv){

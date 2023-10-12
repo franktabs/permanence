@@ -4,9 +4,8 @@ import { IFileParse } from '../../interfaces/IFileParse';
 @Injectable({
   providedIn: 'root'
 })
-export class FileParseLineCSVService implements IFileParse {
+export class FileParseLineCSVService extends IFileParse {
 
-  constructor() { }
 
   parseCSV(csvData: string) {
     const lines = csvData.split('\n');

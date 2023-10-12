@@ -209,28 +209,6 @@ export class Table1Component
 
   importFile(event:any){
 
-    //Nettoyer le resultat;
-    if(event instanceof Array && event.length){
-        let i = 0
-        let tabs = JSON.parse(JSON.stringify(event))
-        for(let line of event){
 
-            let keys = Object.keys(line);
-            let clear = true;
-            for(let key of keys){
-                if(line[key]){
-                    clear = false
-
-                    break;
-                }
-            }
-            if(clear){
-                tabs.splice(i, 1)
-                i--;
-            }
-            i++;
-        }
-        console.log("result import =>", tabs, event);
-    }
   }
 }

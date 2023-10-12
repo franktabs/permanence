@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ImportFileComponent } from './import-file/import-file.component';
+import { ImportFileComponent } from './components/import-file/import-file.component';
 import { FichierService } from './services/fichier/fichier.service';
 import { FileParseColCSVService } from './services/file-parse-col-csv/file-parse-col-csv.service';
 

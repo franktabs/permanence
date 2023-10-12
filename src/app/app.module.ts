@@ -66,7 +66,7 @@ import { ModalInputComponent } from './shared/components/modal-input/modal-input
 import { ModalConfirmComponent } from './shared/components/modal-confirm/modal-confirm.component';
 import { ModalPdfComponent } from './shared/components/modal-pdf/modal-pdf.component';
 import { FichierModule } from './fichier/fichier.module';
-import { ImportFileComponent } from './fichier/import-file/import-file.component';
+import { ImportFileComponent } from './fichier/components/import-file/import-file.component';
 
 
 registerLocaleData(localeFr)

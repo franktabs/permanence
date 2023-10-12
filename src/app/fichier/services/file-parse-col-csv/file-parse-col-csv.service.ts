@@ -4,9 +4,8 @@ import { IFileParse } from '../../interfaces/IFileParse';
 @Injectable({
   providedIn: 'root'
 })
-export class FileParseColCSVService implements IFileParse {
+export class FileParseColCSVService extends IFileParse {
 
-  constructor() { }
 
   parseCSV(csvData: string) {
     // Logique de traitement du fichier CSV
