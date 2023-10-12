@@ -14,7 +14,7 @@
                     <span *ngIf="type=='DIRECTION'" >Ajouter une Direction</span>
                 </div>
             </button>
-            <app-import-file></app-import-file>
+            <app-import-file (resultEmitter)="importFile($event)" read_per="LINES" ></app-import-file>
         </div>
         <div class="ligne"></div>
         <div>

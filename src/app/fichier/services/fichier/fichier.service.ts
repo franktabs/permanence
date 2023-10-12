@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
+import { IFile } from '../../interfaces/IFile';
 
 @Injectable({
     providedIn: 'root',
 })
-export class FichierService {
+export class FichierService implements IFile {
 
     // abstract readFileContent(file: File): Promise<string>
     readFileContent(file: File): Promise<string> {

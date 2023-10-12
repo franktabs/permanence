@@ -27,13 +27,14 @@ import { TitleModalForm } from '../modal-form-model/modal-form-model.component';
 import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { IApiDirection } from '../../interfaces/iapidirection';
 import { IApiDepartement } from '../../interfaces/iapidepartement';
+import { flush } from '@angular/core/testing';
 
 
 type PropagationTable1 = "ADD"|'UPDATE' | 'REMOVE' | null;
 
 export type HandleActionTable1 = {titre: TitleModalForm, action:PropagationTable1, row?:unknown};
 export type TypeTable1 = "PERSONNEL"|"DIRECTION"|"DEPARTEMENT";
- 
+
 @Component({
   selector: 'app-table1',
   templateUrl: './table1.component.html',
@@ -204,5 +205,32 @@ export class Table1Component
 
   actionIcon(event: Event | null, propagation: PropagationTable1) {
     this.propagation = propagation;
+  }
+
+  importFile(event:any){
+
+    //Nettoyer le resultat;
+    if(event instanceof Array && event.length){
+        let i = 0
+        let tabs = JSON.parse(JSON.stringify(event))
+        for(let line of event){
+
+            let keys = Object.keys(line);
+            let clear = true;
+            for(let key of keys){
+                if(line[key]){
+                    clear = false
+
+                    break;
+                }
+            }
+            if(clear){
+                tabs.splice(i, 1)
+                i--;
+            }
+            i++;
+        }
+        console.log("result import =>", tabs, event);
+    }
   }
 }

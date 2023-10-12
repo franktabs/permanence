@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { AlertService } from 'src/app/shared/services/alert.service';
 import { FichierService } from '../services/fichier/fichier.service';
 import { IFileParse } from '../interfaces/IFileParse';
@@ -13,7 +13,9 @@ import { FileParseLineCSVService } from '../services/file-parse-line-csv/file-pa
 export class ImportFileComponent implements OnInit {
     @Input() public accept: 'text/csv' = 'text/csv';
     @Input() public alert:AlertService|undefined;
-    @Input() public title:string = "Importer un fichier"
+    @Input() public title:string = "Importer un fichier";
+    @Input() public read_per:"LINES"|"COLUMNS" = "LINES"
+    @Output() public resultEmitter:EventEmitter<any> = new EventEmitter();
 
     constructor(
         public fichierService: FichierService,
@@ -29,22 +31,32 @@ export class ImportFileComponent implements OnInit {
         const fichier: File = event.target.files[0];
 
         if (fichier) {
+            let textFileCsv:string ="";
             try {
-                let textFileCsv = await this.fichierService.readFileContent(
+                textFileCsv = await this.fichierService.readFileContent(
                     fichier
                 );
-
-                let resultCol = this.parseCol.parseCSV(textFileCsv);
-                let resultLine = this.parseLine.parseCSV(textFileCsv);
-
-                console.log('resultat resultLine=>', resultLine);
-                console.log('resultat resultCol=>', resultCol);
             } catch (err) {
                 console.log("voici l'erreur", err);
                 if(this.alert instanceof AlertService){
                     this.alert.alertError();
                 }
             }
+            let result;
+
+            if(this.read_per=="LINES" && textFileCsv){
+
+                result = this.parseLine.parseCSV(textFileCsv);
+            }
+            else if ( this.read_per=="COLUMNS" && textFileCsv ){
+                result = this.parseCol.parseCSV(textFileCsv);
+
+            }else{
+                if(textFileCsv){
+                    throw new Error("Does'nt support !!!")
+                }
+            }
+            this.resultEmitter.emit(result);
         }
     }
 }
