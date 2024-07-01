@@ -14,7 +14,8 @@ export class ForwardPlanificateur {
             domain: { tfj: GroupsPeople; other: GroupsPeople };
         }
     ) {
-        this.tailleVariable = variablePermanence.length;
+        //taile de l'ensemble des variables
+        this.tailleVariable = variablePermanence.length; 
     }
     backtracking(
         affectation: typeof this.affectation,
@@ -40,6 +41,7 @@ export class ForwardPlanificateur {
             );
             this.tabNonAffectation = [];
         }
+        
         let tailleActuelVariable = Object.keys(affectation.variable).length;
         if (tailleActuelVariable == this.tailleVariable) {
             // Affectation totale est consistante
@@ -62,7 +64,6 @@ export class ForwardPlanificateur {
             }
 
             //pour toute valeur V appartenant a D(Xi)
-
             while (
                 this.tabNonAffectation.length <=
                 affectation.domain.other.data.length
@@ -105,133 +106,87 @@ export class ForwardPlanificateur {
         affectation: typeof this.affectation,
         variable: UnitePermanence | null
     ): boolean {
-        let tailleActuelVariable = Object.keys(affectation.variable).length;
-        //si au tout debut du parcours return true
-        if (!tailleActuelVariable || variable == null) {
+        //Au tout de debut sans affectation
+        if (variable == null) {
             return true;
         }
-        //femme ne pas apparaitre la nuit
+        //femme non présente la nuit
         if (variable.isNight && variable.dataPersonnel.personnel.sexe == 'F') {
             return false;
         }
 
-        //personnes du même groupe ne doivent pas être ensemble sauf contraintes accepté
-        let buffer = this.variableSameDate(affectation, variable.date);
-        let tabGroup = this.groupsSameDate(buffer);
-        for (let group of variable.dataPersonnel.group) {
-            if (tabGroup.includes(group) && group.indexOf('ensemble') == -1) {
-                return false;
-            }
+        const buffer = this.variableSameDate(affectation, variable.date);
+        const tabGroup = this.groupsSameDate(buffer);
+
+        //personne du même groupe non présent ensemble sauf contrainte qui l'autorise
+        if (this.hasSameGroup(variable, tabGroup)) {
+            return false;
         }
 
-        //Controle journée du samedi
-        if (variable.date.getDay() == 6) {
-            //Controle nuit et jour du samedi
-            if (
-                !(
-                    variable.dataPersonnel.criteres.includes(
-                        'REPARTI NORMALEMENT'
-                    ) ||
-                    variable.dataPersonnel.criteres.includes(
-                        'APPARAIT SAMEDI'
-                    ) ||
-                    // variable.dataPersonnel.criteres.includes('SAMEDI JOUR') ||
-                    // variable.dataPersonnel.criteres.includes('SAMEDI NUIT') ||
-                    variable.dataPersonnel.criteres.includes(
-                        'APPARAIT WEEKEND'
-                    ) ||
-                    variable.dataPersonnel.criteres.includes('RESPONSABLE TFJ')
-                )
-            ) {
-                //Controle jour et nuit du samedi
-                if (
-                    (!variable.isNight &&
-                        !variable.dataPersonnel.criteres.includes(
-                            'SAMEDI JOUR'
-                        )) ||
-                    (variable.isNight &&
-                        !variable.dataPersonnel.criteres.includes(
-                            'SAMEDI NUIT'
-                        ))
-                ) {
-                    return false;
-                }
-            }
+        //Controle contrainte weekend
+        if (!this.isValidWeekendCriteria(variable)) {
+            return false;
         }
 
-        //Controle journée du dimanche
-        if (variable.date.getDay() == 0) {
-            //Controle nuit et jour du samedi
-            if (
-                !(
-                    variable.dataPersonnel.criteres.includes(
-                        'REPARTI NORMALEMENT'
-                    ) ||
-                    variable.dataPersonnel.criteres.includes(
-                        'APPARAIT DIMANCHE'
-                    ) ||
-                    // variable.dataPersonnel.criteres.includes('SAMEDI JOUR') ||
-                    // variable.dataPersonnel.criteres.includes('SAMEDI NUIT') ||
-                    variable.dataPersonnel.criteres.includes(
-                        'APPARAIT WEEKEND'
-                    ) ||
-                    variable.dataPersonnel.criteres.includes('RESPONSABLE TFJ')
-                )
-            ) {
-                //Controle jour et nuit du samedi
-                if (
-                    (!variable.isNight &&
-                        !(
-                            variable.dataPersonnel.criteres.includes(
-                                'DIMANCHE JOUR'
-                            ) ||
-                            variable.dataPersonnel.criteres.includes(
-                                'PRESENT JUSTE LE JOUR'
-                            )
-                        )) ||
-                    (variable.isNight &&
-                        !(
-                            variable.dataPersonnel.criteres.includes(
-                                'DIMANCHE NUIT'
-                            ) ||
-                            variable.dataPersonnel.criteres.includes(
-                                'PRESENT JUSTE LA NUIT'
-                            )
-                        ))
-                ) {
-                    return false;
-                }
-            }
+        //Controle contrainte Lundi-Vendredi
+        if (!this.isValidDayCriteria(variable)) {
+            return false;
         }
 
-        //Controle de Lundi - Vendredi
-        if (variable.date.getDay() != 0 && variable.date.getDay() != 6) {
-            if (
-                !(
-                    variable.dataPersonnel.criteres.includes(
-                        'REPARTI NORMALEMENT'
-                    ) ||
-                    variable.dataPersonnel.criteres.includes('RESPONSABLE TFJ')
-                )
-            ) {
-                if (
-                    (!variable.isNight &&
-                        !variable.dataPersonnel.criteres.includes(
-                            'PRESENT JUSTE LE JOUR'
-                        )) ||
-                    (variable.isNight &&
-                        !variable.dataPersonnel.criteres.includes(
-                            'PRESENT JUSTE LA NUIT'
-                        ))
-                ) {
-                    return false;
-                }
-            }
-        }
-        
         return true;
     }
 
+    private hasSameGroup(
+        variable: UnitePermanence,
+        tabGroup: string[]
+    ): boolean {
+        for (let group of variable.dataPersonnel.group) {
+            if (tabGroup.includes(group) && group.indexOf('ensemble') == -1) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private isValidWeekendCriteria(variable: UnitePermanence): boolean {
+        const day = variable.date.getDay();
+        const personnel = variable.dataPersonnel;
+
+        if (day === 6 || day === 0) {
+            return (
+                personnel.criteres.includes('REPARTI NORMALEMENT') ||
+                personnel.criteres.includes('APPARAIT WEEKEND') ||
+                personnel.criteres.includes(
+                    `SAMEDI ${variable.isNight ? 'NUIT' : 'JOUR'}`
+                ) ||
+                personnel.criteres.includes(
+                    `DIMANCHE ${variable.isNight ? 'NUIT' : 'JOUR'}`
+                ) ||
+                personnel.criteres.includes(
+                    `PRESENT JUSTE ${variable.isNight ? 'LA NUIT' : 'LE JOUR'}`
+                )
+            );
+        }
+
+        return true;
+    }
+
+    private isValidDayCriteria(variable: UnitePermanence): boolean {
+        const day = variable.date.getDay();
+        const personnel = variable.dataPersonnel;
+
+        if (day !== 0 && day !== 6) {
+            return (
+                personnel.criteres.includes('REPARTI NORMALEMENT') ||
+                personnel.criteres.includes('RESPONSABLE TFJ') ||
+                personnel.criteres.includes(
+                    `PRESENT JUSTE ${variable.isNight ? 'LA NUIT' : 'LE JOUR'}`
+                )
+            );
+        }
+
+        return true;
+    }
     variableSameDate(affectation: typeof this.affectation, date: Date) {
         let variable = [];
         for (let key in affectation.variable) {
