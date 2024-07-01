@@ -18,7 +18,7 @@ export class FileParseLineCSVService extends IFileParse {
             const object:any = {};
             for (let j = 0; j < headers.length; j++) {
                 if(headers[j].trim()!=""){
-                    object[headers[j]] = currentLine[j];
+                    object[headers[j].trim().toLowerCase()] = currentLine[j].replace(/\r/g, '');;
                 }
             }
             result.push(object);

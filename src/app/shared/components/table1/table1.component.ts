@@ -28,7 +28,10 @@ import { IApiPersonnel } from '../../interfaces/iapipersonnel';
 import { IApiDirection } from '../../interfaces/iapidirection';
 import { IApiDepartement } from '../../interfaces/iapidepartement';
 import { flush } from '@angular/core/testing';
-import { TableImportComponent } from 'src/app/fichier/components/table-import/table-import.component';
+import { DataTableImport, TableImportComponent } from 'src/app/fichier/components/table-import/table-import.component';
+import { OptionalKey } from '../../utils/type';
+import axios from 'axios';
+import { AlertService } from '../../services/alert.service';
 
 type PropagationTable1 = 'ADD' | 'UPDATE' | 'REMOVE' | null;
 
@@ -111,7 +114,8 @@ export class Table1Component
         private http: HttpClient,
         private dialog: MatDialog,
         private api: ApiService,
-        private _liveAnnouncer: LiveAnnouncer
+        private _liveAnnouncer: LiveAnnouncer,
+        private alert: AlertService
     ) {}
 
     ngOnInit(): void {
@@ -211,55 +215,126 @@ export class Table1Component
 
     actionIcon(event: Event | null, propagation: PropagationTable1) {
         this.propagation = propagation;
+
+        if (propagation == 'ADD') {
+            this.handleAction({ action: 'ADD', titre: this.type });
+            this.propagation = null;
+        }
     }
 
-    importFile(event: any) {
-        console.log("arrivé de du tableau", event);
-        this.validFileData(event);
-        let data = { table: event, action: false };
+    async importFile(event: any) {
+        console.log('arrivé de du tableau', event);
+        let colonneFile = await this.validFileData(event);
+        let data:DataTableImport = { table: event, action: false, colonneFile, type:this.type};
         if (event instanceof Array) {
-            console.log("ouverture du tableau");
+            console.log('ouverture du tableau');
             const dialogRef = this.dialog.open(TableImportComponent, {
                 data: data,
             });
-
-            dialogRef.afterClosed().subscribe((result) => {
-                console.log('after choose', data);
-            });
         }
     }
 
-    validFileData(table:Array<any>){
-
-        if(this.type="PERSONNEL"){
+    async validFileData(table: Array<any>) {
+        let colonneFile: {
+            required: Array<keyof IApiPersonnel>;
+            other: Array<keyof IApiPersonnel>;
+        } = { other: [], required: [] };
+        if ((this.type == 'PERSONNEL')) {
+            colonneFile = {
+                other: [
+                    'screenname',
+                    'telephoneCisco',
+                    'telephoneMobile',
+                    'fonction',
+                ],
+                required: ['firstname', 'emailaddress', 'userId', 'sexe'],
+            };
             let personnels = this.api.data.personnels;
             let tabEmails = [];
-            if(personnels instanceof Array && personnels.length)
-            for(let personnel of personnels){
-                tabEmails.push(personnel.emailaddress);
-            }
-            if(table instanceof Array && table.length ) {
-                let keys = Object.keys(table[0]);
-                for(let line of table){
-                    line._errors = []
+            if (personnels instanceof Array && personnels.length)
+                for (let personnel of personnels) {
+                    tabEmails.push(personnel.emailaddress);
+                }
+            try {
+                let response = await axios.get(
+                    this.api.URL_PERSONNELS + '/min-userId'
+                );
+                if (table instanceof Array && table.length && response.data) {
+                    let keys = Object.keys(table[0]);
+                    let minUserId = response.data.userId;
+                    if (minUserId >= 0) {
+                        minUserId = -1;
+                    } else {
+                        minUserId -= 1;
+                    }
+                    for (let line of table) {
+                        minUserId -= minUserId;
+                        line.userId = minUserId;
+                        line._errors = { columns: [], lines: [] };
 
-                    if(keys.includes("email")){
-                        let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                        let error_email = false;
-                        if(!regex.test(line["email"])){
-                            line._errors.push("email");
-                            error_email = true;
-                        }
-                        if(error_email==false){
-                            if(tabEmails.includes(line["email"])){
-                                line._errors.push("email")
+                        //verification d'email
+                        if (keys.includes('email')) {
+                            let regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                            let error_email = false;
+                            if (!regex.test(line['email'])) {
+                                line._errors.lines.push({
+                                    attr: 'email',
+                                    msg: 'Email incorrect',
+                                });
+                                error_email = true;
                             }
-
+                            if (error_email == false) {
+                                if (tabEmails.includes(line['email'])) {
+                                    line._errors.lines.push({
+                                        attr: 'email',
+                                        msg: 'Email existe déjà',
+                                    });
+                                }
+                            }
+                        }
+                        //verification sexe
+                        if (keys.includes('sexe')) {
+                            if (line['sexe'] != 'M' && line['sexe'] != 'F') {
+                                line._errors.lines.push({
+                                    attr: 'sexe',
+                                    msg: 'Sexe incorrect',
+                                });
+                            }
+                        }
+                        //verification champs required
+                        for (let line of table) {
+                            for (let key of colonneFile.required) {
+                                if (
+                                    !line[key] ||
+                                    (typeof line[key] == 'string' &&
+                                        line[key].trim().length == 0)
+                                ) {
+                                    line._errors.columns.push({
+                                        attr: key,
+                                        msg:
+                                            'le champs "' +
+                                            key +
+                                            '" est requis',
+                                    });
+                                    console.log(
+                                        'erreurs champs cle "',
+                                        key,
+                                        '"=>',
+                                        line
+                                    );
+                                }
+                            }
                         }
                     }
                 }
-
+            } catch (e) {
+                console.error('Error =>', e);
+                this.alert.alertMaterial({
+                    message: 'Erreur communication serveur',
+                    title: 'error',
+                });
             }
         }
+        return colonneFile;
     }
 }

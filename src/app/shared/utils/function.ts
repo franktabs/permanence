@@ -150,6 +150,14 @@ export function shuffleArray<T>(array: T[]): T[] {
   return array;
 }
 
+export function cloner<T>(objet: T): T {
+  if (objet == null || objet == undefined) {
+    return objet;
+  }
+  let value: T = JSON.parse(JSON.stringify(objet));
+  return value;
+}
+
 export function stringMonth(i: number): string {
   if (i == 0) {
     return 'janvier';

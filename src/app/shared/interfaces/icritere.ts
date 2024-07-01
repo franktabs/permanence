@@ -2,7 +2,7 @@ import { IModel } from './imodel';
 
 export default interface ICritere extends IModel {
   nom:
-    | 'RESPONSABLE TFG'
+    | 'RESPONSABLE TFJ'
     | 'APPARAIT WEEKEND'
     | 'SUPERVISEUR'
     | 'APPARAIT LUNDI - VENDREDI '

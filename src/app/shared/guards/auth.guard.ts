@@ -52,7 +52,6 @@ export class AuthGuard implements CanActivate {
 
   }
 
-
   async initDB() {
     console.log('execution de initDB');
 

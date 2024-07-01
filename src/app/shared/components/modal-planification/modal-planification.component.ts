@@ -183,7 +183,7 @@ export class ModalPlanificationComponent implements OnInit {
       }
       for(let critere of group.criteres){
         criteresGroupes.add(critere.nom);
-        if(critere.nom=="RESPONSABLE TFG" && group.personnels.size<5){
+        if(critere.nom=="RESPONSABLE TFJ" && group.personnels.size<5){
           console.log("problème tfg < 5")
           return true;
         }
@@ -197,7 +197,7 @@ export class ModalPlanificationComponent implements OnInit {
       console.log("problème aucun superviseur")
       return true;
     }
-    if(!criteresGroupes.has("RESPONSABLE TFG")){
+    if(!criteresGroupes.has("RESPONSABLE TFJ")){
       console.log("problème aucun responsable")
 
       return true;

@@ -92,6 +92,8 @@ let apiPerson: IApiPerson = {
 export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
   public date1Conge: Date = new Date('2023-06-27');
   public date2Conge: Date = new Date('2023-07-27');
+
+  //donnees utilisés pour envoyé au composant table1
   public toTable1: OuputTypeCard1 = { icon: '', title: '' };
   private _directionSelected: string | null = null;
   private _data_apiDirections: TypeDirection[] | null = null;
@@ -254,6 +256,8 @@ export class PageCollecteDataComponent implements OnInit, OnDestroy, OnChanges {
     this.userAuth = this.auth.user;
     this.destroy$ = new Subject();
     console.log(this.date1Conge, this.date2Conge);
+
+
     this.toTable1.icon = "<i class='bi bi-person-lines-fill' ></i>";
     this.toTable1.title = 'Personnel';
 

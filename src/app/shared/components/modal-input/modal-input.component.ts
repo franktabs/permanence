@@ -14,7 +14,7 @@ export type DataModalInput = {
 };
 
 export const CRITERE_OBJECT: { [key in ICritere['nom']]: boolean } = {
-  'RESPONSABLE TFG': false,
+  'RESPONSABLE TFJ': false,
   'APPARAIT WEEKEND': false,
   SUPERVISEUR: false,
   'APPARAIT LUNDI - VENDREDI ': false,
@@ -33,7 +33,7 @@ export const CRITERE_OBJECT: { [key in ICritere['nom']]: boolean } = {
   'RESPONSABILITE 2': false,
 };
 export const CRITERES: (keyof typeof CRITERE_OBJECT)[] = [
-  'RESPONSABLE TFG',
+  'RESPONSABLE TFJ',
   'APPARAIT WEEKEND',
   'SUPERVISEUR',
   'APPARAIT LUNDI - VENDREDI ',
