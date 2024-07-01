@@ -3,7 +3,7 @@ import { cloner } from '../shared/utils/function';
 import { PermanenceCSP } from './PermanenceCSP';
 import { UnitePermanence } from './UnitePermanence';
 
-export class ForwardPlanificateur {
+export class BacktrackPlanificateur {
     public tailleVariable!: number;
     public tabNonAffectation: number[] = [];
 
@@ -16,6 +16,14 @@ export class ForwardPlanificateur {
     ) {
         //taile de l'ensemble des variables
         this.tailleVariable = variablePermanence.length; 
+    }
+
+    start(){
+        this.backtracking(this.affectation, null);
+        return Object.keys(this.affectation.variable).map((key)=>{
+            let variable = this.affectation.variable[key];
+            return variable;
+        });
     }
     backtracking(
         affectation: typeof this.affectation,
@@ -41,7 +49,7 @@ export class ForwardPlanificateur {
             );
             this.tabNonAffectation = [];
         }
-        
+
         let tailleActuelVariable = Object.keys(affectation.variable).length;
         if (tailleActuelVariable == this.tailleVariable) {
             // Affectation totale est consistante
@@ -110,6 +118,10 @@ export class ForwardPlanificateur {
         if (variable == null) {
             return true;
         }
+        if(!variable.dataPersonnel){
+            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        }
+
         //femme non présente la nuit
         if (variable.isNight && variable.dataPersonnel.personnel.sexe == 'F') {
             return false;
@@ -140,7 +152,12 @@ export class ForwardPlanificateur {
         variable: UnitePermanence,
         tabGroup: string[]
     ): boolean {
+        if(!variable.dataPersonnel){
+            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        }
+
         for (let group of variable.dataPersonnel.group) {
+            
             if (tabGroup.includes(group) && group.indexOf('ensemble') == -1) {
                 return true;
             }
@@ -149,6 +166,9 @@ export class ForwardPlanificateur {
     }
 
     private isValidWeekendCriteria(variable: UnitePermanence): boolean {
+        if(!variable.dataPersonnel){
+            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        }
         const day = variable.date.getDay();
         const personnel = variable.dataPersonnel;
 
@@ -172,6 +192,9 @@ export class ForwardPlanificateur {
     }
 
     private isValidDayCriteria(variable: UnitePermanence): boolean {
+        if(!variable.dataPersonnel){
+            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        }
         const day = variable.date.getDay();
         const personnel = variable.dataPersonnel;
 
@@ -206,6 +229,9 @@ export class ForwardPlanificateur {
         affectation: typeof this.affectation,
         variable: UnitePermanence
     ): boolean {
+        if(!variable.dataPersonnel){
+            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        }
         let buffer = this.variableSameDate(affectation, variable.date);
         let tabGroup = this.groupsSameDate(buffer);
         for (let group of variable.dataPersonnel.group) {
@@ -217,8 +243,12 @@ export class ForwardPlanificateur {
     }
 
     groupsSameDate(variables: UnitePermanence[]) {
+        
         let tabGroup: string[] = [];
         for (let variable of variables) {
+            if(!variable.dataPersonnel){
+                throw Error("dataPersonnel non présent !! Erreur backtracking")
+            }
             let group = variable.dataPersonnel.group;
             tabGroup = [...tabGroup, ...group];
         }

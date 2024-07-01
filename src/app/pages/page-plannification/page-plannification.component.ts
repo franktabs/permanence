@@ -44,6 +44,8 @@ import {
     mapReversePersonnel,
 } from 'src/app/shared/utils/tables-map';
 import { TypePersonnel } from 'src/app/shared/utils/types-map';
+import { BacktrackPlanificateur } from 'src/app/utils/BacktrackPlanificateur';
+import { UnitePermanence } from 'src/app/utils/UnitePermanence';
 
 export type RepartitionSemaine = {
     semaine: number;
@@ -735,54 +737,6 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
         return group[initialIndex];
     }
-    // findMan(
-    //   person: IApiPersonnel,
-    //   group: IApiPersonnel[],
-    //   index: number,
-    //   date?: string,
-    //   nbrParcours: number = 0
-    // ): IApiPersonnel {
-    //   if (nbrParcours >= group.length) return person;
-    //   let lastPerson = JSON.parse(JSON.stringify(person));
-
-    //   if (person.sexe == 'F') {
-    //     let initParcours = nbrParcours;
-    //     let lastPosition = index;
-    //     let i = lastPosition;
-
-    //     while (person.sexe == 'F' && nbrParcours < group.length) {
-    //       i = (i + 1) % group.length;
-    //       person = group[i];
-    //       nbrParcours++;
-    //     }
-    //     if (i != lastPosition) {
-    //       console.log(
-    //         'changement de position de group avant =>',
-    //         [...group],
-    //         '\nde la personne =>',
-    //         person,
-    //         '\net la personne =>',
-    //         group[(i - nbrParcours + group.length) % group.length],
-    //         'date =>',
-    //         date
-    //       );
-    //       let temps = group[(i - nbrParcours + group.length) % group.length];
-    //       group[(i - nbrParcours + group.length) % group.length] = person;
-    //       lastPerson = JSON.parse(JSON.stringify(person));
-    //       group[i] = temps;
-    //       console.log('changement de position de group après =>', [...group]);
-    //     }
-    //     if (initParcours == nbrParcours) {
-    //       console.log('person before =>', lastPerson);
-    //       return lastPerson;
-    //     } else {
-    //       console.log('person before =>', lastPerson);
-    //       return this.findPerson(lastPerson, group, i, date || '', nbrParcours);
-    //     }
-    //   }
-    //   console.log('person before =>', lastPerson);
-    //   return lastPerson;
-    // }
 
     findCompatibleDay(
         dataPerson: GroupsPeople['data'][number],
@@ -1191,13 +1145,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             }
         }
 
-        for(let idPersonel in objetDataPersonnel){
-          let dataPersonnel = objetDataPersonnel[idPersonel];
-          if(dataPersonnel.group.includes('tfj')){
-            groupTfg.data.push(dataPersonnel);
-          }else{
-            groupsPeople.data.push(dataPersonnel);
-          }
+        for (let idPersonel in objetDataPersonnel) {
+            let dataPersonnel = objetDataPersonnel[idPersonel];
+            if (dataPersonnel.group.includes('tfj')) {
+                groupTfg.data.push(dataPersonnel);
+            } else {
+                groupsPeople.data.push(dataPersonnel);
+            }
         }
 
         console.log(
@@ -1206,12 +1160,6 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             groupTfg
         );
 
-        let nbrGroup1 = group1.length;
-        let nbrGroup2 = group2.length;
-        let nbrGroup3 = group3.length;
-
-        let oneOrTwoPerson = [1, 2];
-
         let jourFerier: {
             jour1: IPermanence | null;
             jour2: IPermanence | null;
@@ -1219,469 +1167,138 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             jour1: null,
             jour2: null,
         };
-        let sameditAvant: IPermanence | null = null;
 
-        let repartiGroup2 = 0;
-        let repartiGroup3 = 0;
-        let repartiOneOrTwo = 0;
-
-        let idCountChief: { [key in number]: number } = { '-1': -1 };
-
-        this.permanences.forEach((permanence, index) => {
-            let date = new Date(permanence.date);
-            let personnel_permanence: IPermanence = JSON.parse(
-                JSON.stringify(permanence)
-            );
-            delete personnel_permanence.personnels_jour;
-            delete personnel_permanence.personnels_nuit;
-            if (date.getDay() != 0 && date.getDay() != 6) {
-                if (permanence.type == 'simple') {
-                    // let person1 = group1[(index - decalage) % nbrGroup1];
-                    // let lastPosition = (index - decalage) % nbrGroup1;
-                    // person1 = this.findPerson(
-                    //   person1,
-                    //   group1,
-                    //   lastPosition,
-                    //   stringDate(date)
-                    // );
-
-                    let personDataTfjGroup: GroupsPeople['data'][number] =
-                        groupTfg.data[
-                            (index - groupTfg.parcours) % groupTfg.data.length
-                        ];
-                    let lastPosition =
-                        (index - groupTfg.parcours) % groupTfg.data.length;
-
-                    let personDataTfj = this.findPerson(
-                        personDataTfjGroup,
-                        groupTfg.data,
-                        lastPosition,
-                        date,
-                        0,
-                        'nuit',
-                        lastPosition,
-                        []
+        let tabsVariables: UnitePermanence[] = [];
+        let mapDatePermanence: { [key in string]: IPermanence } = {};
+        for (let permanence of this.permanences) {
+            let datePermanence = new Date(permanence.date);
+            let idUnitePermanence = 1;
+            mapDatePermanence[permanence.date] = permanence;
+            //Generation des variables pour les journées de Lundi - Vendredi
+            if (datePermanence.getDay() != 0 && datePermanence.getDay() != 6) {
+                for (let i = 0; i < nbrPersonDay.semaine; i++) {
+                    let unitePermanence = new UnitePermanence(
+                        '' + idUnitePermanence++,
+                        datePermanence,
+                        permanence.type,
+                        true,
+                        i,
+                        null
                     );
-                    let nbrPersonResponsable = 0;
-                    if (personDataTfj) {
-                        nbrPersonResponsable++;
-                    } else {
-                        personDataTfj = this.findPersonResponsability(
-                            groupsPeople,
-                            date,
-                            'nuit'
-                        );
-                        if (personDataTfj) {
-                            nbrPersonResponsable++;
-                        }
-                    }
-
-                    let personDataTfj2 = this.findPersonResponsability(
-                        groupsPeople,
-                        date,
-                        'nuit'
-                    );
-
-                    let datasPersonDay: GroupsPeople['data'][number][] = [];
-                    if (personDataTfj2) {
-                        datasPersonDay.push(personDataTfj2);
-                        nbrPersonResponsable++;
-                    }
-                    for (
-                        let c = 0;
-                        c < nbrPersonDay.semaine - nbrPersonResponsable;
-                        c++
-                    ) {
-                        let lastPosition =
-                            groupsPeople.parcours % groupsPeople.data.length;
-                        let dataPerson2: GroupsPeople['data'][number] | null =
-                            groupsPeople.data[
-                                groupsPeople.parcours++ %
-                                    groupsPeople.data.length
-                            ];
-                        console.log(
-                            '----------------- personne selectionner => ',
-                            dataPerson2.personnel,
-                            '--- date => ',
-                            date,
-                            '---position =>',
-                            lastPosition,
-                            '---parcours =>',
-                            groupsPeople.parcours
-                        );
-                        dataPerson2 = this.uniquePersonDay(
-                            dataPerson2,
-                            datasPersonDay,
-                            groupsPeople.data,
-                            lastPosition,
-                            date,
-                            'nuit'
-                        );
-                        console.log(
-                            '_______________ après la recherche ------->',
-                            dataPerson2,
-                            'position =>',
-                            lastPosition,
-                            '---parcours =>',
-                            groupsPeople.parcours
-                        );
-                        if (dataPerson2) {
-                            datasPersonDay.push(dataPerson2);
-                        }
-                    }
-
-                    if (personDataTfj && personDataTfj.personnel.sexe == 'M') {
-                        let personNuitTfj: IPersonnelNuit = {
-                            permanence: personnel_permanence,
-                            personnel: personDataTfj.personnel,
-                            responsable: true,
-                        };
-                        permanence.personnels_nuit?.push(personNuitTfj);
-                    }
-                    for (let personData of datasPersonDay) {
-                        let otherPersonNuit: IPersonnelNuit = {
-                            permanence: personnel_permanence,
-                            personnel: personData.personnel,
-                            responsable: false,
-                        };
-                        personData.date = date;
-                        permanence.personnels_nuit?.push(otherPersonNuit);
-                    }
-                } else if (permanence.type == 'ouvrable') {
-                    if (jourFerier.jour1 == null) {
-                        jourFerier.jour1 = permanence;
-                    } else if (
-                        jourFerier.jour1 != null &&
-                        jourFerier.jour2 == null
-                    ) {
-                        if (sameditAvant != null) {
-                            permanence.personnels_jour =
-                                sameditAvant.personnels_jour;
-                            permanence.personnels_nuit =
-                                sameditAvant.personnels_nuit;
-                        }
-                    }
-                    console.log('jour ouvrable semaine', date);
-                }
-            } else if (date.getDay() == 6) {
-                if (permanence.type == 'ouvrable') {
-                    let nbrPersonResponsable = 0;
-                    let permanenceLundi = this.permanences[index - 5];
-                    if (
-                        permanence.personnels_jour != null &&
-                        permanenceLundi.personnels_nuit != null
-                    ) {
-                        let personNuit = permanenceLundi.personnels_nuit[0];
-                        let person0: GroupsPeople['data'][number] | null = null;
-                        if (personNuit) {
-                            permanence.personnels_jour[0] = personNuit;
-                            nbrPersonResponsable++;
-                        } else {
-                            console.log(
-                                'problème rencontré le Lundi, anticipation ...'
-                            );
-                            person0 =
-                                groupTfg.data[
-                                    (index - groupTfg.parcours) %
-                                        groupTfg.data.length
-                                ];
-                            // let lastPosition = (index - decalage) % nbrGroup1;
-                            // person0 = this.findPerson(person0, group1, lastPosition,stringDate(date))
-                        }
-                        if (person0 != null) {
-                            let lastPosition =
-                                (index - groupTfg.parcours) %
-                                groupTfg.data.length;
-                            person0 = this.findPerson(
-                                person0,
-                                groupTfg.data,
-                                lastPosition,
-                                date,
-                                0,
-                                'jour',
-                                lastPosition,
-                                []
-                            );
-                            if (person0) {
-                                let person0Jour: IPersonnelJour = {
-                                    personnel: person0.personnel,
-                                    permanence: personnel_permanence,
-                                    responsable: true,
-                                };
-
-                                permanence.personnels_jour.push(person0Jour);
-                                nbrPersonResponsable++;
-                            } else {
-                                person0 = this.findPersonResponsability(
-                                    groupsPeople,
-                                    date,
-                                    'jour'
-                                );
-
-                                if (person0) {
-                                    let person0Jour: IPersonnelJour = {
-                                        personnel: person0.personnel,
-                                        permanence: personnel_permanence,
-                                        responsable: true,
-                                    };
-
-                                    permanence.personnels_jour.push(
-                                        person0Jour
-                                    );
-                                    nbrPersonResponsable++;
-                                }
-                            }
-                        }
-
-                        let personDataTfj2 = this.findPersonResponsability(
-                            groupsPeople,
-                            date,
-                            'jour'
-                        );
-                        let datasPersonDayJour: GroupsPeople['data'][number][] =
-                            [];
-                        if (personDataTfj2) {
-                            datasPersonDayJour.push(personDataTfj2);
-                            nbrPersonResponsable++;
-                        }
-
-                        for (
-                            let c = 0;
-                            c < nbrPersonDay.samediJour - nbrPersonResponsable;
-                            c++
-                        ) {
-                            let lastPosition =
-                                groupsPeople.parcours %
-                                groupsPeople.data.length;
-                            let dataPerson2:
-                                | GroupsPeople['data'][number]
-                                | null =
-                                groupsPeople.data[
-                                    groupsPeople.parcours++ %
-                                        groupsPeople.data.length
-                                ];
-                            dataPerson2 = this.uniquePersonDay(
-                                dataPerson2,
-                                datasPersonDayJour,
-                                groupsPeople.data,
-                                lastPosition,
-                                date,
-                                'jour'
-                            );
-                            if (dataPerson2) {
-                                datasPersonDayJour.push(dataPerson2);
-                            }
-                        }
-                        for (let personData of datasPersonDayJour) {
-                            let otherPersonJour: IPersonnelJour = {
-                                permanence: personnel_permanence,
-                                personnel: personData.personnel,
-                                responsable: false,
-                            };
-                            personData.date = date;
-                            permanence.personnels_jour?.push(otherPersonJour);
-                        }
-
-                        let oneOrTwo =
-                            oneOrTwoPerson[
-                                repartiOneOrTwo++ % oneOrTwoPerson.length
-                            ];
-
-                        nbrPersonResponsable = 0;
-                        personDataTfj2 = this.findPersonResponsability(
-                            groupsPeople,
-                            date,
-                            'nuit'
-                        );
-
-                        let datasPersonDayNuit: GroupsPeople['data'][number][] =
-                            [];
-                        if (personDataTfj2) {
-                            datasPersonDayNuit.push(personDataTfj2);
-                            nbrPersonResponsable++;
-                        }
-
-                        for (
-                            let c = 0;
-                            c < nbrPersonDay.samediNuit - nbrPersonResponsable;
-                            c++
-                        ) {
-                            let lastPosition =
-                                groupsPeople.parcours %
-                                groupsPeople.data.length;
-                            let dataPerson2:
-                                | GroupsPeople['data'][number]
-                                | null =
-                                groupsPeople.data[
-                                    groupsPeople.parcours++ %
-                                        groupsPeople.data.length
-                                ];
-                            dataPerson2 = this.uniquePersonDay(
-                                dataPerson2,
-                                datasPersonDayNuit,
-                                groupsPeople.data,
-                                lastPosition,
-                                date,
-                                'nuit'
-                            );
-                            if (dataPerson2) {
-                                datasPersonDayNuit.push(dataPerson2);
-                            }
-                        }
-
-                        if (personDataTfj2 == null) {
-                            datasPersonDayNuit = this.trierPersonChief(
-                                datasPersonDayNuit,
-                                idCountChief
-                            );
-                        }
-
-                        datasPersonDayNuit.forEach((pers, i) => {
-                            if (pers) {
-                                let persNuit: IPersonnelNuit = {
-                                    personnel: pers.personnel,
-                                    responsable: i == 0,
-                                    permanence: personnel_permanence,
-                                };
-                                pers.date = date;
-                                permanence.personnels_nuit?.push(persNuit);
-                            }
-                        });
-
-                        if (jourFerier.jour1 != null) {
-                            jourFerier.jour1.personnels_jour =
-                                permanence.personnels_jour;
-                            jourFerier.jour1.personnels_nuit =
-                                permanence.personnels_nuit;
-                            jourFerier.jour1 = null;
-                        }
-
-                        sameditAvant = permanence;
-                    }
-                }
-            } else if (date.getDay() == 0) {
-                groupTfg.parcours++;
-                this.nbrSemaineParcouru++;
-
-                if (
-                    permanence.type == 'simple' ||
-                    permanence.type == 'ouvrable'
-                ) {
-                    let nbrPersonResponsable = 0;
-                    let personDataTfj2 = this.findPersonResponsability(
-                        groupsPeople,
-                        date,
-                        'jour'
-                    );
-                    if (personDataTfj2) {
-                        nbrPersonResponsable++;
-                    }
-                    let datasPersonDayJour: GroupsPeople['data'][number][] = [];
-                    if (personDataTfj2) {
-                        datasPersonDayJour.push(personDataTfj2);
-                    }
-
-                    for (
-                        let c = 0;
-                        c < nbrPersonDay.dimancheJour - nbrPersonResponsable;
-                        c++
-                    ) {
-                        let lastPosition =
-                            groupsPeople.parcours % groupsPeople.data.length;
-                        let dataPerson2: GroupsPeople['data'][number] | null =
-                            groupsPeople.data[
-                                groupsPeople.parcours++ %
-                                    groupsPeople.data.length
-                            ];
-                        dataPerson2 = this.uniquePersonDay(
-                            dataPerson2,
-                            datasPersonDayJour,
-                            groupsPeople.data,
-                            lastPosition,
-                            date,
-                            'jour'
-                        );
-                        if (dataPerson2) {
-                            datasPersonDayJour.push(dataPerson2);
-                        }
-                    }
-
-                    if (personDataTfj2 == null) {
-                        datasPersonDayJour = this.trierPersonChief(
-                            datasPersonDayJour,
-                            idCountChief
-                        );
-                    }
-
-                    datasPersonDayJour.forEach((pers, i) => {
-                        if (pers != null) {
-                            let persJour: IPersonnelJour = {
-                                personnel: pers.personnel,
-                                responsable: i == 0,
-                                permanence: personnel_permanence,
-                            };
-                            pers.date = date;
-                            permanence.personnels_jour?.push(persJour);
-                        }
-                    });
-
-                    nbrPersonResponsable = 0;
-                    personDataTfj2 = this.findPersonResponsability(
-                        groupsPeople,
-                        date,
-                        'nuit'
-                    );
-                    let datasPersonDayNuit: GroupsPeople['data'][number][] = [];
-                    if (personDataTfj2) {
-                        datasPersonDayNuit.push(personDataTfj2);
-                        nbrPersonResponsable++;
-                    }
-                    for (
-                        let c = 0;
-                        c < nbrPersonDay.dimancheNuit - nbrPersonResponsable;
-                        c++
-                    ) {
-                        let lastPosition =
-                            groupsPeople.parcours % groupsPeople.data.length;
-                        let dataPerson2: GroupsPeople['data'][number] | null =
-                            groupsPeople.data[
-                                groupsPeople.parcours++ %
-                                    groupsPeople.data.length
-                            ];
-                        dataPerson2 = this.uniquePersonDay(
-                            dataPerson2,
-                            datasPersonDayNuit,
-                            groupsPeople.data,
-                            lastPosition,
-                            date,
-                            'nuit'
-                        );
-                        if (dataPerson2) {
-                            datasPersonDayNuit.push(dataPerson2);
-                        }
-                    }
-
-                    if (personDataTfj2 == null) {
-                        datasPersonDayNuit = this.trierPersonChief(
-                            datasPersonDayNuit,
-                            idCountChief
-                        );
-                    }
-
-                    datasPersonDayNuit.forEach((pers, i) => {
-                        if (pers != null) {
-                            let persNuit: IPersonnelNuit = {
-                                personnel: pers.personnel,
-                                responsable: i == 0,
-                                permanence: personnel_permanence,
-                            };
-                            pers.date = date;
-                            permanence.personnels_nuit?.push(persNuit);
-                        }
-                    });
+                    tabsVariables.push(unitePermanence);
                 }
             }
-        });
+            //Generation des variables pour la journée de samedi
+            if (datePermanence.getDay() == 6) {
+                for (let i = 0; i < nbrPersonDay.samediJour; i++) {
+                    let unitePermanence = new UnitePermanence(
+                        '' + idUnitePermanence++,
+                        datePermanence,
+                        permanence.type,
+                        false,
+                        i,
+                        null
+                    );
+                    tabsVariables.push(unitePermanence);
+                }
+
+                for (let i = 0; i < nbrPersonDay.samediNuit; i++) {
+                    let unitePermanence = new UnitePermanence(
+                        '' + idUnitePermanence++,
+                        datePermanence,
+                        permanence.type,
+                        true,
+                        i,
+                        null
+                    );
+                    tabsVariables.push(unitePermanence);
+                }
+            }
+
+            //Generation des variables pour la journée de dimanche
+            if (datePermanence.getDay() == 0) {
+                for (let i = 0; i < nbrPersonDay.dimancheJour; i++) {
+                    let unitePermanence = new UnitePermanence(
+                        '' + idUnitePermanence++,
+                        datePermanence,
+                        permanence.type,
+                        false,
+                        i,
+                        null
+                    );
+                    tabsVariables.push(unitePermanence);
+                }
+
+                for (let i = 0; i < nbrPersonDay.dimancheNuit; i++) {
+                    let unitePermanence = new UnitePermanence(
+                        '' + idUnitePermanence++,
+                        datePermanence,
+                        permanence.type,
+                        true,
+                        i,
+                        null
+                    );
+                    tabsVariables.push(unitePermanence);
+                }
+            }
+        }
+        let backtrackingPlanificateur: BacktrackPlanificateur =
+            new BacktrackPlanificateur(tabsVariables, {
+                variable: {},
+                domain: { tfj: groupTfg, other: groupsPeople },
+            });
+        let resultVariables = backtrackingPlanificateur.start();
+
+        for (let resultVariable of resultVariables) {
+            let permanence = mapDatePermanence[stringDate(resultVariable.date)];
+            if (!permanence.personnels_jour) {
+                permanence.personnels_jour = [];
+            }
+            if (!permanence.personnels_nuit) {
+                permanence.personnels_nuit = [];
+            }
+            if (
+                resultVariable.isNight
+            ) {
+                if (!resultVariable.dataPersonnel) {
+                    throw new Error('dataPersonnel not found');
+                }
+                if (resultVariable.ordre == 1) {
+                    let personnelNuit: IPersonnelNuit = {
+                        permanence: cloner(permanence),
+                        personnel: resultVariable.dataPersonnel.personnel,
+                        responsable: true,
+                    };
+                    permanence.personnels_nuit.push(personnelNuit);
+                }else{
+                    let personnelNuit: IPersonnelNuit = {
+                        permanence: cloner(permanence),
+                        personnel: resultVariable.dataPersonnel.personnel,
+                        responsable: false,
+                    };
+                    permanence.personnels_nuit.push(personnelNuit);
+                }
+            }else{
+                if (!resultVariable.dataPersonnel) {
+                    throw new Error('dataPersonnel not found');
+                }
+                if (resultVariable.ordre == 1) {
+                    let personnelJour: IPersonnelJour = {
+                        permanence: cloner(permanence),
+                        personnel: resultVariable.dataPersonnel.personnel,
+                        responsable: true,
+                    };
+                    permanence.personnels_jour.push(personnelJour);
+                }else{
+                    let personnelJour: IPersonnelJour = {
+                        permanence: cloner(permanence),
+                        personnel: resultVariable.dataPersonnel.personnel,
+                        responsable: false,
+                    };
+                    permanence.personnels_jour.push(personnelJour);
+                }
+            }
+        }
     }
 
     // fillPlanning() {
