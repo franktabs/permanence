@@ -81,18 +81,18 @@ export class ModalPlanificationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.api
-      .getAllData<IApiPersonnel[]>({ for: 'personnels' })
-      .subscribe((subs) => {
-        let transSubs = subs;
-        // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
-        if (subs)
-          separatePersonnelTFJ(
-            subs,
-            this.optionsManager,
-            this.optionsRessources
-          );
-      });
+    // this.api
+    //   .getAllData<IApiPersonnel[]>({ for: 'personnels' })
+    //   .subscribe((subs) => {
+    //     let transSubs = subs;
+    //     // let transSubs = mapJSON<IApiPersonnel, IPersonnel>(subs, mapPersonnel);
+    //     if (subs)
+    //       separatePersonnelTFJ(
+    //         subs,
+    //         this.optionsManager,
+    //         this.optionsRessources
+    //       );
+    //   });
 
     this.groupes = this.api.data.groupes;
   }

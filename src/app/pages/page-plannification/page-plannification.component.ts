@@ -24,6 +24,7 @@ import { IPersonnelNuit } from 'src/app/shared/interfaces/ipersonnelNuit';
 import { IPersonnelJour } from 'src/app/shared/interfaces/ipersonneljour';
 import { IPlanning } from 'src/app/shared/interfaces/iplanning';
 import { RoleType } from 'src/app/shared/interfaces/irole';
+import { AlertService } from 'src/app/shared/services/alert.service';
 import { ApiService } from 'src/app/shared/services/api.service';
 import { AuthService } from 'src/app/shared/services/auth.service';
 import {
@@ -165,6 +166,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
     constructor(
         private api: ApiService,
         private auth: AuthService,
+        private alert: AlertService,
         private elementRef: ElementRef,
         private _liveAnnouncer: LiveAnnouncer
     ) {}
@@ -585,7 +587,12 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         }
         // newPlanning.permanences = this.permanences;
         this.planningVisible = newPlanning;
-        this.fillPlanning();
+        try{
+            this.fillPlanning();
+        }catch(e){
+            this.alert.alertMaterial({title:"error", message:"Une erreur produite"});
+            console.error("Une erreur produite =>", e);
+        }
         this.plannings.unshift(newPlanning);
         this.visiblePlanning = true;
         console.log('le plannings visible', this.planningVisible);
@@ -1072,7 +1079,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         let groupsPeople: GroupsPeople = { data: [], parcours: 0 };
         let groupTfg: GroupsPeople = { data: [], parcours: 0 };
         let objetDataPersonnel: {
-            [key in number]: GroupsPeople['data'][number];
+            [key in string]: GroupsPeople['data'][number];
         } = {};
 
         let nbrPersonDay: DataPlanning['repartition'] = {
@@ -1099,7 +1106,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         throw Error('Invalid Identification Personnel');
                     }
                     let dataPersonnel: GroupsPeople['data'][number] =
-                        objetDataPersonnel[personnel.id];
+                        objetDataPersonnel[personnel.id+""];
 
                     if (!dataPersonnel) {
                         dataPersonnel = {
@@ -1119,7 +1126,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                             dataPersonnel.group.push('group' + iterGroup);
                         }
                     }
-                    objetDataPersonnel[personnel.id] = dataPersonnel;
+                    objetDataPersonnel[personnel.id+""] = dataPersonnel;
                 }
             } else if (criteresGroup.includes('RESPONSABLE TFJ')) {
                 for (let personnel of oneGroupPersonnel) {
@@ -1128,7 +1135,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                     }
 
                     let dataPersonnel: GroupsPeople['data'][number] =
-                        objetDataPersonnel[personnel.id];
+                        objetDataPersonnel[personnel.id+""];
 
                     if (!dataPersonnel) {
                         dataPersonnel = {
@@ -1140,13 +1147,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                     } else {
                         dataPersonnel.group.push('tfj');
                     }
-                    objetDataPersonnel[personnel.id] = dataPersonnel;
+                    objetDataPersonnel[personnel.id+""] = dataPersonnel;
                 }
             }
         }
 
         for (let idPersonel in objetDataPersonnel) {
-            let dataPersonnel = objetDataPersonnel[idPersonel];
+            let dataPersonnel = objetDataPersonnel[idPersonel+""];
             if (dataPersonnel.group.includes('tfj')) {
                 groupTfg.data.push(dataPersonnel);
             } else {
@@ -1170,9 +1177,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
 
         let tabsVariables: UnitePermanence[] = [];
         let mapDatePermanence: { [key in string]: IPermanence } = {};
+        let idUnitePermanence = 1;
         for (let permanence of this.permanences) {
             let datePermanence = new Date(permanence.date);
-            let idUnitePermanence = 1;
             mapDatePermanence[permanence.date] = permanence;
             //Generation des variables pour les journées de Lundi - Vendredi
             if (datePermanence.getDay() != 0 && datePermanence.getDay() != 6) {
@@ -1182,7 +1189,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         true,
-                        i,
+                        i+1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1196,7 +1203,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         false,
-                        i,
+                        i+1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1208,7 +1215,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         true,
-                        i,
+                        i+1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1223,7 +1230,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         false,
-                        i,
+                        i+1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1235,7 +1242,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         true,
-                        i,
+                        i+1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1247,8 +1254,10 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                 variable: {},
                 domain: { tfj: groupTfg, other: groupsPeople },
             });
+        debugger
         let resultVariables = backtrackingPlanificateur.start();
-
+        console.log("resultat backtracking", resultVariables);
+        debugger;
         for (let resultVariable of resultVariables) {
             let permanence = mapDatePermanence[stringDate(resultVariable.date)];
             if (!permanence.personnels_jour) {

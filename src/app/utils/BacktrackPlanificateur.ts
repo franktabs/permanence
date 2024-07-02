@@ -15,12 +15,12 @@ export class BacktrackPlanificateur {
         }
     ) {
         //taile de l'ensemble des variables
-        this.tailleVariable = variablePermanence.length; 
+        this.tailleVariable = variablePermanence.length;
     }
 
-    start(){
+    start() {
         this.backtracking(this.affectation, null);
-        return Object.keys(this.affectation.variable).map((key)=>{
+        return Object.keys(this.affectation.variable).map((key) => {
             let variable = this.affectation.variable[key];
             return variable;
         });
@@ -30,29 +30,51 @@ export class BacktrackPlanificateur {
         variable: UnitePermanence | null
     ): boolean {
         //Si affectation non consistante retourner faux;
+        console.log('Evolution backtracking', affectation);
+        debugger;
         if (!this.isConsistante(affectation, variable)) {
             return false;
         } else {
             //On affecte la variable
             if (variable != null) {
                 this.affectation.variable[variable.id + ''] = variable;
-            }
-        }
-        if (this.tabNonAffectation.length > 0) {
-            let initialIndex: number = this.tabNonAffectation[0];
-            let lastIndex: number =
-                this.tabNonAffectation[this.tabNonAffectation.length - 1];
-            this.decalage(
-                initialIndex,
-                lastIndex,
-                affectation.domain.other.data
-            );
-            this.tabNonAffectation = [];
-        }
 
+                if (
+                    this.tabNonAffectation.length > 1 &&
+                    !variable.dataPersonnel?.criteres.includes(
+                        'RESPONSABLE TFJ'
+                    )
+                ) {
+                    let initialIndex: number = this.tabNonAffectation[0];
+                    let lastIndex: number =
+                        this.tabNonAffectation[
+                            this.tabNonAffectation.length - 1
+                        ];
+                    console.log(
+                        'avant le decalage',
+                        cloner(affectation.domain.other.data)
+                    );
+                    this.decalage(
+                        initialIndex,
+                        lastIndex,
+                        affectation.domain.other.data
+                    );
+                    console.log(
+                        'après le decalage',
+                        cloner(affectation.domain.other.data)
+                    );
+                    let groupOther = affectation.domain.other;
+                    groupOther.parcours = initialIndex + 1;
+                }
+            }
+            //applique un decalage pour une repartition équitable
+        }
+        debugger;
+        this.tabNonAffectation = [];
         let tailleActuelVariable = Object.keys(affectation.variable).length;
         if (tailleActuelVariable == this.tailleVariable) {
             // Affectation totale est consistante
+            console.log('Affectation totale persistante', affectation);
             return true;
         } else {
             //Choisir une variable qui n'est pas encore affectée
@@ -77,9 +99,12 @@ export class BacktrackPlanificateur {
                 affectation.domain.other.data.length
             ) {
                 if (
-                    variable.ordre == 1 &&
-                    variable.date.getDay() != 0 &&
-                    variable.date.getDay() != 6
+                    (variable.ordre == 1 &&
+                        variable.date.getDay() != 0 &&
+                        variable.date.getDay() != 6) ||
+                    (variable.ordre == 1 &&
+                        variable.date.getDay() == 6 &&
+                        !variable.isNight)
                 ) {
                     let groupTfj = affectation.domain.tfj;
                     let index = groupTfj.parcours;
@@ -87,7 +112,7 @@ export class BacktrackPlanificateur {
                         groupTfj.data[
                             groupTfj.parcours++ % groupTfj.data.length
                         ];
-                    this.tabNonAffectation.push(index);
+                    this.tabNonAffectation.push(index % groupTfj.data.length);
                     variable.dataPersonnel = dataPersonnel;
                     if (this.backtracking(affectation, variable)) {
                         return true;
@@ -99,7 +124,7 @@ export class BacktrackPlanificateur {
                         groupOther.data[
                             groupOther.parcours++ % groupOther.data.length
                         ];
-                    this.tabNonAffectation.push(index);
+                    this.tabNonAffectation.push(index % groupOther.data.length);
                     variable.dataPersonnel = dataPersonnel;
                     if (this.backtracking(affectation, variable)) {
                         return true;
@@ -118,8 +143,8 @@ export class BacktrackPlanificateur {
         if (variable == null) {
             return true;
         }
-        if(!variable.dataPersonnel){
-            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        if (!variable.dataPersonnel) {
+            throw Error('dataPersonnel non présent !! Erreur backtracking');
         }
 
         //femme non présente la nuit
@@ -152,12 +177,11 @@ export class BacktrackPlanificateur {
         variable: UnitePermanence,
         tabGroup: string[]
     ): boolean {
-        if(!variable.dataPersonnel){
-            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        if (!variable.dataPersonnel) {
+            throw Error('dataPersonnel non présent !! Erreur backtracking');
         }
 
         for (let group of variable.dataPersonnel.group) {
-            
             if (tabGroup.includes(group) && group.indexOf('ensemble') == -1) {
                 return true;
             }
@@ -166,11 +190,14 @@ export class BacktrackPlanificateur {
     }
 
     private isValidWeekendCriteria(variable: UnitePermanence): boolean {
-        if(!variable.dataPersonnel){
-            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        if (!variable.dataPersonnel) {
+            throw Error('dataPersonnel non présent !! Erreur backtracking');
         }
         const day = variable.date.getDay();
         const personnel = variable.dataPersonnel;
+        if (day === 6 && personnel.criteres.includes('RESPONSABLE TFJ')) {
+            return true;
+        }
 
         if (day === 6 || day === 0) {
             return (
@@ -192,8 +219,8 @@ export class BacktrackPlanificateur {
     }
 
     private isValidDayCriteria(variable: UnitePermanence): boolean {
-        if(!variable.dataPersonnel){
-            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        if (!variable.dataPersonnel) {
+            throw Error('dataPersonnel non présent !! Erreur backtracking');
         }
         const day = variable.date.getDay();
         const personnel = variable.dataPersonnel;
@@ -229,8 +256,8 @@ export class BacktrackPlanificateur {
         affectation: typeof this.affectation,
         variable: UnitePermanence
     ): boolean {
-        if(!variable.dataPersonnel){
-            throw Error("dataPersonnel non présent !! Erreur backtracking")
+        if (!variable.dataPersonnel) {
+            throw Error('dataPersonnel non présent !! Erreur backtracking');
         }
         let buffer = this.variableSameDate(affectation, variable.date);
         let tabGroup = this.groupsSameDate(buffer);
@@ -243,11 +270,10 @@ export class BacktrackPlanificateur {
     }
 
     groupsSameDate(variables: UnitePermanence[]) {
-        
         let tabGroup: string[] = [];
         for (let variable of variables) {
-            if(!variable.dataPersonnel){
-                throw Error("dataPersonnel non présent !! Erreur backtracking")
+            if (!variable.dataPersonnel) {
+                throw Error('dataPersonnel non présent !! Erreur backtracking');
             }
             let group = variable.dataPersonnel.group;
             tabGroup = [...tabGroup, ...group];
@@ -262,7 +288,7 @@ export class BacktrackPlanificateur {
     ): GroupsPeople['data'] {
         let n = indice2 - indice1;
         if (n != 0) {
-            let element = JSON.parse(JSON.stringify(tableau[indice2]));
+            let element = cloner(tableau[indice2]);
             if (n < 0) {
                 n += tableau.length;
             }
