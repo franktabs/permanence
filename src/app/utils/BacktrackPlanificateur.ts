@@ -1,5 +1,5 @@
 import { GroupsPeople } from '../pages/page-plannification/page-plannification.component';
-import { cloner } from '../shared/utils/function';
+import { cloner, stringDate } from '../shared/utils/function';
 import { PermanenceCSP } from './PermanenceCSP';
 import { UnitePermanence } from './UnitePermanence';
 
@@ -37,37 +37,8 @@ export class BacktrackPlanificateur {
         } else {
             //On affecte la variable
             if (variable != null) {
-                this.affectation.variable[variable.id + ''] = variable;
-
-                if (
-                    this.tabNonAffectation.length > 1 &&
-                    !variable.dataPersonnel?.criteres.includes(
-                        'RESPONSABLE TFJ'
-                    )
-                ) {
-                    let initialIndex: number = this.tabNonAffectation[0];
-                    let lastIndex: number =
-                        this.tabNonAffectation[
-                            this.tabNonAffectation.length - 1
-                        ];
-                    console.log(
-                        'avant le decalage',
-                        cloner(affectation.domain.other.data)
-                    );
-                    this.decalage(
-                        initialIndex,
-                        lastIndex,
-                        affectation.domain.other.data
-                    );
-                    console.log(
-                        'après le decalage',
-                        cloner(affectation.domain.other.data)
-                    );
-                    let groupOther = affectation.domain.other;
-                    groupOther.parcours = initialIndex + 1;
-                }
+                this.affecterVariable(affectation, variable);
             }
-            //applique un decalage pour une repartition équitable
         }
         debugger;
         this.tabNonAffectation = [];
@@ -147,16 +118,26 @@ export class BacktrackPlanificateur {
             throw Error('dataPersonnel non présent !! Erreur backtracking');
         }
 
+        //verification de la disponibilité
+        if (!this.estDisponible(variable)) {
+            return false;
+        }
+
         //femme non présente la nuit
         if (variable.isNight && variable.dataPersonnel.personnel.sexe == 'F') {
             return false;
         }
 
-        const buffer = this.variableSameDate(affectation, variable.date);
-        const tabGroup = this.groupsSameDate(buffer);
+        const listVariableSamePeriode = this.variableSamePeriode(
+            affectation,
+            variable
+        );
+        const listGroupSamePeriode = this.groupsOfListVariable(
+            listVariableSamePeriode
+        );
 
         //personne du même groupe non présent ensemble sauf contrainte qui l'autorise
-        if (this.hasSameGroup(variable, tabGroup)) {
+        if (this.hasSameGroup(variable, listGroupSamePeriode)) {
             return false;
         }
 
@@ -173,6 +154,105 @@ export class BacktrackPlanificateur {
         return true;
     }
 
+    private affecterVariable(
+        affectation: typeof this.affectation,
+        variable: UnitePermanence
+    ) {
+        variable = this.controleResponsability(affectation, variable);
+        affectation.variable[variable.id + ''] = variable;
+
+        if (
+            this.tabNonAffectation.length > 1 &&
+            !variable.dataPersonnel?.criteres.includes('RESPONSABLE TFJ')
+        ) {
+            let initialIndex: number = this.tabNonAffectation[0];
+            let lastIndex: number =
+                this.tabNonAffectation[this.tabNonAffectation.length - 1];
+            console.log(
+                'avant le decalage',
+                cloner(affectation.domain.other.data)
+            );
+            this.decalage(
+                initialIndex,
+                lastIndex,
+                affectation.domain.other.data
+            );
+            console.log(
+                'après le decalage',
+                cloner(affectation.domain.other.data)
+            );
+            let groupOther = affectation.domain.other;
+            groupOther.parcours = initialIndex + 1;
+        }
+    }
+
+    private controleResponsability(
+        affectation: typeof this.affectation,
+        variable: UnitePermanence
+    ): UnitePermanence {
+        
+        if (!variable.dataPersonnel) {
+            return variable;
+        }
+
+        const listVariableSamePeriode = this.variableSamePeriode(
+            affectation,
+            variable
+        );
+
+        if (
+            variable.dataPersonnel.criteres.includes('RESPONSABILITE 1') ||
+            variable.dataPersonnel.criteres.includes('RESPONSABILITE 2')
+        ) {
+            listVariableSamePeriode.sort((a, b) => a.ordre - b.ordre);
+            let listVariableToChange = [];
+            for (let oneVariable of listVariableSamePeriode) {
+                if (
+                    oneVariable.dataPersonnel &&
+                    !oneVariable.dataPersonnel.criteres.includes(
+                        'RESPONSABLE TFJ'
+                    ) &&
+                    !oneVariable.dataPersonnel.criteres.includes(
+                        'RESPONSABILITE 1'
+                    )
+                ) {
+                    if (
+                        variable.dataPersonnel.criteres.includes(
+                            'RESPONSABILITE 1'
+                        )
+                    ) {
+                        listVariableToChange.push(oneVariable);
+                        continue;
+                    }
+                    if (
+                        !oneVariable.dataPersonnel.criteres.includes(
+                            'RESPONSABILITE 2'
+                        ) &&
+                        variable.dataPersonnel.criteres.includes(
+                            'RESPONSABILITE 2'
+                        )
+                    ) {
+                        listVariableToChange.push(oneVariable);
+                        continue;
+                    }
+                }
+            }
+            let dataPersonnelTemporaire = variable.dataPersonnel;
+            for (let oneVariable of listVariableToChange) {
+                if (!oneVariable.dataPersonnel) {
+                    throw Error(
+                        'Erreur Configuration Responsabilité!! DataPersonnel null'
+                    );
+                }
+                let dataPersonnel = oneVariable.dataPersonnel;
+                oneVariable.dataPersonnel = dataPersonnelTemporaire;
+                dataPersonnelTemporaire = dataPersonnel;
+            }
+            variable.dataPersonnel = dataPersonnelTemporaire;
+        }
+        return variable;
+    }
+
     private hasSameGroup(
         variable: UnitePermanence,
         tabGroup: string[]
@@ -187,6 +267,25 @@ export class BacktrackPlanificateur {
             }
         }
         return false;
+    }
+
+    private estDisponible(variable: UnitePermanence) {
+        if (!variable.dataPersonnel) {
+            throw Error('dataPersonnel non présent !! Erreur backtracking');
+        }
+        //Verification des vacances
+        let vacances = variable.dataPersonnel.personnel.vacancies;
+        if (vacances?.length) {
+            for (let vacance of vacances) {
+                if (
+                    vacance.start <= stringDate(variable.date) &&
+                    stringDate(variable.date) <= vacance.end
+                ) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     private isValidWeekendCriteria(variable: UnitePermanence): boolean {
@@ -237,39 +336,27 @@ export class BacktrackPlanificateur {
 
         return true;
     }
-    variableSameDate(affectation: typeof this.affectation, date: Date) {
-        let variable = [];
+    variableSamePeriode(
+        affectation: typeof this.affectation,
+        variable: UnitePermanence
+    ) {
+        let listVariable = [];
+        let date = variable.date;
         for (let key in affectation.variable) {
             let variableCurrent = affectation.variable[key];
             if (
+                variableCurrent.isNight == variable.isNight &&
                 variableCurrent.date.getDate() == date.getDate() &&
                 variableCurrent.date.getMonth() == date.getMonth() &&
                 variableCurrent.date.getFullYear() == date.getFullYear()
             ) {
-                variable.push(variableCurrent);
+                listVariable.push(variableCurrent);
             }
         }
-        return variable;
+        return listVariable;
     }
 
-    personnelSameGroupeDate(
-        affectation: typeof this.affectation,
-        variable: UnitePermanence
-    ): boolean {
-        if (!variable.dataPersonnel) {
-            throw Error('dataPersonnel non présent !! Erreur backtracking');
-        }
-        let buffer = this.variableSameDate(affectation, variable.date);
-        let tabGroup = this.groupsSameDate(buffer);
-        for (let group of variable.dataPersonnel.group) {
-            if (tabGroup.includes(group) && group.indexOf('ensemble') == -1) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    groupsSameDate(variables: UnitePermanence[]) {
+    groupsOfListVariable(variables: UnitePermanence[]) {
         let tabGroup: string[] = [];
         for (let variable of variables) {
             if (!variable.dataPersonnel) {
