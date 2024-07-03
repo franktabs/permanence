@@ -4,7 +4,7 @@ import { PermanenceCSP } from './PermanenceCSP';
 import { UnitePermanence } from './UnitePermanence';
 
 export class BacktrackPlanificateur {
-    public tailleVariable!: number;
+    public tailleVariables!: number;
     public tabNonAffectation: number[] = [];
 
     constructor(
@@ -15,9 +15,13 @@ export class BacktrackPlanificateur {
         }
     ) {
         //taile de l'ensemble des variables
-        this.tailleVariable = variablePermanence.length;
+        this.tailleVariables = variablePermanence.length;
     }
 
+    /**
+     * Lancer l'algorithme backtracking
+     * @returns
+     */
     start() {
         this.backtracking(this.affectation, null);
         return Object.keys(this.affectation.variable).map((key) => {
@@ -25,12 +29,18 @@ export class BacktrackPlanificateur {
             return variable;
         });
     }
+
+    /**
+     * Execute l'algorithme backtracking des CSP
+     * @param affectation
+     * @param variable
+     * @returns
+     */
     backtracking(
         affectation: typeof this.affectation,
         variable: UnitePermanence | null
     ): boolean {
         //Si affectation non consistante retourner faux;
-        console.log('Evolution backtracking', affectation);
         debugger;
         if (!this.isConsistante(affectation, variable)) {
             return false;
@@ -43,63 +53,22 @@ export class BacktrackPlanificateur {
         debugger;
         this.tabNonAffectation = [];
         let tailleActuelVariable = Object.keys(affectation.variable).length;
-        if (tailleActuelVariable == this.tailleVariable) {
+
+        //Si l'affectation est total et consistante
+        if (tailleActuelVariable == this.tailleVariables) {
             // Affectation totale est consistante
-            console.log('Affectation totale persistante', affectation);
             return true;
         } else {
             //Choisir une variable qui n'est pas encore affectée
-            variable = null;
-            let estAffecte = true;
-            let i = 0;
-            while (estAffecte && i < this.tailleVariable) {
-                variable = this.variablePermanence[i];
-                if (!affectation.variable[variable.id]) {
-                    estAffecte = false;
-                } else {
-                    i++;
-                }
-            }
-            if (variable == null) {
-                throw Error("Impossible d'affecter une autre variable");
-            }
+            variable = this.takeAnotherVariable(affectation);
 
-            //pour toute valeur V appartenant a D(Xi)
+            //pourt toutes les valeurs du domaine de la variable
             while (
                 this.tabNonAffectation.length <=
                 affectation.domain.other.data.length
             ) {
-                if (
-                    (variable.ordre == 1 &&
-                        variable.date.getDay() != 0 &&
-                        variable.date.getDay() != 6) ||
-                    (variable.ordre == 1 &&
-                        variable.date.getDay() == 6 &&
-                        !variable.isNight)
-                ) {
-                    let groupTfj = affectation.domain.tfj;
-                    let index = groupTfj.parcours;
-                    let dataPersonnel =
-                        groupTfj.data[
-                            groupTfj.parcours++ % groupTfj.data.length
-                        ];
-                    this.tabNonAffectation.push(index % groupTfj.data.length);
-                    variable.dataPersonnel = dataPersonnel;
-                    if (this.backtracking(affectation, variable)) {
-                        return true;
-                    }
-                } else {
-                    let groupOther = affectation.domain.other;
-                    let index = groupOther.parcours;
-                    let dataPersonnel =
-                        groupOther.data[
-                            groupOther.parcours++ % groupOther.data.length
-                        ];
-                    this.tabNonAffectation.push(index % groupOther.data.length);
-                    variable.dataPersonnel = dataPersonnel;
-                    if (this.backtracking(affectation, variable)) {
-                        return true;
-                    }
+                if (this.backtracking(affectation, this.takeValeurDomaine(affectation, variable))) {
+                    return true;
                 }
             }
             return false;
@@ -114,9 +83,6 @@ export class BacktrackPlanificateur {
         if (variable == null) {
             return true;
         }
-        if (!variable.dataPersonnel) {
-            throw Error('dataPersonnel non présent !! Erreur backtracking');
-        }
 
         //verification de la disponibilité
         if (!this.estDisponible(variable)) {
@@ -124,20 +90,12 @@ export class BacktrackPlanificateur {
         }
 
         //femme non présente la nuit
-        if (variable.isNight && variable.dataPersonnel.personnel.sexe == 'F') {
+        if (variable.isNight && variable.dataPersonnel?.personnel.sexe == 'F') {
             return false;
         }
 
-        const listVariableSamePeriode = this.variableSamePeriode(
-            affectation,
-            variable
-        );
-        const listGroupSamePeriode = this.groupsOfListVariable(
-            listVariableSamePeriode
-        );
-
         //personne du même groupe non présent ensemble sauf contrainte qui l'autorise
-        if (this.hasSameGroup(variable, listGroupSamePeriode)) {
+        if (this.hasSameGroup(affectation, variable)) {
             return false;
         }
 
@@ -154,13 +112,71 @@ export class BacktrackPlanificateur {
         return true;
     }
 
+    private takeAnotherVariable(
+        affectation: typeof this.affectation
+    ): UnitePermanence {
+        let variable = null;
+        let estAffecte = true;
+        let i = 0;
+        while (estAffecte && i < this.tailleVariables) {
+            variable = this.variablePermanence[i];
+            if (!affectation.variable[variable.id]) {
+                estAffecte = false;
+            } else {
+                i++;
+            }
+        }
+        if (variable == null) {
+            throw Error("Impossible d'affecter une autre variable");
+        }
+        return variable;
+    }
+
+    private takeValeurDomaine(
+        affectation: typeof this.affectation,
+        variable: UnitePermanence
+    ): UnitePermanence {
+        if (
+            (variable.ordre == 1 &&
+                variable.date.getDay() != 0 &&
+                variable.date.getDay() != 6) ||
+            (variable.ordre == 1 &&
+                variable.date.getDay() == 6 &&
+                !variable.isNight)
+        ) {
+            let groupTfj = affectation.domain.tfj;
+            let index = groupTfj.parcours;
+            let dataPersonnel =
+                groupTfj.data[groupTfj.parcours++ % groupTfj.data.length];
+            this.tabNonAffectation.push(index % groupTfj.data.length);
+            variable.dataPersonnel = dataPersonnel;
+        } else {
+            let groupOther = affectation.domain.other;
+            let index = groupOther.parcours;
+            let dataPersonnel =
+                groupOther.data[groupOther.parcours++ % groupOther.data.length];
+            this.tabNonAffectation.push(index % groupOther.data.length);
+            variable.dataPersonnel = dataPersonnel;
+        }
+
+        return variable;
+    }
+
     private affecterVariable(
         affectation: typeof this.affectation,
         variable: UnitePermanence
     ) {
+        this.configureNextIndex(affectation, variable);
+
+        //Controle des responsabilités
         variable = this.controleResponsability(affectation, variable);
         affectation.variable[variable.id + ''] = variable;
+    }
 
+    private configureNextIndex(
+        affectation: typeof this.affectation,
+        variable: UnitePermanence
+    ) {
         if (
             this.tabNonAffectation.length > 1 &&
             !variable.dataPersonnel?.criteres.includes('RESPONSABLE TFJ')
@@ -190,7 +206,6 @@ export class BacktrackPlanificateur {
         affectation: typeof this.affectation,
         variable: UnitePermanence
     ): UnitePermanence {
-        
         if (!variable.dataPersonnel) {
             return variable;
         }
@@ -254,15 +269,25 @@ export class BacktrackPlanificateur {
     }
 
     private hasSameGroup(
-        variable: UnitePermanence,
-        tabGroup: string[]
+        affectation: typeof this.affectation,
+        variable: UnitePermanence
     ): boolean {
+        const listVariableSamePeriode = this.variableSamePeriode(
+            affectation,
+            variable
+        );
+        const listGroupSamePeriode = this.groupsOfListVariable(
+            listVariableSamePeriode
+        );
         if (!variable.dataPersonnel) {
             throw Error('dataPersonnel non présent !! Erreur backtracking');
         }
 
         for (let group of variable.dataPersonnel.group) {
-            if (tabGroup.includes(group) && group.indexOf('ensemble') == -1) {
+            if (
+                listGroupSamePeriode.includes(group) &&
+                group.indexOf('ensemble') == -1
+            ) {
                 return true;
             }
         }
@@ -336,7 +361,8 @@ export class BacktrackPlanificateur {
 
         return true;
     }
-    variableSamePeriode(
+
+    private variableSamePeriode(
         affectation: typeof this.affectation,
         variable: UnitePermanence
     ) {
@@ -356,7 +382,7 @@ export class BacktrackPlanificateur {
         return listVariable;
     }
 
-    groupsOfListVariable(variables: UnitePermanence[]) {
+    private groupsOfListVariable(variables: UnitePermanence[]) {
         let tabGroup: string[] = [];
         for (let variable of variables) {
             if (!variable.dataPersonnel) {
@@ -368,7 +394,7 @@ export class BacktrackPlanificateur {
         return tabGroup;
     }
 
-    decalage(
+    private decalage(
         indice1: number,
         indice2: number,
         tableau: GroupsPeople['data']
