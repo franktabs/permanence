@@ -6,6 +6,7 @@ import { UnitePermanence } from './UnitePermanence';
 export class BacktrackPlanificateur {
     public tailleVariables!: number;
     public tabNonAffectation: number[] = [];
+    public nbreChief: { [key in string]: number } = {};
 
     constructor(
         public variablePermanence: UnitePermanence[],
@@ -31,7 +32,7 @@ export class BacktrackPlanificateur {
     }
 
     /**
-     * Execute l'algorithme backtracking des CSP
+     * Execute l'algorithme backtracking pour les CSP
      * @param affectation
      * @param variable
      * @returns
@@ -44,18 +45,17 @@ export class BacktrackPlanificateur {
         debugger;
         if (!this.isConsistante(affectation, variable)) {
             return false;
-        } else {
-            //On affecte la variable
-            if (variable != null) {
-                this.affecterVariable(affectation, variable);
-            }
+        }
+        if (variable != null) {
+            this.configureNextIndex(affectation, variable);
+            this.affecterVariable(affectation, variable);
         }
         debugger;
         this.tabNonAffectation = [];
-        let tailleActuelVariable = Object.keys(affectation.variable).length;
+        let tailleVariableAffectee = Object.keys(affectation.variable).length;
 
         //Si l'affectation est total et consistante
-        if (tailleActuelVariable == this.tailleVariables) {
+        if (tailleVariableAffectee == this.tailleVariables) {
             // Affectation totale est consistante
             return true;
         } else {
@@ -67,7 +67,12 @@ export class BacktrackPlanificateur {
                 this.tabNonAffectation.length <=
                 affectation.domain.other.data.length
             ) {
-                if (this.backtracking(affectation, this.takeValeurDomaine(affectation, variable))) {
+                if (
+                    this.backtracking(
+                        affectation,
+                        this.takeValeur(affectation, variable)
+                    )
+                ) {
                     return true;
                 }
             }
@@ -132,7 +137,7 @@ export class BacktrackPlanificateur {
         return variable;
     }
 
-    private takeValeurDomaine(
+    private takeValeur(
         affectation: typeof this.affectation,
         variable: UnitePermanence
     ): UnitePermanence {
@@ -166,11 +171,44 @@ export class BacktrackPlanificateur {
         affectation: typeof this.affectation,
         variable: UnitePermanence
     ) {
-        this.configureNextIndex(affectation, variable);
+        //Controle responsable
+        variable = this.controleResponsable(affectation, variable);
+        //Controle des priorités
+        variable = this.controlePriorite(affectation, variable);
 
-        //Controle des responsabilités
-        variable = this.controleResponsability(affectation, variable);
         affectation.variable[variable.id + ''] = variable;
+
+        this.incrementNbreChef(variable);
+    }
+
+    private incrementNbreChef(variable: UnitePermanence) {
+        if (!variable.dataPersonnel) {
+            throw Error('dataPersonnel non présent !! Erreur backtracking');
+        }
+        if (variable.ordre != 1) return;
+        let id = variable.dataPersonnel.personnel.id;
+        if (!id) {
+            throw Error('Utilisateur sans id');
+        }
+        if (this.nbreChief['' + id] >= 0) {
+            this.nbreChief['' + id] += 1;
+        } else {
+            this.nbreChief['' + id] = 1;
+        }
+    }
+
+    private decrementNbreChef(variable: UnitePermanence) {
+        if (!variable.dataPersonnel) {
+            throw Error('dataPersonnel non présent !! Erreur backtracking');
+        }
+        if (variable.ordre != 1) return;
+        let id = variable.dataPersonnel.personnel.id;
+        if (!id) {
+            throw Error('Utilisateur sans id');
+        }
+        if (this.nbreChief['' + id] >= 1) {
+            this.nbreChief['' + id] -= 1;
+        }
     }
 
     private configureNextIndex(
@@ -202,7 +240,7 @@ export class BacktrackPlanificateur {
         }
     }
 
-    private controleResponsability(
+    private controlePriorite(
         affectation: typeof this.affectation,
         variable: UnitePermanence
     ): UnitePermanence {
@@ -216,8 +254,8 @@ export class BacktrackPlanificateur {
         );
 
         if (
-            variable.dataPersonnel.criteres.includes('RESPONSABILITE 1') ||
-            variable.dataPersonnel.criteres.includes('RESPONSABILITE 2')
+            variable.dataPersonnel.criteres.includes('PRIORITE 1') ||
+            variable.dataPersonnel.criteres.includes('PRIORITE 2')
         ) {
             listVariableSamePeriode.sort((a, b) => a.ordre - b.ordre);
             let listVariableToChange = [];
@@ -228,12 +266,12 @@ export class BacktrackPlanificateur {
                         'RESPONSABLE TFJ'
                     ) &&
                     !oneVariable.dataPersonnel.criteres.includes(
-                        'RESPONSABILITE 1'
+                        'PRIORITE 1'
                     )
                 ) {
                     if (
                         variable.dataPersonnel.criteres.includes(
-                            'RESPONSABILITE 1'
+                            'PRIORITE 1'
                         )
                     ) {
                         listVariableToChange.push(oneVariable);
@@ -241,10 +279,10 @@ export class BacktrackPlanificateur {
                     }
                     if (
                         !oneVariable.dataPersonnel.criteres.includes(
-                            'RESPONSABILITE 2'
+                            'PRIORITE 2'
                         ) &&
                         variable.dataPersonnel.criteres.includes(
-                            'RESPONSABILITE 2'
+                            'PRIORITE 2'
                         )
                     ) {
                         listVariableToChange.push(oneVariable);
@@ -260,10 +298,79 @@ export class BacktrackPlanificateur {
                     );
                 }
                 let dataPersonnel = oneVariable.dataPersonnel;
+                this.decrementNbreChef(oneVariable);
                 oneVariable.dataPersonnel = dataPersonnelTemporaire;
                 dataPersonnelTemporaire = dataPersonnel;
+                this.incrementNbreChef(oneVariable);
             }
             variable.dataPersonnel = dataPersonnelTemporaire;
+        }
+        return variable;
+    }
+
+    private controleResponsable(
+        affectation: typeof this.affectation,
+        variable: UnitePermanence
+    ) {
+        if (!variable.dataPersonnel) {
+            return variable;
+        }
+
+        const listVariableSamePeriode = this.variableSamePeriode(
+            affectation,
+            variable
+        );
+        listVariableSamePeriode.sort((a, b) => a.ordre - b.ordre);
+        let variableToChange :UnitePermanence | null = null;
+
+        for (let oneVariable of listVariableSamePeriode) {
+            if (oneVariable.ordre == 1 && oneVariable.dataPersonnel) {
+                if (
+                    !oneVariable.dataPersonnel.criteres.includes(
+                        'RESPONSABLE TFJ'
+                    )
+                ) {
+                    if (
+                        variable.dataPersonnel.criteres.includes(
+                            'PRIORITE 1'
+                        ) ||
+                        (!oneVariable.dataPersonnel.criteres.includes(
+                            'PRIORITE 1'
+                        ) &&
+                            variable.dataPersonnel.criteres.includes(
+                                'PRIORITE 2'
+                            )
+                        ) ||
+                        (!oneVariable.dataPersonnel.criteres.includes(
+                            'PRIORITE 1'
+                        ) &&
+                            !oneVariable.dataPersonnel.criteres.includes(
+                                'PRIORITE 2'
+                            )
+                        )
+                    ) {
+                        let n: number =
+                            this.nbreChief[
+                                '' + oneVariable.dataPersonnel.personnel.id
+                            ] ?? 0; // variable déjà affectée
+                        let m: number =
+                            this.nbreChief[
+                                '' + variable.dataPersonnel.personnel.id
+                            ] ?? 0; //variable non affectée
+                        if (n > m) {
+                            variableToChange = oneVariable;
+                        }
+                        continue;
+                    }
+                }
+            }
+        }
+        if(variableToChange){
+            let dataPersonnelTemporaire = variableToChange.dataPersonnel;
+            this.decrementNbreChef(variableToChange);
+            variableToChange.dataPersonnel=variable.dataPersonnel;
+            variable.dataPersonnel=dataPersonnelTemporaire;
+            this.incrementNbreChef(variableToChange);
         }
         return variable;
     }

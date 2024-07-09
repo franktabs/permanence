@@ -17,6 +17,6 @@ export default interface ICritere extends IModel {
     | 'SAMEDI NUIT'
     | 'DIMANCHE JOUR'
     | 'DIMANCHE NUIT'
-    | 'RESPONSABILITE 1'
-    | 'RESPONSABILITE 2'
+    | 'PRIORITE 1'
+    | 'PRIORITE 2'
 }

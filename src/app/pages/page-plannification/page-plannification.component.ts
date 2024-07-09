@@ -587,11 +587,14 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         }
         // newPlanning.permanences = this.permanences;
         this.planningVisible = newPlanning;
-        try{
+        try {
             this.fillPlanning();
-        }catch(e){
-            this.alert.alertMaterial({title:"error", message:"Une erreur produite"});
-            console.error("Une erreur produite =>", e);
+        } catch (e) {
+            this.alert.alertMaterial({
+                title: 'error',
+                message: 'Une erreur produite',
+            });
+            console.error('Une erreur produite =>', e);
         }
         this.plannings.unshift(newPlanning);
         this.visiblePlanning = true;
@@ -1106,7 +1109,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         throw Error('Invalid Identification Personnel');
                     }
                     let dataPersonnel: GroupsPeople['data'][number] =
-                        objetDataPersonnel[personnel.id+""];
+                        objetDataPersonnel[personnel.id + ''];
 
                     if (!dataPersonnel) {
                         dataPersonnel = {
@@ -1126,7 +1129,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                             dataPersonnel.group.push('group' + iterGroup);
                         }
                     }
-                    objetDataPersonnel[personnel.id+""] = dataPersonnel;
+                    objetDataPersonnel[personnel.id + ''] = dataPersonnel;
                 }
             } else if (criteresGroup.includes('RESPONSABLE TFJ')) {
                 for (let personnel of oneGroupPersonnel) {
@@ -1135,7 +1138,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                     }
 
                     let dataPersonnel: GroupsPeople['data'][number] =
-                        objetDataPersonnel[personnel.id+""];
+                        objetDataPersonnel[personnel.id + ''];
 
                     if (!dataPersonnel) {
                         dataPersonnel = {
@@ -1147,13 +1150,13 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                     } else {
                         dataPersonnel.group.push('tfj');
                     }
-                    objetDataPersonnel[personnel.id+""] = dataPersonnel;
+                    objetDataPersonnel[personnel.id + ''] = dataPersonnel;
                 }
             }
         }
 
         for (let idPersonel in objetDataPersonnel) {
-            let dataPersonnel = objetDataPersonnel[idPersonel+""];
+            let dataPersonnel = objetDataPersonnel[idPersonel + ''];
             if (dataPersonnel.group.includes('tfj')) {
                 groupTfg.data.push(dataPersonnel);
             } else {
@@ -1166,14 +1169,6 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             JSON.parse(JSON.stringify(groupsPeople)),
             groupTfg
         );
-
-        let jourFerier: {
-            jour1: IPermanence | null;
-            jour2: IPermanence | null;
-        } = {
-            jour1: null,
-            jour2: null,
-        };
 
         let tabsVariables: UnitePermanence[] = [];
         let mapDatePermanence: { [key in string]: IPermanence } = {};
@@ -1189,7 +1184,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         true,
-                        i+1,
+                        i + 1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1203,7 +1198,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         false,
-                        i+1,
+                        i + 1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1215,7 +1210,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         true,
-                        i+1,
+                        i + 1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1230,7 +1225,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         false,
-                        i+1,
+                        i + 1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1242,7 +1237,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                         datePermanence,
                         permanence.type,
                         true,
-                        i+1,
+                        i + 1,
                         null
                     );
                     tabsVariables.push(unitePermanence);
@@ -1254,9 +1249,9 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                 variable: {},
                 domain: { tfj: groupTfg, other: groupsPeople },
             });
-        debugger
+        debugger;
         let resultVariables = backtrackingPlanificateur.start();
-        console.log("resultat backtracking", resultVariables);
+        console.log('resultat backtracking', resultVariables);
         debugger;
         for (let resultVariable of resultVariables) {
             let permanence = mapDatePermanence[stringDate(resultVariable.date)];
@@ -1266,46 +1261,78 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             if (!permanence.personnels_nuit) {
                 permanence.personnels_nuit = [];
             }
+            if (resultVariable.isNight) {
+                if (!resultVariable.dataPersonnel) {
+                    throw new Error('dataPersonnel not found');
+                }
+                if (resultVariable.ordre == 1) {
+                    let personnelNuit: IPersonnelNuit = {
+                        permanence: cloner(permanence),
+                        personnel: resultVariable.dataPersonnel.personnel,
+                        responsable: true,
+                    };
+                    permanence.personnels_nuit.push(personnelNuit);
+                } else {
+                    let personnelNuit: IPersonnelNuit = {
+                        permanence: cloner(permanence),
+                        personnel: resultVariable.dataPersonnel.personnel,
+                        responsable: false,
+                    };
+                    permanence.personnels_nuit.push(personnelNuit);
+                }
+            } else {
+                if (!resultVariable.dataPersonnel) {
+                    throw new Error('dataPersonnel not found');
+                }
+                if (resultVariable.ordre == 1) {
+                    let personnelJour: IPersonnelJour = {
+                        permanence: cloner(permanence),
+                        personnel: resultVariable.dataPersonnel.personnel,
+                        responsable: true,
+                    };
+                    permanence.personnels_jour.push(personnelJour);
+                } else {
+                    let personnelJour: IPersonnelJour = {
+                        permanence: cloner(permanence),
+                        personnel: resultVariable.dataPersonnel.personnel,
+                        responsable: false,
+                    };
+                    permanence.personnels_jour.push(personnelJour);
+                }
+            }
+        }
+
+        let jourFerier: {
+            jour1: IPermanence | null;
+            jour2: IPermanence | null;
+        } = {
+            jour1: null,
+            jour2: null,
+        };
+        let sameditAvant: IPermanence | null = null;
+        for (let permanence of this.permanences) {
+            let date = new Date(permanence.date);
             if (
-                resultVariable.isNight
+                date.getDay() != 6 &&
+                date.getDay() != 0 &&
+                permanence.type == 'ouvrable'
             ) {
-                if (!resultVariable.dataPersonnel) {
-                    throw new Error('dataPersonnel not found');
+                if (jourFerier.jour1 == null) {
+                    jourFerier.jour1 = permanence;
+                } else if (sameditAvant != null) {
+                    permanence.personnels_jour = sameditAvant.personnels_jour;
+                    permanence.personnels_nuit = sameditAvant.personnels_nuit;
                 }
-                if (resultVariable.ordre == 1) {
-                    let personnelNuit: IPersonnelNuit = {
-                        permanence: cloner(permanence),
-                        personnel: resultVariable.dataPersonnel.personnel,
-                        responsable: true,
-                    };
-                    permanence.personnels_nuit.push(personnelNuit);
-                }else{
-                    let personnelNuit: IPersonnelNuit = {
-                        permanence: cloner(permanence),
-                        personnel: resultVariable.dataPersonnel.personnel,
-                        responsable: false,
-                    };
-                    permanence.personnels_nuit.push(personnelNuit);
+            }
+            if (date.getDay() == 6) {
+                if (jourFerier.jour1 != null) {
+                    jourFerier.jour1.personnels_jour =
+                        permanence.personnels_jour;
+                    jourFerier.jour1.personnels_nuit =
+                        permanence.personnels_nuit;
+                    jourFerier.jour1 = null;
                 }
-            }else{
-                if (!resultVariable.dataPersonnel) {
-                    throw new Error('dataPersonnel not found');
-                }
-                if (resultVariable.ordre == 1) {
-                    let personnelJour: IPersonnelJour = {
-                        permanence: cloner(permanence),
-                        personnel: resultVariable.dataPersonnel.personnel,
-                        responsable: true,
-                    };
-                    permanence.personnels_jour.push(personnelJour);
-                }else{
-                    let personnelJour: IPersonnelJour = {
-                        permanence: cloner(permanence),
-                        personnel: resultVariable.dataPersonnel.personnel,
-                        responsable: false,
-                    };
-                    permanence.personnels_jour.push(personnelJour);
-                }
+                sameditAvant = permanence;
             }
         }
     }
@@ -1934,7 +1961,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             type,
             lastPosition,
             [],
-            ['RESPONSABILITE 1']
+            ['PRIORITE 1']
         );
 
         if (personDataTfj2 == null) {
@@ -1949,7 +1976,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                 type,
                 lastPosition,
                 [],
-                ['RESPONSABILITE 2']
+                ['PRIORITE 2']
             );
         }
         return personDataTfj2;

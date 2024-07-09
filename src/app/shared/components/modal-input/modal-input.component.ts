@@ -29,8 +29,8 @@ export const CRITERE_OBJECT: { [key in ICritere['nom']]: boolean } = {
   'SAMEDI NUIT': false,
   'DIMANCHE JOUR': false,
   'DIMANCHE NUIT': false,
-  'RESPONSABILITE 1': false,
-  'RESPONSABILITE 2': false,
+  'PRIORITE 1': false,
+  'PRIORITE 2': false,
 };
 export const CRITERES: (keyof typeof CRITERE_OBJECT)[] = [
   'RESPONSABLE TFJ',
@@ -48,8 +48,8 @@ export const CRITERES: (keyof typeof CRITERE_OBJECT)[] = [
   'SAMEDI NUIT',
   'DIMANCHE JOUR',
   'DIMANCHE NUIT',
-  'RESPONSABILITE 1',
-  'RESPONSABILITE 2',
+  'PRIORITE 1',
+  'PRIORITE 2',
 ];
 
 @Component({
