@@ -97,7 +97,10 @@
         <ng-container *ngIf="visiblePlanning && planningVisible && planningVisible.months">
             <div class="mt-5 pe-2 month-planning shadow-by-material2 anim-slide-s "
                 *ngFor="let month of planningVisible.months, let i = index">
-                <h1> Superviseur : {{ (month.superviseur && month.superviseur.firstname) }} </h1>
+                <div class="d-flex justify-content-between px-5 align-items-center">
+                    <h1 class="text-uppercase m-0 fw-bold fs-3 text-bordeau"> {{ month.name }} </h1>
+                    <h1 class="m-0"> Superviseur : {{ (month.superviseur && month.superviseur.firstname) }} </h1>
+                </div>
                 <div class="ligne"></div>
                 <div class='planning mt-2 overflow-x-auto pt-2 '>
                     <ng-container *ngFor="let permanence of month.permanences">

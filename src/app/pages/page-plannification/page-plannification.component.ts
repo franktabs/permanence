@@ -74,12 +74,12 @@ export type GroupsPeople = {
 
 type ApparitionPerson = {
     [key in
-        | keyof IApiPersonnel
-        | keyof OtherKey]?: key extends keyof IApiPersonnel
-        ? IApiPersonnel[key]
-        : key extends keyof OtherKey
-        ? OtherKey[key]
-        : never;
+    | keyof IApiPersonnel
+    | keyof OtherKey]?: key extends keyof IApiPersonnel
+    ? IApiPersonnel[key]
+    : key extends keyof OtherKey
+    ? OtherKey[key]
+    : never;
 };
 
 type OtherKey = {
@@ -169,7 +169,7 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
         private alert: AlertService,
         private elementRef: ElementRef,
         private _liveAnnouncer: LiveAnnouncer
-    ) {}
+    ) { }
 
     ngOnInit(): void {
         this.authRoles = this.auth.rolesName;
@@ -391,8 +391,8 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             try {
                 let response = await axios.get(
                     this.api.URL_PLANNINGS +
-                        '/count-personnels/' +
-                        this.planningVisible.id
+                    '/count-personnels/' +
+                    this.planningVisible.id
                 );
                 let dataAppartion: { [key in number]: number } = response.data;
                 for (let person of dataPersonnel) {
@@ -1261,45 +1261,48 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
             if (!permanence.personnels_nuit) {
                 permanence.personnels_nuit = [];
             }
-            if (resultVariable.isNight) {
-                if (!resultVariable.dataPersonnel) {
-                    throw new Error('dataPersonnel not found');
-                }
-                if (resultVariable.ordre == 1) {
-                    let personnelNuit: IPersonnelNuit = {
-                        permanence: cloner(permanence),
-                        personnel: resultVariable.dataPersonnel.personnel,
-                        responsable: true,
-                    };
-                    permanence.personnels_nuit.push(personnelNuit);
+            if (!(resultVariable.type == "non_ouvrable" || (resultVariable.type == "ouvrable" && resultVariable.date.getDay() != 6 && resultVariable.date.getDay() != 1))) {
+                if (resultVariable.isNight) {
+                    if (!resultVariable.dataPersonnel) {
+                        throw new Error('dataPersonnel not found');
+                    }
+                    if (resultVariable.ordre == 1) {
+                        let personnelNuit: IPersonnelNuit = {
+                            permanence: cloner(permanence),
+                            personnel: resultVariable.dataPersonnel.personnel,
+                            responsable: true,
+                        };
+                        permanence.personnels_nuit.push(personnelNuit);
+                    } else {
+                        let personnelNuit: IPersonnelNuit = {
+                            permanence: cloner(permanence),
+                            personnel: resultVariable.dataPersonnel.personnel,
+                            responsable: false,
+                        };
+                        permanence.personnels_nuit.push(personnelNuit);
+                    }
                 } else {
-                    let personnelNuit: IPersonnelNuit = {
-                        permanence: cloner(permanence),
-                        personnel: resultVariable.dataPersonnel.personnel,
-                        responsable: false,
-                    };
-                    permanence.personnels_nuit.push(personnelNuit);
-                }
-            } else {
-                if (!resultVariable.dataPersonnel) {
-                    throw new Error('dataPersonnel not found');
-                }
-                if (resultVariable.ordre == 1) {
-                    let personnelJour: IPersonnelJour = {
-                        permanence: cloner(permanence),
-                        personnel: resultVariable.dataPersonnel.personnel,
-                        responsable: true,
-                    };
-                    permanence.personnels_jour.push(personnelJour);
-                } else {
-                    let personnelJour: IPersonnelJour = {
-                        permanence: cloner(permanence),
-                        personnel: resultVariable.dataPersonnel.personnel,
-                        responsable: false,
-                    };
-                    permanence.personnels_jour.push(personnelJour);
+                    if (!resultVariable.dataPersonnel) {
+                        throw new Error('dataPersonnel not found');
+                    }
+                    if (resultVariable.ordre == 1) {
+                        let personnelJour: IPersonnelJour = {
+                            permanence: cloner(permanence),
+                            personnel: resultVariable.dataPersonnel.personnel,
+                            responsable: true,
+                        };
+                        permanence.personnels_jour.push(personnelJour);
+                    } else {
+                        let personnelJour: IPersonnelJour = {
+                            permanence: cloner(permanence),
+                            personnel: resultVariable.dataPersonnel.personnel,
+                            responsable: false,
+                        };
+                        permanence.personnels_jour.push(personnelJour);
+                    }
                 }
             }
+
         }
 
         let jourFerier: {

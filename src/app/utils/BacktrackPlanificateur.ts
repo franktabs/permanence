@@ -141,6 +141,20 @@ export class BacktrackPlanificateur {
         affectation: typeof this.affectation,
         variable: UnitePermanence
     ): UnitePermanence {
+        let continuer = true;
+        let tailleVariableAffectee = Object.keys(affectation.variable);
+        while (continuer && tailleVariableAffectee.length < this.variablePermanence.length) {
+            if (variable.type == "non_ouvrable" || (variable.type == "ouvrable" && variable.date.getDay() != 6 && variable.date.getDay() != 0)) {
+                affectation.variable["" + variable.id] = variable;
+                tailleVariableAffectee = Object.keys(affectation.variable);
+                if (tailleVariableAffectee.length < this.variablePermanence.length) {
+                    variable = this.takeAnotherVariable(affectation);
+                }
+            } else {
+                continuer = false;
+            }
+        }
+        if (variable.type == "non_ouvrable" || (variable.type == "ouvrable" && variable.date.getDay() != 6 && variable.date.getDay() != 0)) return variable;
         if (
             (variable.ordre == 1 &&
                 variable.date.getDay() != 0 &&
@@ -321,7 +335,7 @@ export class BacktrackPlanificateur {
             variable
         );
         listVariableSamePeriode.sort((a, b) => a.ordre - b.ordre);
-        let variableToChange :UnitePermanence | null = null;
+        let variableToChange: UnitePermanence | null = null;
 
         for (let oneVariable of listVariableSamePeriode) {
             if (oneVariable.ordre == 1 && oneVariable.dataPersonnel) {
@@ -351,11 +365,11 @@ export class BacktrackPlanificateur {
                     ) {
                         let n: number =
                             this.nbreChief[
-                                '' + oneVariable.dataPersonnel.personnel.id
+                            '' + oneVariable.dataPersonnel.personnel.id
                             ] ?? 0; // variable déjà affectée
                         let m: number =
                             this.nbreChief[
-                                '' + variable.dataPersonnel.personnel.id
+                            '' + variable.dataPersonnel.personnel.id
                             ] ?? 0; //variable non affectée
                         if (n > m) {
                             variableToChange = oneVariable;
@@ -365,11 +379,11 @@ export class BacktrackPlanificateur {
                 }
             }
         }
-        if(variableToChange){
+        if (variableToChange) {
             let dataPersonnelTemporaire = variableToChange.dataPersonnel;
             this.decrementNbreChef(variableToChange);
-            variableToChange.dataPersonnel=variable.dataPersonnel;
-            variable.dataPersonnel=dataPersonnelTemporaire;
+            variableToChange.dataPersonnel = variable.dataPersonnel;
+            variable.dataPersonnel = dataPersonnelTemporaire;
             this.incrementNbreChef(variableToChange);
         }
         return variable;
@@ -411,7 +425,7 @@ export class BacktrackPlanificateur {
             for (let vacance of vacances) {
                 if (
                     vacance.start <= stringDate(variable.date) &&
-                    stringDate(variable.date) <= vacance.end && vacance.validate==null && vacance.validate==true
+                    stringDate(variable.date) <= vacance.end && vacance.validate == null && vacance.validate == true
                 ) {
                     return false;
                 }

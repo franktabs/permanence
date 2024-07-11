@@ -62,7 +62,7 @@ export class PersonnelAutocompleteComponent implements OnInit, OnChanges {
               name = unkOption;
             }
             return name
-              ? this._filter(name as string).slice(0, 5)
+              ? this._filter(name as string).sort((a,b)=>a.firstname.localeCompare(b.firstname)).slice(0, 5)
               : this.options.slice().slice(0, 5);
           })
         );
