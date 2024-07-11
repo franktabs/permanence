@@ -42,7 +42,7 @@ export class ModalAbsenceComponent implements OnInit {
 
   ngOnInit(): void {
     this.absenceForm = this.formBuilder.group({
-      type: ['CONGE', Validators.required],
+      motif: ['CONGE', Validators.required],
       start: ['', Validators.required],
       end: ['', Validators.required],
       submissionDate: [''],
@@ -76,11 +76,11 @@ export class ModalAbsenceComponent implements OnInit {
     let headerModal = document.querySelectorAll('.see-modal-absence');
     for (let i = 0; i < headerModal.length; i++) {
       let elemt = headerModal[i];
-      elemt.classList.add('anim-slideOut-s');
+      elemt.classList.add('anim-scaleOut');
     }
     setTimeout(() => {
       this.openChange.emit(false);
-    }, 400);
+    }, 200);
   }
 
   isValidForm(): boolean {

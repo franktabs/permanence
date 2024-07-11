@@ -1,5 +1,5 @@
 <div class="my-modal">
-    <div class="my-body shadow-lg anim-slide-s see-modal-absence">
+    <div class="my-body shadow-lg anim-scaleIn see-modal-absence">
         <button class="btn btn-close my-close" (click)="up()"></button>
         <div>
             <div class="my-title fw-bold p-2">
@@ -38,7 +38,7 @@
                                             <select class="form-select"
                                             id="typeAbsence" 
                                                 aria-label="Default select example" id="select-month"
-                                                formControlName="type"
+                                                formControlName="motif"
                                                 >
                                                 <option value="CONGE">Congé</option>
                                                 <option value="PERMISSION">Permission</option>
@@ -87,7 +87,7 @@
 
                         <div class="text-end">
                             <button mat-raised-button color="btn-bordeau" type="submit"
-                                [disabled]="!isValidForm()" (click)="postAbsence()" >Soumettre <i class="bi bi-save"></i> </button>
+                                [disabled]="!isValidForm()" >Soumettre <i class="bi bi-save"></i> </button>
                         </div>
                     </form>
 

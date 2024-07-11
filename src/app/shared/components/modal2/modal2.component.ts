@@ -69,7 +69,7 @@ export class Modal2Component implements OnInit {
     }
     setTimeout(() => {
       this.closeChange.emit(true);
-    }, 400);
+    }, 200);
   }
 
   async postRemplacement() {

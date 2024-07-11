@@ -286,7 +286,7 @@ body {
 
 /* Appliquer l'animation à l'élément */
 .anim-scaleIn {
-  animation: scaleIn .5s ease-out;
+  animation: scaleIn .41s ease-out;
 }
 
 @keyframes scaleOut {
@@ -301,7 +301,7 @@ body {
 
 /* Appliquer l'animation à l'élément */
 .anim-scaleOut {
-  animation: scaleOut .41s ease-out;
+  animation: scaleOut .21s ease-out;
 }
 
 @keyframes bounceIn {

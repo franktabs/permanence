@@ -35,7 +35,7 @@ export class BacktrackPlanificateur {
      * Execute l'algorithme backtracking pour les CSP
      * @param affectation
      * @param variable
-     * @returns
+     * @returns boolean
      */
     backtracking(
         affectation: typeof this.affectation,
@@ -62,7 +62,7 @@ export class BacktrackPlanificateur {
             //Choisir une variable qui n'est pas encore affectée
             variable = this.takeAnotherVariable(affectation);
 
-            //pourt toutes les valeurs du domaine de la variable
+            //pour toutes les valeurs du domaine de la variable
             while (
                 this.tabNonAffectation.length <=
                 affectation.domain.other.data.length

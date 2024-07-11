@@ -232,7 +232,7 @@ export class Modal1Component implements OnInit, OnChanges, OnDestroy {
     headerModal.classList.add('anim-scaleOut');
     setTimeout(() => {
       this.isOpenChange.emit(false);
-    }, 400);
+    }, 200);
   }
 
   openModalRemplacement() {

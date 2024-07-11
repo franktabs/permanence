@@ -36,6 +36,6 @@ export class HeadModalDefaultComponent implements OnInit {
 
     setTimeout(() => {
       this.openChange.emit(false);
-    }, 500);
+    }, 200);
   }
 }
