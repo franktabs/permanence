@@ -255,9 +255,9 @@ body {
 }
 
 /* Appliquer l'animation à l'élément */
-.anim-fadeIn {
-  animation: fadeIn 1s ease-in;
-}
+// .anim-fadeIn {
+//   animation: fadeIn 1s ease-in;
+// }
 
 @keyframes slideIn {
   from {
@@ -270,9 +270,9 @@ body {
 }
 
 /* Appliquer l'animation à l'élément */
-.anim-slideIn {
-  animation: slideIn 1s ease-in-out;
-}
+// .anim-slideIn {
+//   animation: slideIn 1s ease-in-out;
+// }
 
 @keyframes scaleIn {
   from {
@@ -321,9 +321,9 @@ body {
 }
 
 /* Appliquer l'animation à l'élément */
-.anim-bounceIn {
-  animation: bounceIn 1s;
-}
+// .anim-bounceIn {
+//   animation: bounceIn 1s;
+// }
 
 @keyframes bounceIn2 {
   0% {
@@ -342,9 +342,9 @@ body {
 }
 
 /* Appliquer l'animation à l'élément */
-.anim-bounceIn2 {
-  animation: bounceIn2 1s;
-}
+// .anim-bounceIn2 {
+//   animation: bounceIn2 1s;
+// }
 
 @keyframes slideLeftIn {
   0% {
@@ -362,9 +362,9 @@ body {
   }
 }
 
-.anim-slide-s {
-  animation: slideLeftIn 1s;
-}
+// .anim-slide-s {
+//   animation: slideLeftIn 1s;
+// }
 
 @keyframes slideLeftOut {
   0% {
@@ -390,9 +390,9 @@ body {
   }
 }
 
-.anim-slideOut-s {
-  animation: slideLeftOut 1s;
-}
+// .anim-slideOut-s {
+//   animation: slideLeftOut 1s;
+// }
 
 @keyframes slideRightIn {
   0% {
@@ -410,9 +410,9 @@ body {
   }
 }
 
-.anim-slide-e {
-  animation: slideRightIn 1s;
-}
+// .anim-slide-e {
+//   animation: slideRightIn 1s;
+// }
 
 @keyframes slideRightOut {
   0% {
@@ -438,9 +438,9 @@ body {
   }
 }
 
-.anim-slideOut-e {
-  animation: slideRightOut 1s;
-}
+// .anim-slideOut-e {
+//   animation: slideRightOut 1s;
+// }
 
 
 @keyframes bounceIn3 {
@@ -485,9 +485,9 @@ body {
   }
 }
 
-.anim-bounceIn3 {
-  animation: bounceIn3 1s;
-}
+// .anim-bounceIn3 {
+//   animation: bounceIn3 1s;
+// }
 
 @keyframes rotateTenTimes {
   0% {
@@ -501,9 +501,9 @@ body {
   }
 }
 
-.anim-rotIn {
-  animation: rotateTenTimes 1s;
-}
+// .anim-rotIn {
+//   animation: rotateTenTimes 1s;
+// }
 
 @keyframes rotateTenTimes2 {
   0% {
@@ -517,9 +517,9 @@ body {
   }
 }
 
-.anim-rotOut {
-  animation: rotateTenTimes2 1s;
-}
+// .anim-rotOut {
+//   animation: rotateTenTimes2 1s;
+// }
 
 @keyframes slideBottomIn {
   0% {
@@ -537,9 +537,9 @@ body {
   }
 }
 
-.anim-slide-b {
-  animation: slideBottomIn 1s;
-}
+// .anim-slide-b {
+//   animation: slideBottomIn 1s;
+// }
 @keyframes slideTopIn {
   0% {
     transform: translateY(-2000px);
@@ -556,8 +556,8 @@ body {
   }
 }
 
-.anim-slide-t {
-  animation: slideTopIn 1s;
-}
+// .anim-slide-t {
+//   animation: slideTopIn 1s;
+// }
 
 

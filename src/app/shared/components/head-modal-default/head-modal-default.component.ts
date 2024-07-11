@@ -26,7 +26,7 @@ export class HeadModalDefaultComponent implements OnInit {
   closeModal() {
     let headerModal =
       this.elementRef.nativeElement.querySelector('.see-header-modal');
-    headerModal.classList.add('anim-slideOut-e');
+    headerModal.classList.add('anim-scaleOut');
     // let headerModal = document.querySelectorAll(".see-header-modal")
     // for(let i = 0; i<headerModal.length; i++){
     //   let elemt = headerModal[i];

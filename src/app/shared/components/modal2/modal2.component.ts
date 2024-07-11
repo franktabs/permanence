@@ -65,7 +65,7 @@ export class Modal2Component implements OnInit {
     let headerModal = document.querySelectorAll('.see-modal2');
     for (let i = 0; i < headerModal.length; i++) {
       let elemt = headerModal[i];
-      elemt.classList.add('anim-slideOut-s');
+      elemt.classList.add('anim-scaleOut');
     }
     setTimeout(() => {
       this.closeChange.emit(true);

@@ -44,7 +44,7 @@ export class Modal1Component implements OnInit, OnChanges, OnDestroy {
 
   @Output() isOpenChange: EventEmitter<boolean> = new EventEmitter();
 
-  @Input() rows!: TypePersonnel | any;
+  @Input() rows!: TypePersonnel|any ;
 
   @Input() type:"DEPARTEMENT"|"DIRECTION"|"PERSONNEL" = "PERSONNEL"
 
@@ -53,6 +53,8 @@ export class Modal1Component implements OnInit, OnChanges, OnDestroy {
   public nbrPermanences: number = 0;
 
   public closeModal3: boolean = true;
+
+  public closeModal4: boolean = true;
 
   public keyRow: Array<keyof TypePersonnel> = [];
 
@@ -235,6 +237,10 @@ export class Modal1Component implements OnInit, OnChanges, OnDestroy {
 
   openModalRemplacement() {
     this.closeModal3 = false;
+  }
+
+  openModalAbsence(){
+    this.closeModal4 = false;
   }
 
   openDialog() {

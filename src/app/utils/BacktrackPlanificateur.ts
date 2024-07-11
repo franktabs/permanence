@@ -411,7 +411,7 @@ export class BacktrackPlanificateur {
             for (let vacance of vacances) {
                 if (
                     vacance.start <= stringDate(variable.date) &&
-                    stringDate(variable.date) <= vacance.end
+                    stringDate(variable.date) <= vacance.end && vacance.validate==null && vacance.validate==true
                 ) {
                     return false;
                 }
