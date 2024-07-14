@@ -1244,15 +1244,17 @@ export class PagePlannificationComponent implements OnInit, OnDestroy {
                 }
             }
         }
+
+        
         let backtrackingPlanificateur: BacktrackPlanificateur =
             new BacktrackPlanificateur(tabsVariables, {
                 variable: {},
                 domain: { tfj: groupTfg, other: groupsPeople },
             });
-        debugger;
+
         let resultVariables = backtrackingPlanificateur.start();
         console.log('resultat backtracking', resultVariables);
-        debugger;
+
         for (let resultVariable of resultVariables) {
             let permanence = mapDatePermanence[stringDate(resultVariable.date)];
             if (!permanence.personnels_jour) {

@@ -4,8 +4,13 @@ import { PermanenceCSP } from './PermanenceCSP';
 import { UnitePermanence } from './UnitePermanence';
 
 export class BacktrackPlanificateur {
+    //taille de l'ensemble des variables
     public tailleVariables!: number;
+
+    //tableau des valeurs non consistantes pour une variable lors du parcours
     public tabNonAffectation: number[] = [];
+
+    //comptabilise le nombre de fois qu'une personne est responsable dans le planning
     public nbreChief: { [key in string]: number } = {};
 
     constructor(
