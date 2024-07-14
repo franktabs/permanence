@@ -17,8 +17,9 @@ export class BacktrackPlanificateur {
         public variablePermanence: UnitePermanence[],
         public affectation: {
             variable: { [key in string]: UnitePermanence };
-            domain: { tfj: GroupsPeople; other: GroupsPeople };
-        }
+        },
+        public domaine: { tfj: GroupsPeople; other: GroupsPeople }
+
     ) {
         //taile de l'ensemble des variables
         this.tailleVariables = variablePermanence.length;
@@ -47,7 +48,6 @@ export class BacktrackPlanificateur {
         variable: UnitePermanence | null
     ): boolean {
         //Si affectation non consistante retourner faux;
-        debugger;
         if (!this.isConsistante(affectation, variable)) {
             return false;
         }
@@ -55,7 +55,6 @@ export class BacktrackPlanificateur {
             this.configureNextIndex(affectation, variable);
             this.affecterVariable(affectation, variable);
         }
-        debugger;
         this.tabNonAffectation = [];
         let tailleVariableAffectee = Object.keys(affectation.variable).length;
 
@@ -70,7 +69,7 @@ export class BacktrackPlanificateur {
             //pour toutes les valeurs du domaine de la variable
             while (
                 this.tabNonAffectation.length <=
-                affectation.domain.other.data.length
+                this.domaine.other.data.length
             ) {
                 if (
                     this.backtracking(
@@ -168,14 +167,14 @@ export class BacktrackPlanificateur {
                 variable.date.getDay() == 6 &&
                 !variable.isNight)
         ) {
-            let groupTfj = affectation.domain.tfj;
+            let groupTfj = this.domaine.tfj;
             let index = groupTfj.parcours;
             let dataPersonnel =
                 groupTfj.data[groupTfj.parcours++ % groupTfj.data.length];
             this.tabNonAffectation.push(index % groupTfj.data.length);
             variable.dataPersonnel = dataPersonnel;
         } else {
-            let groupOther = affectation.domain.other;
+            let groupOther = this.domaine.other;
             let index = groupOther.parcours;
             let dataPersonnel =
                 groupOther.data[groupOther.parcours++ % groupOther.data.length];
@@ -243,18 +242,18 @@ export class BacktrackPlanificateur {
                 this.tabNonAffectation[this.tabNonAffectation.length - 1];
             console.log(
                 'avant le decalage',
-                cloner(affectation.domain.other.data)
+                cloner(this.domaine.other.data)
             );
             this.decalage(
                 initialIndex,
                 lastIndex,
-                affectation.domain.other.data
+                this.domaine.other.data
             );
             console.log(
                 'après le decalage',
-                cloner(affectation.domain.other.data)
+                cloner(this.domaine.other.data)
             );
-            let groupOther = affectation.domain.other;
+            let groupOther = this.domaine.other;
             groupOther.parcours = initialIndex + 1;
         }
     }
